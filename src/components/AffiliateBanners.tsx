@@ -10,7 +10,7 @@ interface AffiliateBannersProps {
 export const AffiliateBanners: React.FC<AffiliateBannersProps> = ({ result, gpuObj, caseObj }) => {
   if (result.status === 'GREEN') return null;
 
-  const AMAZON_TAG = 'pcclearance-21';
+ const AMAZON_TAG = 'pcclearance-21';
 
   if (result.status === 'YELLOW') {
     const adapterUrl = `https://www.amazon.es/s?k=adaptador+12vhpwr+90+grados&tag=${AMAZON_TAG}`;
