@@ -1,0 +1,49 @@
+---
+import hardwareData from '../data/hardware.json';
+import { calculateClearance } from '../utils/clearanceEngine';
+import { ClearanceCanvas } from '../components/ClearanceCanvas';
+import { AffiliateBanners } from '../components/AffiliateBanners';
+import '../styles/global.css';
+
+const caseObj = hardwareData.cases[0];
+const gpuObj = hardwareData.gpus[0];
+const aioObj = hardwareData.aios[0];
+
+const result = calculateClearance(caseObj, gpuObj, aioObj);
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>PC Clearance Lab</title>
+  </head>
+  <body class="bg-[#0B0F17] text-slate-200 min-h-screen p-4 md:p-8 font-sans">
+    <main class="max-w-4xl mx-auto space-y-8">
+      
+      <header class="text-center space-y-2">
+        <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-white">
+          PC Clearance Lab
+        </h1>
+        <p class="text-slate-400">
+          Analizando: <span class="text-[#00F0FF]">{caseObj.brand} {caseObj.model}</span> + <span class="text-white">{gpuObj.brand} {gpuObj.model}</span>
+        </p>
+      </header>
+
+      <ClearanceCanvas 
+        caseObj={caseObj} 
+        gpuObj={gpuObj} 
+        aioObj={aioObj} 
+        result={result} 
+        client:load 
+      />
+      
+      <AffiliateBanners 
+        caseObj={caseObj} 
+        gpuObj={gpuObj} 
+        result={result} 
+      />
+
+    </main>
+  </body>
+</html>

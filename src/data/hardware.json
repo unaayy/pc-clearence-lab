@@ -1,0 +1,234 @@
+{
+  "cases": [
+    {
+      "id": "corsair-4000d-airflow",
+      "brand": "Corsair",
+      "model": "4000D Airflow",
+      "slug": "corsair-4000d-airflow",
+      "maxGpuLengthMM": 360,
+      "maxCpuCoolerHeightMM": 170,
+      "internalWidthMM": 180
+    },
+    {
+      "id": "nzxt-h5-flow",
+      "brand": "NZXT",
+      "model": "H5 Flow",
+      "slug": "nzxt-h5-flow",
+      "maxGpuLengthMM": 365,
+      "maxCpuCoolerHeightMM": 165,
+      "internalWidthMM": 175
+    },
+    {
+      "id": "lian-li-o11-dynamic-evo",
+      "brand": "Lian Li",
+      "model": "O11 Dynamic EVO",
+      "slug": "lian-li-o11-dynamic-evo",
+      "maxGpuLengthMM": 422,
+      "maxCpuCoolerHeightMM": 167,
+      "internalWidthMM": 190
+    },
+    {
+      "id": "fractal-design-north",
+      "brand": "Fractal Design",
+      "model": "North",
+      "slug": "fractal-design-north",
+      "maxGpuLengthMM": 355.0,
+      "maxCpuCoolerHeightMM": 170.0,
+      "psuShroudDepthMM": 0.0,
+      "radiatorFrontSupport": true
+    },
+    {
+      "id": "hyte-y60",
+      "brand": "Hyte",
+      "model": "Y60",
+      "slug": "hyte-y60",
+      "maxGpuLengthMM": 375.0,
+      "maxCpuCoolerHeightMM": 160.0,
+      "psuShroudDepthMM": 0.0,
+      "radiatorFrontSupport": false
+    },
+    {
+      "id": "deepcool-ch560-digital",
+      "brand": "DeepCool",
+      "model": "CH560 Digital",
+      "slug": "deepcool-ch560-digital",
+      "maxGpuLengthMM": 380.0,
+      "maxCpuCoolerHeightMM": 175.0,
+      "psuShroudDepthMM": 0.0,
+      "radiatorFrontSupport": true
+    },
+    {
+      "id": "montech-king-95-pro",
+      "brand": "Montech",
+      "model": "KING 95 PRO",
+      "slug": "montech-king-95-pro",
+      "maxGpuLengthMM": 420.0,
+      "maxCpuCoolerHeightMM": 175.0,
+      "psuShroudDepthMM": 0.0,
+      "radiatorFrontSupport": true
+    }
+  ],
+  "gpus": [
+    {
+      "id": "asus-rog-strix-rtx-4090",
+      "brand": "ASUS",
+      "model": "ROG Strix RTX 4090",
+      "slug": "asus-rog-strix-rtx-4090",
+      "connectorType": "12VHPWR",
+      "dimensions": {
+        "lengthMM": 357.6,
+        "widthMM": 149.3,
+        "heightMM": 70.1
+      }
+    },
+    {
+      "id": "msi-rtx-4080-super-ventus",
+      "brand": "MSI",
+      "model": "RTX 4080 Super Ventus 3X",
+      "slug": "msi-rtx-4080-super-ventus",
+      "connectorType": "12VHPWR",
+      "dimensions": {
+        "lengthMM": 322,
+        "widthMM": 136,
+        "heightMM": 62
+      }
+    },
+    {
+      "id": "sapphire-nitro-rx-7900-xtx",
+      "brand": "Sapphire",
+      "model": "Nitro+ RX 7900 XTX",
+      "slug": "sapphire-nitro-rx-7900-xtx",
+      "connectorType": "8PIN",
+      "dimensions": {
+        "lengthMM": 320,
+        "widthMM": 133.75,
+        "heightMM": 71.6
+      }
+    },
+    {
+      "id": "gigabyte-rtx-4070-ti-super-gaming-oc",
+      "brand": "Gigabyte",
+      "model": "RTX 4070 Ti SUPER Gaming OC",
+      "slug": "gigabyte-rtx-4070-ti-super-gaming-oc",
+      "connectorType": "12VHPWR",
+      "dimensions": {
+        "lengthMM": 300.0,
+        "widthMM": 130.0,
+        "heightMM": 57.6
+      }
+    },
+    {
+      "id": "msi-rtx-4070-super-gaming-x-slim",
+      "brand": "MSI",
+      "model": "RTX 4070 SUPER Gaming X Slim",
+      "slug": "msi-rtx-4070-super-gaming-x-slim",
+      "connectorType": "12VHPWR",
+      "dimensions": {
+        "lengthMM": 307.0,
+        "widthMM": 125.0,
+        "heightMM": 46.0
+      }
+    },
+    {
+      "id": "asus-tuf-gaming-rtx-4080-super",
+      "brand": "ASUS",
+      "model": "TUF Gaming RTX 4080 SUPER",
+      "slug": "asus-tuf-gaming-rtx-4080-super",
+      "connectorType": "12VHPWR",
+      "dimensions": {
+        "lengthMM": 348.2,
+        "widthMM": 150.0,
+        "heightMM": 72.6
+      }
+    },
+    {
+      "id": "zotac-gaming-rtx-4060-twin-edge",
+      "brand": "Zotac",
+      "model": "Gaming RTX 4060 Twin Edge",
+      "slug": "zotac-gaming-rtx-4060-twin-edge",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 221.4,
+        "widthMM": 122.7,
+        "heightMM": 41.7
+      }
+    },
+    {
+      "id": "powercolor-hellhound-rx-7800-xt",
+      "brand": "PowerColor",
+      "model": "Hellhound RX 7800 XT",
+      "slug": "powercolor-hellhound-rx-7800-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 322.0,
+        "widthMM": 134.0,
+        "heightMM": 50.0
+      }
+    },
+    {
+      "id": "sapphire-pulse-rx-7700-xt",
+      "brand": "Sapphire",
+      "model": "PULSE RX 7700 XT",
+      "slug": "sapphire-pulse-rx-7700-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 280.0,
+        "widthMM": 128.7,
+        "heightMM": 52.5
+      }
+    },
+    {
+      "id": "xfx-speedster-qick-319-rx-7800-xt",
+      "brand": "XFX",
+      "model": "Speedster QICK 319 RX 7800 XT",
+      "slug": "xfx-speedster-qick-319-rx-7800-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 335.0,
+        "widthMM": 130.0,
+        "heightMM": 52.0
+      }
+    },
+    {
+      "id": "gigabyte-aorus-geforce-rtx-4090-master",
+      "brand": "Gigabyte",
+      "model": "AORUS GeForce RTX 4090 MASTER",
+      "slug": "gigabyte-aorus-geforce-rtx-4090-master",
+      "connectorType": "12VHPWR",
+      "dimensions": {
+        "lengthMM": 358.0,
+        "widthMM": 162.8,
+        "heightMM": 75.1
+      }
+    }
+  ],
+  "aios": [
+    {
+      "id": "arctic-liquid-freezer-iii-360",
+      "brand": "ARCTIC",
+      "model": "Liquid Freezer III 360",
+      "slug": "arctic-liquid-freezer-iii-360",
+      "radiatorThicknessMM": 38,
+      "fanThicknessMM": 25,
+      "totalThicknessMM": 63
+    },
+    {
+      "id": "corsair-icue-h150i-elite",
+      "brand": "Corsair",
+      "model": "iCUE H150i ELITE",
+      "slug": "corsair-icue-h150i-elite",
+      "radiatorThicknessMM": 27,
+      "fanThicknessMM": 25,
+      "totalThicknessMM": 52
+    },
+    {
+      "id": "none",
+      "brand": "Ninguno",
+      "model": "Sin AIO (Solo ventiladores 25mm)",
+      "slug": "none",
+      "radiatorThicknessMM": 0,
+      "fanThicknessMM": 25,
+      "totalThicknessMM": 25
+    }
+  ]
+}
