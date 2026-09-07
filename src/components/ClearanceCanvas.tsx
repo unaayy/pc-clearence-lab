@@ -1,146 +1,127 @@
 import React from 'react';
-import type { Case, GPU, AIO, ClearanceResult } from '../types/hardware';
 
 interface ClearanceCanvasProps {
-  caseObj: Case;
-  gpuObj: GPU;
-  aioObj?: AIO;
-  result: ClearanceResult;
+  caseObj?: any;
+  gpuObj?: any;
+  caseData?: any;
+  gpuData?: any;
+  status?: string;
 }
 
-export const ClearanceCanvas: React.FC<ClearanceCanvasProps> = ({ caseObj, gpuObj, aioObj, result }) => {
-  const SCALE = 2;
+export const ClearanceCanvas: React.FC<ClearanceCanvasProps> = (props) => {
+  const cData = props.caseObj || props.caseData;
+  const gData = props.gpuObj || props.gpuData;
 
-  const canvasWidth = caseObj.maxGpuLengthMM * SCALE;
-  const canvasHeight = caseObj.internalWidthMM * SCALE;
+  if (!cData || !gData) {
+    return (
+      <div className="w-full py-8 text-center text-slate-500 font-mono text-xs">
+        CARGANDO VISTA TÉCNICA...
+      </div>
+    );
+  }
 
-  const aioThicknessPx = (aioObj ? aioObj.totalThicknessMM : 25) * SCALE;
-  const gpuLengthPx = gpuObj.dimensions.lengthMM * SCALE;
-  const gpuWidthPx = gpuObj.dimensions.widthMM * SCALE;
+  // Medidas milimétricas
+  const maxGpuLength = Number(cData.maxGpuLengthMM || cData.maxGpuLength || 360);
+  const gpuLength = Number(gData.dimensions?.lengthMM || gData.dimensions?.length || gData.lengthMM || 300);
+  const clearanceMM = Math.round(maxGpuLength - gpuLength);
 
-  const colors = {
-    GREEN: { stroke: '#00FF66', fill: 'rgba(0, 255, 102, 0.15)', text: '#00FF66' },
-    YELLOW: { stroke: '#FFCC00', fill: 'rgba(255, 204, 0, 0.15)', text: '#FFCC00' },
-    RED: { stroke: '#FF0055', fill: 'rgba(255, 0, 85, 0.25)', text: '#FF0055' }
-  };
+  // CONEXIÓN DIRECTA AL MOTOR
+  // Si tu función calculateClearance dictamina 'RED' (ej. choca con el cristal), forzamos la incompatibilidad.
+  const isEngineIncompatible = props.status === 'RED';
 
-  const currentColor = colors[result.status];
+  // Es compatible visualmente SOLO si el motor no está en RED Y el largo físico encaja
+  const compatible = !isEngineIncompatible && clearanceMM >= 0;
 
-  const gpuConnectorX = aioThicknessPx + gpuLengthPx * 0.7;
-  const gpuConnectorY = canvasHeight - gpuWidthPx;
-  const panelY = 0;
+  // Texto de la cartela
+  let badgeText = `${clearanceMM >= 0 ? '+' : ''}${clearanceMM}mm`;
+  if (isEngineIncompatible && clearanceMM >= 0) {
+    badgeText = 'INCOMPATIBLE'; // Falla por lateral (grosor) aunque sobre largo
+  } else if (!compatible) {
+    badgeText = `${clearanceMM}mm`; // Falla porque no cabe de largo
+  }
 
-  const cablePath = `M ${gpuConnectorX} ${gpuConnectorY} C ${gpuConnectorX} ${gpuConnectorY - 20}, ${gpuConnectorX + 20} ${panelY + 10}, ${gpuConnectorX + 40} ${panelY}`;
+  // Escala
+  const scale = 0.95;
+  const caseWidth = Math.max(maxGpuLength + 80, 430) * scale;
+  const caseHeight = 280 * scale;
+  const gpuW = gpuLength * scale;
+  const gpuH = 48 * scale;
+
+  const fontStyle = { fontFamily: "'Zen Dots', sans-serif" };
+  const strokeColor = compatible ? '#00FF66' : '#FF0055';
 
   return (
-    <div className="w-full flex flex-col items-center justify-center p-8 bg-[#0B0F17] rounded-xl border border-white/10 backdrop-blur-md relative overflow-hidden shadow-2xl">
-      <div 
-        className="absolute inset-0 opacity-10 pointer-events-none"
-        style={{
-          backgroundImage: 'radial-gradient(#00F0FF 1px, transparent 1px)',
-          backgroundSize: '20px 20px'
-        }}
-      />
+    <div className="w-full overflow-x-auto py-3">
+      <svg 
+        viewBox={`0 0 ${caseWidth + 80} ${caseHeight + 90}`} 
+        className="w-full h-auto min-w-[550px] max-w-2xl mx-auto bg-slate-950/90 rounded-3xl border border-white/10 p-4 backdrop-blur-xl shadow-2xl"
+      >
+        <defs>
+          <pattern id="dotGrid" width="14" height="14" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1" fill="rgba(255, 255, 255, 0.06)" />
+          </pattern>
+          <linearGradient id="gpuBodyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#0f172a" />
+            <stop offset="50%" stopColor="#1e293b" />
+            <stop offset="100%" stopColor="#0f172a" />
+          </linearGradient>
+        </defs>
 
-      <div className="z-10 mb-6 flex justify-between items-center w-full max-w-3xl">
-        <span className="text-xs font-mono uppercase tracking-wider text-slate-400">
-          Vista de Planta (2D) - Escala 1mm = 2px
-        </span>
-        <span className="text-xs font-mono font-bold px-3 py-1.5 rounded border border-white/20 shadow-sm" style={{ color: currentColor.text, backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          STATUS: {result.status}
-        </span>
-      </div>
+        <rect width="100%" height="100%" fill="url(#dotGrid)" />
 
-      <div className="relative overflow-auto max-w-full p-4 flex justify-center w-full z-10">
-        <svg
-          width={canvasWidth + 60}
-          height={canvasHeight + 60}
-          viewBox={`-30 -30 ${canvasWidth + 60} ${canvasHeight + 60}`}
-          className="transition-all duration-300 ease-in-out"
-        >
-          <rect
-            x="0"
-            y="0"
-            width={canvasWidth}
-            height={canvasHeight}
-            fill="none"
-            stroke="#00F0FF"
-            strokeWidth="2"
-            strokeDasharray="8 6"
-            className="opacity-60"
+        <g transform="translate(40, 35)">
+          {/* PATAS */}
+          <path d={`M 20 ${caseHeight} L 30 ${caseHeight + 10} L 60 ${caseHeight + 10} L 70 ${caseHeight} Z`} fill="#1e293b" stroke={strokeColor} strokeWidth="1" />
+          <path d={`M ${caseWidth - 70} ${caseHeight} L ${caseWidth - 60} ${caseHeight + 10} L ${caseWidth - 30} ${caseHeight + 10} L ${caseWidth - 20} ${caseHeight} Z`} fill="#1e293b" stroke={strokeColor} strokeWidth="1" />
+
+          {/* CHASIS */}
+          <path 
+            d={`M 15 0 L ${caseWidth - 15} 0 L ${caseWidth} 15 L ${caseWidth} ${caseHeight - 10} L ${caseWidth - 10} ${caseHeight} L 10 ${caseHeight} L 0 ${caseHeight - 10} L 0 15 Z`}
+            fill="#050811" stroke={strokeColor} strokeWidth="2" 
           />
-          <text x="5" y="-10" fill="#00F0FF" fontSize="12" className="font-mono opacity-80">
-            Panel de Cristal Lateral
-          </text>
-          <text x="5" y={canvasHeight + 20} fill="#00F0FF" fontSize="12" className="font-mono opacity-80">
-            Placa Base / Bandeja
-          </text>
+          <path d={`M ${caseWidth - 20} 20 L ${caseWidth - 8} 25 L ${caseWidth - 8} ${caseHeight - 50} L ${caseWidth - 20} ${caseHeight - 40} Z`} fill="rgba(255,255,255,0.03)" stroke="#334155" strokeWidth="1" />
+          <line x1={caseWidth - 14} y1="30" x2={caseWidth - 14} y2={caseHeight - 50} stroke="#334155" strokeWidth="3" strokeDasharray="6 4" />
+          
+          <rect x="0" y={caseHeight - 45} width={caseWidth - 20} height="45" fill="#090d16" stroke="#1e293b" strokeWidth="1.5" />
+          <rect x={30 + gpuW - 15} y={caseHeight - 45} width="30" height="6" fill="#020408" stroke={strokeColor} strokeWidth="1" rx="2" />
+          <rect x="30" y="25" width={caseWidth - 75} height={caseHeight - 80} fill="rgba(15, 23, 42, 0.4)" stroke="#1e293b" strokeWidth="1" rx="4" />
+          <text x="40" y="40" fill="#475569" fontSize="8" style={fontStyle}>MOTHERBOARD ATX</text>
+          <rect x="30" y={caseHeight - 100} width="160" height="7" fill="#020408" stroke="#334155" strokeWidth="1" rx="1" />
 
-          <g className="transition-all duration-300">
-            <rect
-              x="0"
-              y="0"
-              width={aioThicknessPx}
-              height={canvasHeight}
-              fill="rgba(0, 240, 255, 0.1)"
-              stroke="#00F0FF"
-              strokeWidth="1"
-            />
-            <text
-              x={aioThicknessPx / 2}
-              y={canvasHeight / 2}
-              fill="#00F0FF"
-              fontSize="12"
-              className="font-mono font-bold"
-              textAnchor="middle"
-              transform={`rotate(-90 ${aioThicknessPx / 2} ${canvasHeight / 2})`}
-            >
-              {aioObj ? aioObj.model : 'Frontal'} ({aioObj ? aioObj.totalThicknessMM : 25}mm)
+          {/* GPU */}
+          <g transform={`translate(30, ${caseHeight - 140})`}>
+            <rect x="-10" y="-8" width="10" height={gpuH + 20} fill="#334155" stroke="#64748b" strokeWidth="1" rx="2" />
+            <rect x="0" y="0" width={gpuW} height={gpuH} fill="url(#gpuBodyGrad)" stroke={strokeColor} strokeWidth="2" rx="8" />
+            <path d={`M 10 4 L ${gpuW - 10} 4 L ${gpuW - 20} ${gpuH - 4} L 20 ${gpuH - 4} Z`} fill="none" stroke={strokeColor} strokeWidth="1" opacity="0.4" />
+            
+            <line x1="25" y1="12" x2={gpuW - 25} y2="12" stroke="#64748b" strokeWidth="4" strokeDasharray="3 3" opacity="0.7" />
+            <line x1="25" y1={gpuH - 12} x2={gpuW - 25} y2={gpuH - 12} stroke="#64748b" strokeWidth="4" strokeDasharray="3 3" opacity="0.7" />
+            
+            <text x={gpuW / 2} y={gpuH / 2} fill="#ffffff" textAnchor="middle" dominantBaseline="middle" fontSize="9" style={fontStyle}>
+              {gData.brand} {gData.model}
             </text>
+
+            <rect x={gpuW - 65} y="-8" width="26" height="8" fill="#020408" stroke={strokeColor} strokeWidth="1.5" rx="2" />
+            <g stroke={strokeColor} strokeWidth="2" fill="none" opacity="0.95" strokeLinecap="round">
+              <path d={`M ${gpuW - 58} -8 C ${gpuW - 58} -28, ${gpuW - 5} 10, ${gpuW - 5} 95`} />
+              <path d={`M ${gpuW - 52} -8 C ${gpuW - 52} -31, ${gpuW} 10, ${gpuW} 95`} />
+              <path d={`M ${gpuW - 46} -8 C ${gpuW - 46} -34, ${gpuW + 5} 10, ${gpuW + 5} 95`} />
+            </g>
+            <rect x={gpuW - 40} y="-20" width="18" height="4" fill="#020408" stroke={strokeColor} strokeWidth="1" rx="1" transform={`rotate(-15 ${gpuW - 40} -20)`} />
           </g>
 
-          <rect
-            x={aioThicknessPx}
-            y={canvasHeight - gpuWidthPx}
-            width={gpuLengthPx}
-            height={gpuWidthPx}
-            fill={currentColor.fill}
-            stroke={currentColor.stroke}
-            strokeWidth="2"
-            className={`transition-all duration-300 ${result.status === 'RED' ? 'animate-pulse' : ''}`}
-            rx="4"
-          />
-          <text
-            x={aioThicknessPx + gpuLengthPx / 2}
-            y={canvasHeight - gpuWidthPx / 2}
-            fill="#FFFFFF"
-            fontSize="14"
-            className="font-mono font-bold drop-shadow-md"
-            textAnchor="middle"
-          >
-            {gpuObj.brand} {gpuObj.model}
-          </text>
-
-          <path
-            d={cablePath}
-            fill="none"
-            stroke={currentColor.stroke}
-            strokeWidth="4"
-            strokeDasharray={result.status === 'YELLOW' ? '6 4' : 'none'}
-            className="transition-all duration-500"
-          />
-
-          {result.status === 'RED' && (
-            <circle
-              cx={aioThicknessPx + gpuLengthPx}
-              cy={canvasHeight - gpuWidthPx / 2}
-              r="10"
-              fill="#FF0055"
-              className="animate-ping opacity-75"
-            />
-          )}
-        </svg>
-      </div>
+          {/* CARTELA */}
+          <g transform={`translate(${30 + gpuW}, ${caseHeight - 116})`}>
+            <line x1="5" y1="0" x2={Math.max(5, caseWidth - 35 - gpuW)} y2="0" stroke={strokeColor} strokeWidth="1.5" strokeDasharray="3 3" />
+            <g transform={`translate(${Math.max(0, (caseWidth - 40 - gpuW) / 2 - 45)}, -28)`}>
+              <rect x="0" y="0" width="90" height="22" fill="#020408" stroke={strokeColor} strokeWidth="1.5" rx="6" />
+              <text x="45" y="14" fill={strokeColor} fontSize="8" style={fontStyle} textAnchor="middle">
+                {badgeText}
+              </text>
+            </g>
+          </g>
+        </g>
+      </svg>
     </div>
   );
 };

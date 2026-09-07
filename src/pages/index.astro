@@ -1,49 +1,95 @@
 ---
 import hardwareData from '../data/hardware.json';
-import { calculateClearance } from '../utils/clearanceEngine';
-import { ClearanceCanvas } from '../components/ClearanceCanvas';
-import { AffiliateBanners } from '../components/AffiliateBanners';
+import SearchInterface from '../components/SearchInterface.jsx';
 import '../styles/global.css';
 
-const caseObj = hardwareData.cases[0];
-const gpuObj = hardwareData.gpus[0];
-const aioObj = hardwareData.aios[0];
-
-const result = calculateClearance(caseObj, gpuObj, aioObj);
+const { cases, gpus } = hardwareData;
 ---
 
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>PC Clearance Lab</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PC Clearance Lab - Comprobador Físico de Hardware</title>
+    
+    <!-- Carga de la fuente Zen Dots (Deck Seven) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap" rel="stylesheet">
   </head>
-  <body class="bg-[#0B0F17] text-slate-200 min-h-screen p-4 md:p-8 font-sans">
-    <main class="max-w-4xl mx-auto space-y-8">
-      
-      <header class="text-center space-y-2">
-        <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-white">
-          PC Clearance Lab
-        </h1>
-        <p class="text-slate-400">
-          Analizando: <span class="text-[#00F0FF]">{caseObj.brand} {caseObj.model}</span> + <span class="text-white">{gpuObj.brand} {gpuObj.model}</span>
-        </p>
-      </header>
+  <body class="bg-black text-slate-100 min-h-screen font-sans selection:bg-[#00F0FF] selection:text-black relative overflow-x-hidden">
+    
+    <!-- Fondo Estilo Nothing -->
+    <div class="fixed inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none"></div>
+    <div class="fixed -top-40 -left-40 w-96 h-96 bg-[#00F0FF]/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="fixed -bottom-40 -right-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-      <ClearanceCanvas 
-        caseObj={caseObj} 
-        gpuObj={gpuObj} 
-        aioObj={aioObj} 
-        result={result} 
-        client:load 
-      />
+    <!-- Navbar Superior Simplificado -->
+    <header class="relative z-50 border-b border-white/10 backdrop-blur-md bg-black/40">
+      <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+        
+        <!-- Logo -->
+        <a href="/" class="flex items-center gap-3 group">
+          <div class="w-10 h-10 rounded-xl bg-black border border-[#00F0FF]/50 flex items-center justify-center shadow-[0_0_10px_rgba(0,240,255,0.2)] group-hover:border-[#00F0FF] transition">
+            <span class="text-[#00F0FF] text-sm font-bold" style="font-family: 'Zen Dots', sans-serif;">PC</span>
+          </div>
+          <span class="text-lg tracking-wider font-bold text-white" style="font-family: 'Zen Dots', sans-serif;">CLEARANCE<span class="text-[#00F0FF]">.LAB</span></span>
+        </a>
+
+        <!-- Iniciar Sesión -->
+        <div class="flex items-center gap-4">
+          <button 
+            style="font-family: 'Zen Dots', sans-serif;"
+            class="text-xs text-slate-200 hover:text-white border border-white/20 hover:border-white/50 px-5 py-2.5 rounded-full transition uppercase tracking-wider"
+          >
+            Iniciar sesión
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Bloque Principal -->
+    <main class="relative z-10 max-w-4xl mx-auto px-4 pt-16 pb-24 space-y-12">
       
-      <AffiliateBanners 
-        caseObj={caseObj} 
-        gpuObj={gpuObj} 
-        result={result} 
-      />
+      <!-- Título Principal -->
+      <div class="text-center space-y-4">
+        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-wide text-white uppercase" style="font-family: 'Zen Dots', sans-serif;">
+          COMPROBAR <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00F0FF] to-emerald-400">COMPATIBILIDAD</span>
+        </h1>
+        <p class="text-slate-300 text-base sm:text-lg font-mono max-w-xl mx-auto">
+          Verifica el espacio libre antes de ensamblar tu PC.
+        </p>
+      </div>
+
+      <!-- Buscador Interactivo -->
+      <SearchInterface client:load cases={cases} gpus={gpus} />
+
+      <!-- Combinaciones Frecuentes -->
+      <section class="pt-8 space-y-5">
+        <div class="flex items-center gap-3 text-xs sm:text-sm text-slate-400 uppercase tracking-widest" style="font-family: 'Zen Dots', sans-serif;">
+          <span class="w-2 h-2 rounded-full bg-[#00F0FF] animate-pulse"></span>
+          Combinaciones frecuentes
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {cases.slice(0, 3).map((caseItem) => (
+            gpus.slice(0, 2).map((gpuItem) => (
+              <a
+                href={`/${caseItem.slug}-vs-${gpuItem.slug}`}
+                class="bg-slate-950/60 hover:bg-slate-900 border border-white/10 hover:border-[#00F0FF]/50 p-4 rounded-2xl text-sm text-slate-200 transition-all duration-300 flex items-center justify-between group backdrop-blur-sm"
+              >
+                <div class="truncate pr-2">
+                  <div class="text-white font-bold text-sm sm:text-base truncate" style="font-family: 'Zen Dots', sans-serif;">{caseItem.brand} {caseItem.model}</div>
+                  <div class="text-slate-400 text-xs font-mono truncate">vs {gpuItem.brand} {gpuItem.model}</div>
+                </div>
+                <span class="text-[#00F0FF] text-base opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">→</span>
+              </a>
+            ))
+          ))}
+        </div>
+      </section>
 
     </main>
+
   </body>
 </html>

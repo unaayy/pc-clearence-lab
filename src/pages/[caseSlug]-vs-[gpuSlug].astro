@@ -7,7 +7,10 @@ import '../styles/global.css';
 
 // Esta función es el corazón del pSEO. Le dice a Astro qué URLs debe fabricar.
 export function getStaticPaths() {
-  const paths = [];
+  // Add ': any[]' to explicitly type the paths array
+  const paths: any[] = []; 
+
+  // ... rest of your code
 
   // Cruzamos todas las cajas con todas las GPUs
   hardwareData.cases.forEach((caseItem) => {
@@ -41,26 +44,33 @@ const result = calculateClearance(caseObj, gpuObj, aioObj);
     <meta name="viewport" content="width=device-width" />
     <title>¿Cabe la {gpuObj.brand} {gpuObj.model} en la {caseObj.brand} {caseObj.model}? - PC Clearance Lab</title>
     <meta name="description" content={`Comprueba visualmente si la tarjeta gráfica ${gpuObj.brand} ${gpuObj.model} cabe en la caja ${caseObj.brand} ${caseObj.model}. Análisis de colisión y conector 12VHPWR.`} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap" rel="stylesheet">
+
   </head>
   <body class="bg-[#0B0F17] text-slate-200 min-h-screen p-4 md:p-8 font-sans">
     <main class="max-w-4xl mx-auto space-y-8">
       
       <header class="text-center space-y-2">
-        <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-white">
-          Análisis de Compatibilidad
-        </h1>
+        <h1 
+  class="text-3xl sm:text-4xl font-extrabold tracking-wide text-white uppercase text-center" 
+  style="font-family: 'Zen Dots', sans-serif;"
+>
+  Analisis de Compatibilidad
+</h1>
         <p class="text-slate-400">
           Caja: <span class="text-[#00F0FF]">{caseObj.brand} {caseObj.model}</span> | GPU: <span class="text-white">{gpuObj.brand} {gpuObj.model}</span>
         </p>
       </header>
 
-      <ClearanceCanvas 
-        caseObj={caseObj} 
-        gpuObj={gpuObj} 
-        aioObj={aioObj} 
-        result={result} 
-        client:load 
-      />
+<ClearanceCanvas
+  caseObj={caseObj}
+  gpuObj={gpuObj}
+  status={result.status} 
+  client:load
+/>
       
       <AffiliateBanners 
         caseObj={caseObj} 

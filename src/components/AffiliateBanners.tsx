@@ -8,9 +8,43 @@ interface AffiliateBannersProps {
 }
 
 export const AffiliateBanners: React.FC<AffiliateBannersProps> = ({ result, gpuObj, caseObj }) => {
-  if (result.status === 'GREEN') return null;
+  const AMAZON_TAG = 'pcclearance-21';
 
- const AMAZON_TAG = 'pcclearance-21';
+  if (result.status === 'GREEN') {
+    const gpuUrl = `https://www.amazon.es/s?k=${encodeURIComponent(gpuObj.brand + ' ' + gpuObj.model)}&tag=${AMAZON_TAG}`;
+    const caseUrl = `https://www.amazon.es/s?k=${encodeURIComponent(caseObj.brand + ' ' + caseObj.model)}&tag=${AMAZON_TAG}`;
+
+    return (
+      <div className="w-full mt-6 bg-[#00FF66]/10 border border-[#00FF66]/30 rounded-xl p-5 backdrop-blur-sm flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex-1">
+          <h3 className="text-[#00FF66] font-bold text-lg mb-1 flex items-center gap-2">
+            Compatibilidad Verificada
+          </h3>
+          <p className="text-slate-300 text-sm">
+            Esta combinación encaja perfectamente y tienes espacio suficiente. Si estás listo para montar tu PC, puedes consultar la disponibilidad de estos componentes.
+          </p>
+        </div>
+        <div className="flex flex-col gap-3 min-w-[250px]">
+          <a
+            href={gpuUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 text-center bg-white/5 hover:bg-white/10 border border-[#00FF66]/50 text-white font-semibold rounded-lg transition-colors text-sm"
+          >
+            Ver {gpuObj.brand} en Amazon
+          </a>
+          <a
+            href={caseUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 text-center bg-[#00FF66] hover:bg-emerald-400 text-black font-bold rounded-lg transition-colors shadow-[0_0_15px_rgba(0,255,102,0.3)] text-sm"
+          >
+            Ver Caja {caseObj.brand} en Amazon
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   if (result.status === 'YELLOW') {
     const adapterUrl = `https://www.amazon.es/s?k=adaptador+12vhpwr+90+grados&tag=${AMAZON_TAG}`;
