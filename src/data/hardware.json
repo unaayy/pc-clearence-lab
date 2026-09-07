@@ -66,6 +66,368 @@
       "maxCpuCoolerHeightMM": 175.0,
       "psuShroudDepthMM": 0.0,
       "radiatorFrontSupport": true
+    },
+    {
+      
+    },
+    {
+    
+    },
+    {
+      "id": "antec-flux-pro-noctua-edition",
+      "brand": "ANTEC",
+      "model": "Flux Pro Noctua Edition",
+      "slug": "antec-flux-pro-noctua-edition",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "asus-prime-ap202",
+      "brand": "ASUS",
+      "model": "Prime Ap202",
+      "slug": "asus-prime-ap202",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "be-quiet-light-base-500-lx",
+      "brand": "BE",
+      "model": "Quiet Light Base 500 Lx",
+      "slug": "be-quiet-light-base-500-lx",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "cooler-master-cosmos-alpha",
+      "brand": "COOLER",
+      "model": "Master Cosmos Alpha",
+      "slug": "cooler-master-cosmos-alpha",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "cooler-master-masterframe-360-panorama",
+      "brand": "COOLER",
+      "model": "Master Masterframe 360 Panorama",
+      "slug": "cooler-master-masterframe-360-panorama",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "corsair-3200d-rs-argb",
+      "brand": "CORSAIR",
+      "model": "3200d Rs Argb",
+      "slug": "corsair-3200d-rs-argb",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "cps-pccooler-k101-mesh",
+      "brand": "CPS",
+      "model": "Pccooler K101 Mesh",
+      "slug": "cps-pccooler-k101-mesh",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "darkflash-dy460",
+      "brand": "DARKFLASH",
+      "model": "Dy460",
+      "slug": "darkflash-dy460",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "einarex-pulse-pm400",
+      "brand": "EINAREX",
+      "model": "Pulse Pm400",
+      "slug": "einarex-pulse-pm400",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "fomula-v-line-crystal-u9-pa",
+      "brand": "FOMULA",
+      "model": "V Line Crystal U9 Pa",
+      "slug": "fomula-v-line-crystal-u9-pa",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "fractal-design-epoch-xl-rgb-tg",
+      "brand": "FRACTAL",
+      "model": "Design Epoch Xl Rgb Tg",
+      "slug": "fractal-design-epoch-xl-rgb-tg",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "fractal-design-north-momentum-edition",
+      "brand": "FRACTAL",
+      "model": "Design North Momentum Edition",
+      "slug": "fractal-design-north-momentum-edition",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "fractal-design-pop-2-vision-rgb",
+      "brand": "FRACTAL",
+      "model": "Design Pop 2 Vision Rgb",
+      "slug": "fractal-design-pop-2-vision-rgb",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "fractal-design-radius-240-rgb-aio-liquid-cpu-cooler",
+      "brand": "FRACTAL",
+      "model": "Design Radius 240 Rgb Aio Liquid Cpu Cooler",
+      "slug": "fractal-design-radius-240-rgb-aio-liquid-cpu-cooler",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "fractal-design-summit-ambience-blackout-tg",
+      "brand": "FRACTAL",
+      "model": "Design Summit Ambience Blackout Tg",
+      "slug": "fractal-design-summit-ambience-blackout-tg",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "future-hardware-releases",
+      "brand": "FUTURE",
+      "model": "Hardware Releases",
+      "slug": "future-hardware-releases",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "g-wolves-lycan",
+      "brand": "G",
+      "model": "Wolves Lycan",
+      "slug": "g-wolves-lycan",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "gamdias-atlas-m4",
+      "brand": "GAMDIAS",
+      "model": "Atlas M4",
+      "slug": "gamdias-atlas-m4",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "gamdias-atlas-p6-cg",
+      "brand": "GAMDIAS",
+      "model": "Atlas P6 Cg",
+      "slug": "gamdias-atlas-p6-cg",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "lian-li-b4-matx",
+      "brand": "LIAN",
+      "model": "Li B4 Matx",
+      "slug": "lian-li-b4-matx",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "montech-sky-3",
+      "brand": "MONTECH",
+      "model": "Sky 3",
+      "slug": "montech-sky-3",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "montech-ten",
+      "brand": "MONTECH",
+      "model": "Ten",
+      "slug": "montech-ten",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    
+      
+      ]
+    },
+    {
+ 
+    },
+    {
+      "id": "nzxt-h2-flow",
+      "brand": "NZXT",
+      "model": "H2 Flow",
+      "slug": "nzxt-h2-flow",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+ 
+    },
+    {
+   
+      
+    },
+    {
+  
+    },
+    
+    {
+      "id": "thermal-grizzly-der8auer-benchtable",
+      "brand": "THERMAL",
+      "model": "Grizzly Der8auer Benchtable",
+      "slug": "thermal-grizzly-der8auer-benchtable",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "thermaltake-view-600-tg-butter-caramel",
+      "brand": "THERMALTAKE",
+      "model": "View 600 Tg Butter Caramel",
+      "slug": "thermaltake-view-600-tg-butter-caramel",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
+    {
+      "id": "xpg-valor-air-pro",
+      "brand": "XPG",
+      "model": "Valor Air Pro",
+      "slug": "xpg-valor-air-pro",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
     }
   ],
   "gpus": [
@@ -200,35 +562,2010 @@
         "widthMM": 162.8,
         "heightMM": 75.1
       }
-    }
-  ],
-  "aios": [
-    {
-      "id": "arctic-liquid-freezer-iii-360",
-      "brand": "ARCTIC",
-      "model": "Liquid Freezer III 360",
-      "slug": "arctic-liquid-freezer-iii-360",
-      "radiatorThicknessMM": 38,
-      "fanThicknessMM": 25,
-      "totalThicknessMM": 63
     },
     {
-      "id": "corsair-icue-h150i-elite",
-      "brand": "Corsair",
-      "model": "iCUE H150i ELITE",
-      "slug": "corsair-icue-h150i-elite",
-      "radiatorThicknessMM": 27,
-      "fanThicknessMM": 25,
-      "totalThicknessMM": 52
+      "id": "asus-rog-strix-rtx-4090-oc",
+      "brand": "ASUS",
+      "model": "Rog Strix RTX 4090 OC",
+      "slug": "asus-rog-strix-rtx-4090-oc",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
     },
     {
-      "id": "none",
-      "brand": "Ninguno",
-      "model": "Sin AIO (Solo ventiladores 25mm)",
-      "slug": "none",
-      "radiatorThicknessMM": 0,
-      "fanThicknessMM": 25,
-      "totalThicknessMM": 25
+      "id": "msi-rtx-4080-super-16g-suprim-x",
+      "brand": "MSI",
+      "model": "RTX 4080 Super 16g Suprim X",
+      "slug": "msi-rtx-4080-super-16g-suprim-x",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "amd-lexa",
+      "brand": "AMD",
+      "model": "Lexa",
+      "slug": "amd-lexa",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "amd-navi-10",
+      "brand": "AMD",
+      "model": "Navi 10",
+      "slug": "amd-navi-10",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "amd-navi-14",
+      "brand": "AMD",
+      "model": "Navi 14",
+      "slug": "amd-navi-14",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "amd-navi-21",
+      "brand": "AMD",
+      "model": "Navi 21",
+      "slug": "amd-navi-21",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "amd-navi-22",
+      "brand": "AMD",
+      "model": "Navi 22",
+      "slug": "amd-navi-22",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "amd-navi-23",
+      "brand": "AMD",
+      "model": "Navi 23",
+      "slug": "amd-navi-23",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "amd-navi-24",
+      "brand": "AMD",
+      "model": "Navi 24",
+      "slug": "amd-navi-24",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "amd-navi-31",
+      "brand": "AMD",
+      "model": "Navi 31",
+      "slug": "amd-navi-31",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "amd-navi-32",
+      "brand": "AMD",
+      "model": "Navi 32",
+      "slug": "amd-navi-32",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "amd-navi-33",
+      "brand": "AMD",
+      "model": "Navi 33",
+      "slug": "amd-navi-33",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "amd-navi-44",
+      "brand": "AMD",
+      "model": "Navi 44",
+      "slug": "amd-navi-44",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "amd-navi-48",
+      "brand": "AMD",
+      "model": "Navi 48",
+      "slug": "amd-navi-48",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "amd-phoenix",
+      "brand": "AMD",
+      "model": "Phoenix",
+      "slug": "amd-phoenix",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "amd-polaris-20",
+      "brand": "AMD",
+      "model": "Polaris 20",
+      "slug": "amd-polaris-20",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "amd-polaris-30",
+      "brand": "AMD",
+      "model": "Polaris 30",
+      "slug": "amd-polaris-30",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "amd-vega-10",
+      "brand": "AMD",
+      "model": "Vega 10",
+      "slug": "amd-vega-10",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "amd-vega-20",
+      "brand": "AMD",
+      "model": "Vega 20",
+      "slug": "amd-vega-20",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "arc-b580",
+      "brand": "ARC",
+      "model": "B580",
+      "slug": "arc-b580",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "arc-pro-b70",
+      "brand": "ARC",
+      "model": "Pro B70",
+      "slug": "arc-pro-b70",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "cmp-170hx-8-gb",
+      "brand": "CMP",
+      "model": "170hx 8 Gb",
+      "slug": "cmp-170hx-8-gb",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-210",
+      "brand": "GEFORCE",
+      "model": "210",
+      "slug": "geforce-210",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gt-1030",
+      "brand": "GEFORCE",
+      "model": "Gt 1030",
+      "slug": "geforce-gt-1030",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gt-730",
+      "brand": "GEFORCE",
+      "model": "Gt 730",
+      "slug": "geforce-gt-730",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gtx-1050-ti",
+      "brand": "GEFORCE",
+      "model": "GTX 1050 TI",
+      "slug": "geforce-gtx-1050-ti",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gtx-1050",
+      "brand": "GEFORCE",
+      "model": "GTX 1050",
+      "slug": "geforce-gtx-1050",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gtx-1060-6-gb",
+      "brand": "GEFORCE",
+      "model": "GTX 1060 6 Gb",
+      "slug": "geforce-gtx-1060-6-gb",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gtx-1070-ti",
+      "brand": "GEFORCE",
+      "model": "GTX 1070 TI",
+      "slug": "geforce-gtx-1070-ti",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gtx-1070",
+      "brand": "GEFORCE",
+      "model": "GTX 1070",
+      "slug": "geforce-gtx-1070",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gtx-1080-ti",
+      "brand": "GEFORCE",
+      "model": "GTX 1080 TI",
+      "slug": "geforce-gtx-1080-ti",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gtx-1080",
+      "brand": "GEFORCE",
+      "model": "GTX 1080",
+      "slug": "geforce-gtx-1080",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gtx-1650-super",
+      "brand": "GEFORCE",
+      "model": "GTX 1650 Super",
+      "slug": "geforce-gtx-1650-super",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gtx-1650",
+      "brand": "GEFORCE",
+      "model": "GTX 1650",
+      "slug": "geforce-gtx-1650",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gtx-1660-super",
+      "brand": "GEFORCE",
+      "model": "GTX 1660 Super",
+      "slug": "geforce-gtx-1660-super",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gtx-1660-ti",
+      "brand": "GEFORCE",
+      "model": "GTX 1660 TI",
+      "slug": "geforce-gtx-1660-ti",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gtx-1660",
+      "brand": "GEFORCE",
+      "model": "GTX 1660",
+      "slug": "geforce-gtx-1660",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gtx-750-ti",
+      "brand": "GEFORCE",
+      "model": "GTX 750 TI",
+      "slug": "geforce-gtx-750-ti",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gtx-960",
+      "brand": "GEFORCE",
+      "model": "GTX 960",
+      "slug": "geforce-gtx-960",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gtx-970",
+      "brand": "GEFORCE",
+      "model": "GTX 970",
+      "slug": "geforce-gtx-970",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gtx-980-ti",
+      "brand": "GEFORCE",
+      "model": "GTX 980 TI",
+      "slug": "geforce-gtx-980-ti",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-gtx-980",
+      "brand": "GEFORCE",
+      "model": "GTX 980",
+      "slug": "geforce-gtx-980",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-2060-super",
+      "brand": "GEFORCE",
+      "model": "RTX 2060 Super",
+      "slug": "geforce-rtx-2060-super",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-2060",
+      "brand": "GEFORCE",
+      "model": "RTX 2060",
+      "slug": "geforce-rtx-2060",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-2070-super",
+      "brand": "GEFORCE",
+      "model": "RTX 2070 Super",
+      "slug": "geforce-rtx-2070-super",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-2070",
+      "brand": "GEFORCE",
+      "model": "RTX 2070",
+      "slug": "geforce-rtx-2070",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-2080-super",
+      "brand": "GEFORCE",
+      "model": "RTX 2080 Super",
+      "slug": "geforce-rtx-2080-super",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-2080-ti",
+      "brand": "GEFORCE",
+      "model": "RTX 2080 TI",
+      "slug": "geforce-rtx-2080-ti",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-2080",
+      "brand": "GEFORCE",
+      "model": "RTX 2080",
+      "slug": "geforce-rtx-2080",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-3050-6-gb",
+      "brand": "GEFORCE",
+      "model": "RTX 3050 6 Gb",
+      "slug": "geforce-rtx-3050-6-gb",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-3050-8-gb",
+      "brand": "GEFORCE",
+      "model": "RTX 3050 8 Gb",
+      "slug": "geforce-rtx-3050-8-gb",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-3060-12-gb",
+      "brand": "GEFORCE",
+      "model": "RTX 3060 12 Gb",
+      "slug": "geforce-rtx-3060-12-gb",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-3060-ti",
+      "brand": "GEFORCE",
+      "model": "RTX 3060 TI",
+      "slug": "geforce-rtx-3060-ti",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-3070-ti",
+      "brand": "GEFORCE",
+      "model": "RTX 3070 TI",
+      "slug": "geforce-rtx-3070-ti",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-3070",
+      "brand": "GEFORCE",
+      "model": "RTX 3070",
+      "slug": "geforce-rtx-3070",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-3080-ti",
+      "brand": "GEFORCE",
+      "model": "RTX 3080 TI",
+      "slug": "geforce-rtx-3080-ti",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-3080",
+      "brand": "GEFORCE",
+      "model": "RTX 3080",
+      "slug": "geforce-rtx-3080",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-3090-ti",
+      "brand": "GEFORCE",
+      "model": "RTX 3090 TI",
+      "slug": "geforce-rtx-3090-ti",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-3090",
+      "brand": "GEFORCE",
+      "model": "RTX 3090",
+      "slug": "geforce-rtx-3090",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-4060-ti-8-gb",
+      "brand": "GEFORCE",
+      "model": "RTX 4060 TI 8 Gb",
+      "slug": "geforce-rtx-4060-ti-8-gb",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-4060",
+      "brand": "GEFORCE",
+      "model": "RTX 4060",
+      "slug": "geforce-rtx-4060",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-4070-super",
+      "brand": "GEFORCE",
+      "model": "RTX 4070 Super",
+      "slug": "geforce-rtx-4070-super",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-4070-ti-super",
+      "brand": "GEFORCE",
+      "model": "RTX 4070 TI Super",
+      "slug": "geforce-rtx-4070-ti-super",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-4070-ti",
+      "brand": "GEFORCE",
+      "model": "RTX 4070 TI",
+      "slug": "geforce-rtx-4070-ti",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-4070",
+      "brand": "GEFORCE",
+      "model": "RTX 4070",
+      "slug": "geforce-rtx-4070",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-4080-super",
+      "brand": "GEFORCE",
+      "model": "RTX 4080 Super",
+      "slug": "geforce-rtx-4080-super",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-4080",
+      "brand": "GEFORCE",
+      "model": "RTX 4080",
+      "slug": "geforce-rtx-4080",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-4090",
+      "brand": "GEFORCE",
+      "model": "RTX 4090",
+      "slug": "geforce-rtx-4090",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-5050-mobile",
+      "brand": "GEFORCE",
+      "model": "RTX 5050 Mobile",
+      "slug": "geforce-rtx-5050-mobile",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-5050",
+      "brand": "GEFORCE",
+      "model": "RTX 5050",
+      "slug": "geforce-rtx-5050",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-5060-mobile",
+      "brand": "GEFORCE",
+      "model": "RTX 5060 Mobile",
+      "slug": "geforce-rtx-5060-mobile",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-5060-ti-16-gb",
+      "brand": "GEFORCE",
+      "model": "RTX 5060 TI 16 Gb",
+      "slug": "geforce-rtx-5060-ti-16-gb",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-5060-ti-8-gb",
+      "brand": "GEFORCE",
+      "model": "RTX 5060 TI 8 Gb",
+      "slug": "geforce-rtx-5060-ti-8-gb",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-5060",
+      "brand": "GEFORCE",
+      "model": "RTX 5060",
+      "slug": "geforce-rtx-5060",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-5070-mobile-12-gb",
+      "brand": "GEFORCE",
+      "model": "RTX 5070 Mobile 12 Gb",
+      "slug": "geforce-rtx-5070-mobile-12-gb",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-5070-mobile",
+      "brand": "GEFORCE",
+      "model": "RTX 5070 Mobile",
+      "slug": "geforce-rtx-5070-mobile",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-5070-ti",
+      "brand": "GEFORCE",
+      "model": "RTX 5070 TI",
+      "slug": "geforce-rtx-5070-ti",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-5070",
+      "brand": "GEFORCE",
+      "model": "RTX 5070",
+      "slug": "geforce-rtx-5070",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-5080",
+      "brand": "GEFORCE",
+      "model": "RTX 5080",
+      "slug": "geforce-rtx-5080",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-5090",
+      "brand": "GEFORCE",
+      "model": "RTX 5090",
+      "slug": "geforce-rtx-5090",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "geforce-rtx-6090",
+      "brand": "GEFORCE",
+      "model": "RTX 6090",
+      "slug": "geforce-rtx-6090",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "intel-bmg-g21",
+      "brand": "INTEL",
+      "model": "Bmg G21",
+      "slug": "intel-bmg-g21",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "intel-bmg-g31",
+      "brand": "INTEL",
+      "model": "Bmg G31",
+      "slug": "intel-bmg-g31",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "mtt-s10",
+      "brand": "MTT",
+      "model": "S10",
+      "slug": "mtt-s10",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "mtt-s1000m",
+      "brand": "MTT",
+      "model": "S1000m",
+      "slug": "mtt-s1000m",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "mtt-s2000",
+      "brand": "MTT",
+      "model": "S2000",
+      "slug": "mtt-s2000",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "mtt-s30",
+      "brand": "MTT",
+      "model": "S30",
+      "slug": "mtt-s30",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "mtt-s3000",
+      "brand": "MTT",
+      "model": "S3000",
+      "slug": "mtt-s3000",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "mtt-s3000e",
+      "brand": "MTT",
+      "model": "S3000e",
+      "slug": "mtt-s3000e",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "mtt-s4000",
+      "brand": "MTT",
+      "model": "S4000",
+      "slug": "mtt-s4000",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "mtt-s50",
+      "brand": "MTT",
+      "model": "S50",
+      "slug": "mtt-s50",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "mtt-s60",
+      "brand": "MTT",
+      "model": "S60",
+      "slug": "mtt-s60",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "mtt-s70",
+      "brand": "MTT",
+      "model": "S70",
+      "slug": "mtt-s70",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "mtt-s80",
+      "brand": "MTT",
+      "model": "S80",
+      "slug": "mtt-s80",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-ad102",
+      "brand": "NVIDIA",
+      "model": "Ad102",
+      "slug": "nvidia-ad102",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-ad103",
+      "brand": "NVIDIA",
+      "model": "Ad103",
+      "slug": "nvidia-ad103",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-ad104",
+      "brand": "NVIDIA",
+      "model": "Ad104",
+      "slug": "nvidia-ad104",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-ad106",
+      "brand": "NVIDIA",
+      "model": "Ad106",
+      "slug": "nvidia-ad106",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-ad107",
+      "brand": "NVIDIA",
+      "model": "Ad107",
+      "slug": "nvidia-ad107",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-ga100",
+      "brand": "NVIDIA",
+      "model": "Ga100",
+      "slug": "nvidia-ga100",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-ga102",
+      "brand": "NVIDIA",
+      "model": "Ga102",
+      "slug": "nvidia-ga102",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-ga104",
+      "brand": "NVIDIA",
+      "model": "Ga104",
+      "slug": "nvidia-ga104",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-ga106",
+      "brand": "NVIDIA",
+      "model": "Ga106",
+      "slug": "nvidia-ga106",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-ga107",
+      "brand": "NVIDIA",
+      "model": "Ga107",
+      "slug": "nvidia-ga107",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-gb202",
+      "brand": "NVIDIA",
+      "model": "Gb202",
+      "slug": "nvidia-gb202",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-gb203",
+      "brand": "NVIDIA",
+      "model": "Gb203",
+      "slug": "nvidia-gb203",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-gb205",
+      "brand": "NVIDIA",
+      "model": "Gb205",
+      "slug": "nvidia-gb205",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-gb206",
+      "brand": "NVIDIA",
+      "model": "Gb206",
+      "slug": "nvidia-gb206",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-gb207",
+      "brand": "NVIDIA",
+      "model": "Gb207",
+      "slug": "nvidia-gb207",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-gf108",
+      "brand": "NVIDIA",
+      "model": "Gf108",
+      "slug": "nvidia-gf108",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-gm107",
+      "brand": "NVIDIA",
+      "model": "Gm107",
+      "slug": "nvidia-gm107",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-gm200",
+      "brand": "NVIDIA",
+      "model": "Gm200",
+      "slug": "nvidia-gm200",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-gm204",
+      "brand": "NVIDIA",
+      "model": "Gm204",
+      "slug": "nvidia-gm204",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-gm206",
+      "brand": "NVIDIA",
+      "model": "Gm206",
+      "slug": "nvidia-gm206",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-gp102",
+      "brand": "NVIDIA",
+      "model": "Gp102",
+      "slug": "nvidia-gp102",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-gp104",
+      "brand": "NVIDIA",
+      "model": "Gp104",
+      "slug": "nvidia-gp104",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-gp106",
+      "brand": "NVIDIA",
+      "model": "Gp106",
+      "slug": "nvidia-gp106",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-gp107",
+      "brand": "NVIDIA",
+      "model": "Gp107",
+      "slug": "nvidia-gp107",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-gp108",
+      "brand": "NVIDIA",
+      "model": "Gp108",
+      "slug": "nvidia-gp108",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-gr202",
+      "brand": "NVIDIA",
+      "model": "Gr202",
+      "slug": "nvidia-gr202",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-gt218s",
+      "brand": "NVIDIA",
+      "model": "Gt218s",
+      "slug": "nvidia-gt218s",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-tu102",
+      "brand": "NVIDIA",
+      "model": "Tu102",
+      "slug": "nvidia-tu102",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-tu104",
+      "brand": "NVIDIA",
+      "model": "Tu104",
+      "slug": "nvidia-tu104",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-tu106",
+      "brand": "NVIDIA",
+      "model": "Tu106",
+      "slug": "nvidia-tu106",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-tu116",
+      "brand": "NVIDIA",
+      "model": "Tu116",
+      "slug": "nvidia-tu116",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "nvidia-tu117",
+      "brand": "NVIDIA",
+      "model": "Tu117",
+      "slug": "nvidia-tu117",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-780m",
+      "brand": "RADEON",
+      "model": "780m",
+      "slug": "radeon-780m",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-ai-pro-r9700",
+      "brand": "RADEON",
+      "model": "Ai Pro R9700",
+      "slug": "radeon-ai-pro-r9700",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-instinct-mi50",
+      "brand": "RADEON",
+      "model": "Instinct Mi50",
+      "slug": "radeon-instinct-mi50",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-550",
+      "brand": "RADEON",
+      "model": "RX 550",
+      "slug": "radeon-rx-550",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-5500-xt",
+      "brand": "RADEON",
+      "model": "RX 5500 Xt",
+      "slug": "radeon-rx-5500-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-5600-xt",
+      "brand": "RADEON",
+      "model": "RX 5600 Xt",
+      "slug": "radeon-rx-5600-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-570",
+      "brand": "RADEON",
+      "model": "RX 570",
+      "slug": "radeon-rx-570",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-5700-xt",
+      "brand": "RADEON",
+      "model": "RX 5700 Xt",
+      "slug": "radeon-rx-5700-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-5700",
+      "brand": "RADEON",
+      "model": "RX 5700",
+      "slug": "radeon-rx-5700",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-580-2048sp",
+      "brand": "RADEON",
+      "model": "RX 580 2048sp",
+      "slug": "radeon-rx-580-2048sp",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-580",
+      "brand": "RADEON",
+      "model": "RX 580",
+      "slug": "radeon-rx-580",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-590",
+      "brand": "RADEON",
+      "model": "RX 590",
+      "slug": "radeon-rx-590",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-6500-xt",
+      "brand": "RADEON",
+      "model": "RX 6500 Xt",
+      "slug": "radeon-rx-6500-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-6600-xt",
+      "brand": "RADEON",
+      "model": "RX 6600 Xt",
+      "slug": "radeon-rx-6600-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-6600",
+      "brand": "RADEON",
+      "model": "RX 6600",
+      "slug": "radeon-rx-6600",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-6650-xt",
+      "brand": "RADEON",
+      "model": "RX 6650 Xt",
+      "slug": "radeon-rx-6650-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-6700-xt",
+      "brand": "RADEON",
+      "model": "RX 6700 Xt",
+      "slug": "radeon-rx-6700-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-6750-xt",
+      "brand": "RADEON",
+      "model": "RX 6750 Xt",
+      "slug": "radeon-rx-6750-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-6800-xt",
+      "brand": "RADEON",
+      "model": "RX 6800 Xt",
+      "slug": "radeon-rx-6800-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-6800",
+      "brand": "RADEON",
+      "model": "RX 6800",
+      "slug": "radeon-rx-6800",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-6900-xt",
+      "brand": "RADEON",
+      "model": "RX 6900 Xt",
+      "slug": "radeon-rx-6900-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-6950-xt",
+      "brand": "RADEON",
+      "model": "RX 6950 Xt",
+      "slug": "radeon-rx-6950-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-7600-xt",
+      "brand": "RADEON",
+      "model": "RX 7600 Xt",
+      "slug": "radeon-rx-7600-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-7600",
+      "brand": "RADEON",
+      "model": "RX 7600",
+      "slug": "radeon-rx-7600",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-7700-xt",
+      "brand": "RADEON",
+      "model": "RX 7700 Xt",
+      "slug": "radeon-rx-7700-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-7800-xt",
+      "brand": "RADEON",
+      "model": "RX 7800 Xt",
+      "slug": "radeon-rx-7800-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-7900-gre",
+      "brand": "RADEON",
+      "model": "RX 7900 Gre",
+      "slug": "radeon-rx-7900-gre",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-7900-xt",
+      "brand": "RADEON",
+      "model": "RX 7900 Xt",
+      "slug": "radeon-rx-7900-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-7900-xtx",
+      "brand": "RADEON",
+      "model": "RX 7900 Xtx",
+      "slug": "radeon-rx-7900-xtx",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-9050-oem",
+      "brand": "RADEON",
+      "model": "RX 9050 Oem",
+      "slug": "radeon-rx-9050-oem",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-9050",
+      "brand": "RADEON",
+      "model": "RX 9050",
+      "slug": "radeon-rx-9050",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-9060-xt-16-gb",
+      "brand": "RADEON",
+      "model": "RX 9060 Xt 16 Gb",
+      "slug": "radeon-rx-9060-xt-16-gb",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-9060-xt-8-gb",
+      "brand": "RADEON",
+      "model": "RX 9060 Xt 8 Gb",
+      "slug": "radeon-rx-9060-xt-8-gb",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-9070-gre",
+      "brand": "RADEON",
+      "model": "RX 9070 Gre",
+      "slug": "radeon-rx-9070-gre",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-9070-xt",
+      "brand": "RADEON",
+      "model": "RX 9070 Xt",
+      "slug": "radeon-rx-9070-xt",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-9070",
+      "brand": "RADEON",
+      "model": "RX 9070",
+      "slug": "radeon-rx-9070",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-vega-56",
+      "brand": "RADEON",
+      "model": "RX Vega 56",
+      "slug": "radeon-rx-vega-56",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-rx-vega-64",
+      "brand": "RADEON",
+      "model": "RX Vega 64",
+      "slug": "radeon-rx-vega-64",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "radeon-vii",
+      "brand": "RADEON",
+      "model": "Vii",
+      "slug": "radeon-vii",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "rtx-pro-6000-blackwell",
+      "brand": "RTX",
+      "model": "Pro 6000 Blackwell",
+      "slug": "rtx-pro-6000-blackwell",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
+    },
+    {
+      "id": "steam-machine-gpu",
+      "brand": "STEAM",
+      "model": "Machine Gpu",
+      "slug": "steam-machine-gpu",
+      "connectorType": "8-pin",
+      "dimensions": {
+        "lengthMM": 0.0,
+        "widthMM": 0.0,
+        "heightMM": 0.0
+      }
     }
   ]
 }
