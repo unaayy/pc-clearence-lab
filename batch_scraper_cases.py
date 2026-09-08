@@ -26,45 +26,55 @@ def guardar_caja(case_data, url):
     if 'cases' not in data:
         data['cases'] = []
 
-    # Evitamos duplicados por ID / slug
     if not any(c['id'] == case_data['id'] for c in data['cases']):
         data['cases'].append(case_data)
         
         with open(DATA_FILE, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
 
-    # Registrar URL como procesada
     with open(LOG_FILE, 'a', encoding='utf-8') as f:
         f.write(f"{url}\n")
 
 def extraer_caja(page, url):
     page.goto(url, timeout=45000, wait_until="domcontentloaded")
     
-    # Extraemos marca y modelo a partir del slug de la URL
-    url_slug = url.split("/review/")[1].split("/")[0]
-    parts = url_slug.split("-")
+    # Selector específico para capturar el nombre real del producto
+    title = ""
+    title_el = page.query_selector("#productTitle") or page.query_selector("h1.product-name") or page.query_selector("h1")
     
-    brand = parts[0].upper() if len(parts) > 0 else "UNKNOWN"
-    model = " ".join([p.capitalize() for p in parts[1:]])
-    slug = url_slug
+    if title_el:
+        title = title_el.inner_text().strip()
+        
+    # Corrección de títulos basura de Amazon
+    if not title or "resumen del producto presenta" in title.lower():
+        title_tag = page.query_selector("title")
+        if title_tag:
+            title = title_tag.inner_text().split(":")[0].split("|")[0].strip()
+
+    if not title:
+        clean_path = url.rstrip('/').split('/')[-1]
+        title = clean_path.replace('-', ' ').title()
+
+    parts = title.split()
+    brand = parts[0].upper() if len(parts) > 0 else "GENERIC"
+    model = " ".join(parts[1:]) if len(parts) > 1 else title
+    slug = re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-')
 
     case_data = {
         "id": slug,
         "brand": brand,
         "model": model,
         "slug": slug,
-        "maxGpuLengthMM": 360.0,  # Valor por defecto seguro si no se especifica
+        "maxGpuLengthMM": 360.0,
         "maxAioSizeMM": 360,
-        "supportedFormFactors": ["ATX", "Micro-ATX", "Mini-ITX"]
+        "supportedFormFactors": ["ATX", "Micro-ATX", "Mini-ITX"],
+        "link": url
     }
 
-    # Intentamos extraer el valor real de GPU Clearance del texto/tablas
     content = page.content()
-    
-    # Patrones comunes en TechPowerUp para medidas de gráfica
-    match = re.search(r'(?:GPU|Graphics Card)(?: clearance| length)?:?\s*(\d{3})\s*mm', content, re.IGNORECASE)
+    match = re.search(r'(?:gpu|gráfica|longitud max|lenght)[\s\w:]*?(\d{3})\s*mm', content, re.IGNORECASE)
     if not match:
-        match = re.search(r'(\d{3})\s*mm\s*(?:GPU|Graphics Card)', content, re.IGNORECASE)
+        match = re.search(r'(\d{3})\s*mm[\s\w]*?(?:gpu|gráfica)', content, re.IGNORECASE)
         
     if match:
         case_data["maxGpuLengthMM"] = float(match.group(1))
@@ -79,7 +89,6 @@ def ejecutar_worker_cajas():
     with open(URLS_FILE, 'r', encoding='utf-8') as f:
         urls = [line.strip() for line in f if line.strip() and not line.startswith('#')]
 
-    # Palabras clave de artículos no deseados
     PALABRAS_PROHIBIDAS = ["benchmark", "steam-deck", "performance", "game-test", "handheld", "ally-x", "claw-8"]
 
     procesadas = cargar_procesadas()
@@ -99,9 +108,8 @@ def ejecutar_worker_cajas():
         context.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
         for idx, url in enumerate(pendientes, 1):
-            # Filtro de seguridad: saltar si la URL es de un benchmark/juego
             if any(palabra in url.lower() for palabra in PALABRAS_PROHIBIDAS):
-                print(f"[{idx}/{len(pendientes)}] ⚠️ Saltando artículo (no es caja): {url}")
+                print(f"[{idx}/{len(pendientes)}] ⚠️ Saltando artículo: {url}")
                 continue
 
             print(f"[{idx}/{len(pendientes)}] Procesando Caja: {url}")
@@ -110,15 +118,16 @@ def ejecutar_worker_cajas():
             try:
                 case_data = extraer_caja(page, url)
                 guardar_caja(case_data, url)
-                print(f"  ✅ Guardada: {case_data['brand']} {case_data['model']} (Max GPU: {case_data['maxGpuLengthMM']}mm)")
+                print(f"   ✅ Guardada: {case_data['brand']} {case_data['model']} (Max GPU: {case_data['maxGpuLengthMM']}mm)")
             except Exception as e:
-                print(f"  ❌ Error en la URL: {e}")
+                print(f"   ❌ Error en la URL: {e}")
             finally:
                 page.close()
 
-            time.sleep(random.uniform(4.0, 7.0))
+            time.sleep(random.uniform(2.0, 4.0))
 
         browser.close()
         print("\n🎉 ¡Proceso por lotes de Cajas finalizado con éxito!")
+
 if __name__ == '__main__':
     ejecutar_worker_cajas()

@@ -427,6 +427,1000 @@
         "Micro-ATX",
         "Mini-ITX"
       ]
+    },
+    {
+      "id": "unykach-caja-de-ordenador-atx-glayze-black-gaming-frontal-argb-panel-lateral-de-cristal-templado-1-ventilador-rgb-120-mm-sistema-de-montaje-tool-less-1-x-usb-3-0-y-2-x-usb-2-0",
+      "brand": "UNYKACH",
+      "model": "Caja de Ordenador ATX GLAYZE Black, Gaming, Frontal ARGB, Panel Lateral De Cristal Templado, 1 Ventilador RGB 120 mm, Sistema De Montaje Tool Less,1 x USB 3.0 y 2 x USB 2.0",
+      "slug": "unykach-caja-de-ordenador-atx-glayze-black-gaming-frontal-argb-panel-lateral-de-cristal-templado-1-ventilador-rgb-120-mm-sistema-de-montaje-tool-less-1-x-usb-3-0-y-2-x-usb-2-0",
+      "maxGpuLengthMM": 290.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B08NVY7S45"
+    },
+    {
+      "id": "unykach-caja-de-ordenador-atx-mir-100-gaming-gran-tama-o-con-4-ventiladores-argb-1-usb-2-0-y-3-usb-3-0",
+      "brand": "UNYKACH",
+      "model": "Caja de Ordenador ATX MIR 100, Gaming Gran Tamaño con 4 Ventiladores ARGB, 1 USB 2.0 y 3 USB 3.0",
+      "slug": "unykach-caja-de-ordenador-atx-mir-100-gaming-gran-tama-o-con-4-ventiladores-argb-1-usb-2-0-y-3-usb-3-0",
+      "maxGpuLengthMM": 340.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B095PL1MR8"
+    },
+    {
+      "id": "mars-gaming-mc300-caja-pc-gaming-compacta-microatx-mini-itx-3x-ventiladores-120mm-frgb-frontal-malla-total-mesh-cristal-templado-rosa",
+      "brand": "MARS",
+      "model": "Gaming MC300, Caja PC Gaming Compacta MicroATX/Mini-ITX, 3X Ventiladores 120mm FRGB, Frontal Malla Total-Mesh, Cristal Templado, Rosa",
+      "slug": "mars-gaming-mc300-caja-pc-gaming-compacta-microatx-mini-itx-3x-ventiladores-120mm-frgb-frontal-malla-total-mesh-cristal-templado-rosa",
+      "maxGpuLengthMM": 330.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B09GYLSBK2"
+    },
+    {
+      "id": "musetex-caja-pc-atx-pre-instalado-con-6-ventiladores-pwm-argb-caja-gaming-diamond-mesh-puerta-abierta-cristal-templado-panel-lateral-caja-mid-tower-usb-3-0-x-2-negro-nn8",
+      "brand": "MUSETEX",
+      "model": "Caja PC ATX Pre-Instalado con 6 Ventiladores PWM ARGB, Caja Gaming Diamond Mesh, Puerta Abierta, Cristal Templado, Panel Lateral, Caja Mid-Tower, USB 3.0 x 2, Negro, NN8",
+      "slug": "musetex-caja-pc-atx-pre-instalado-con-6-ventiladores-pwm-argb-caja-gaming-diamond-mesh-puerta-abierta-cristal-templado-panel-lateral-caja-mid-tower-usb-3-0-x-2-negro-nn8",
+      "maxGpuLengthMM": 320.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B09MKNW18F"
+    },
+    {
+      "id": "msi-mag-forge-m100r-caja-pc-mini-torre-vidrio-templado-admite-micro-atx-y-mini-itx-panel-frontal-mallado-4-fans-argb-120mm-c-controlador-hub-filtro-de-polvo-magn-tico-puerto-usb-3-2-gen1-tipo-a",
+      "brand": "MSI",
+      "model": "MAG FORGE M100R Caja PC Mini Torre - Vidrio Templado, Admite Micro-ATX y Mini-ITX, Panel Frontal Mallado, 4 Fans ARGB 120mm c/Controlador Hub, Filtro de Polvo Magnético, Puerto USB 3.2 Gen1 Tipo-A",
+      "slug": "msi-mag-forge-m100r-caja-pc-mini-torre-vidrio-templado-admite-micro-atx-y-mini-itx-panel-frontal-mallado-4-fans-argb-120mm-c-controlador-hub-filtro-de-polvo-magn-tico-puerto-usb-3-2-gen1-tipo-a",
+      "maxGpuLengthMM": 300.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B09QLFHT1H"
+    },
+    {
+      "id": "msi-mag-forge-m100a-caja-de-pc-mini-torre-admite-micro-atx-y-mini-itx-panel-frontal-mallado-4-ventiladores-rgb-autom-ticos-de-120mm-filtro-de-polvo-magn-tico-puerto-usb-3-2-gen1-tipo-a",
+      "brand": "MSI",
+      "model": "MAG FORGE M100A Caja de PC Mini Torre - Admite Micro-ATX y Mini-ITX, Panel Frontal Mallado, 4 Ventiladores RGB Automáticos de 120mm, Filtro de Polvo Magnético, Puerto USB 3.2 Gen1 Tipo-A",
+      "slug": "msi-mag-forge-m100a-caja-de-pc-mini-torre-admite-micro-atx-y-mini-itx-panel-frontal-mallado-4-ventiladores-rgb-autom-ticos-de-120mm-filtro-de-polvo-magn-tico-puerto-usb-3-2-gen1-tipo-a",
+      "maxGpuLengthMM": 300.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B09RG465SJ"
+    },
+    {
+      "id": "msi-mag-forge-112r-caja-pc-mid-tower-vidrio-templado-admite-atx-micro-atx-y-mini-itx-panel-frontal-mallado-4-fans-argb-120mm-c-controlador-filtro-de-polvo-magn-tico-puertos-usb-3-2-gen1-tipo-a",
+      "brand": "MSI",
+      "model": "MAG FORGE 112R Caja PC Mid-Tower - Vidrio Templado, Admite ATX, Micro-ATX y Mini-ITX, Panel Frontal Mallado, 4 Fans ARGB 120mm c/Controlador, Filtro de Polvo Magnético, Puertos USB 3.2 Gen1 Tipo-A",
+      "slug": "msi-mag-forge-112r-caja-pc-mid-tower-vidrio-templado-admite-atx-micro-atx-y-mini-itx-panel-frontal-mallado-4-fans-argb-120mm-c-controlador-filtro-de-polvo-magn-tico-puertos-usb-3-2-gen1-tipo-a",
+      "maxGpuLengthMM": 330.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B09RGHK5CY"
+    },
+    {
+      "id": "fractal-design-north-charcoal-black-tempered-glass-dark-frente-de-madera-de-nogal-panel-lateral-de-vidrio-incluye-dos-ventiladores-aspect-pwm-de-140-mm-puerto-usb-tipo-c",
+      "brand": "FRACTAL",
+      "model": "Design North Charcoal Black Tempered Glass Dark - Frente de Madera de Nogal - Panel Lateral de Vidrio - Incluye Dos Ventiladores Aspect PWM de 140 mm - Puerto USB Tipo C",
+      "slug": "fractal-design-north-charcoal-black-tempered-glass-dark-frente-de-madera-de-nogal-panel-lateral-de-vidrio-incluye-dos-ventiladores-aspect-pwm-de-140-mm-puerto-usb-tipo-c",
+      "maxGpuLengthMM": 355.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B09V8HNWW9"
+    },
+    {
+      "id": "mars-gaming-mc-art-caja-pc-gaming-atx-doble-cristal-templado-dibujable-argb-12-modos-ventilador-12-cm-negro",
+      "brand": "MARS",
+      "model": "Gaming MC-Art, Caja PC Gaming ATX, Doble Cristal Templado Dibujable, ARGB 12 Modos, Ventilador 12 cm, Negro",
+      "slug": "mars-gaming-mc-art-caja-pc-gaming-atx-doble-cristal-templado-dibujable-argb-12-modos-ventilador-12-cm-negro",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0B63WB2WS"
+    },
+    {
+      "id": "msi-mag-pano-110r-pz-carcasa-para-pc-para-juegos-de-torre-media-soporta-gpu-de-hasta-400-mm-de-longitud-filtros-de-polvo-extra-bles-usb-20-gbps-tipo-c-soporte-de-placa-base-atx-y-micro-atx",
+      "brand": "MSI",
+      "model": "mag PANO 110R PZ - Carcasa para PC para Juegos de Torre Media - Soporta GPU de hasta 400 mm de Longitud, filtros de Polvo extraíbles, USB 20 Gbps (Tipo C), Soporte de Placa Base ATX y Micro-ATX",
+      "slug": "msi-mag-pano-110r-pz-carcasa-para-pc-para-juegos-de-torre-media-soporta-gpu-de-hasta-400-mm-de-longitud-filtros-de-polvo-extra-bles-usb-20-gbps-tipo-c-soporte-de-placa-base-atx-y-micro-atx",
+      "maxGpuLengthMM": 400.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0BSLKQ1K3"
+    },
+    {
+      "id": "mars-gaming-mcv3-caja-gaming-custom-xxl-e-atx-ventana-cristal-templado-lateral-y-frontal-estructura-modular-doble-c-mara-negro",
+      "brand": "MARS",
+      "model": "Gaming MCV3, Caja Gaming Custom XXL E-ATX, Ventana Cristal Templado Lateral y Frontal, Estructura Modular Doble Cámara, Negro",
+      "slug": "mars-gaming-mcv3-caja-gaming-custom-xxl-e-atx-ventana-cristal-templado-lateral-y-frontal-estructura-modular-doble-c-mara-negro",
+      "maxGpuLengthMM": 418.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0BSV8291K"
+    },
+    {
+      "id": "nox-xtreme-products-infinity-zeta-minitorre-m-atxitx-argb-rainbow-din-mica-panel-lateral-cristal-templado-espacio-para-6-ventiladores-compatible-con-gr-ficas-hasta-310mm-usb-3-0-color-negro",
+      "brand": "NOX",
+      "model": "XTREME PRODUCTS Infinity Zeta - Minitorre M-ATXITX ARGB Rainbow dinámica, Panel Lateral Cristal Templado, Espacio para 6 Ventiladores, Compatible con gráficas hasta 310mm, USB 3.0, Color Negro",
+      "slug": "nox-xtreme-products-infinity-zeta-minitorre-m-atxitx-argb-rainbow-din-mica-panel-lateral-cristal-templado-espacio-para-6-ventiladores-compatible-con-gr-ficas-hasta-310mm-usb-3-0-color-negro",
+      "maxGpuLengthMM": 310.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0C2VHC7P3"
+    },
+    {
+      "id": "nzxt-h6-flow-caja-pc-atx-compacta-doble-c-mara-negro",
+      "brand": "NZXT",
+      "model": "H6 Flow - Caja PC ATX Compacta Doble Cámara - Negro",
+      "slug": "nzxt-h6-flow-caja-pc-atx-compacta-doble-c-mara-negro",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0C89FCDFP"
+    },
+    {
+      "id": "msi-mag-forge-120a-airflow-cristal-templado-usb-3-2",
+      "brand": "MSI",
+      "model": "mag Forge 120A Airflow Cristal Templado USB 3.2",
+      "slug": "msi-mag-forge-120a-airflow-cristal-templado-usb-3-2",
+      "maxGpuLengthMM": 330.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0CFYMC6SJ"
+    },
+    {
+      "id": "nox-xtreme-products-hummer-vision-white-semitorre-atx-m-atx-ventana-lateral-y-frontal-cristal-templado-espacio-para-5-ventiladores-compatible-con-gr-ficas-de-hasta-300mm-usb-3-0-color-blanco",
+      "brand": "NOX",
+      "model": "Xtreme Products Hummer Vision White - Semitorre ATX | M-ATX, Ventana Lateral y Frontal Cristal Templado, Espacio para 5 Ventiladores, Compatible con gráficas de hasta 300mm, USB 3.0, Color Blanco",
+      "slug": "nox-xtreme-products-hummer-vision-white-semitorre-atx-m-atx-ventana-lateral-y-frontal-cristal-templado-espacio-para-5-ventiladores-compatible-con-gr-ficas-de-hasta-300mm-usb-3-0-color-blanco",
+      "maxGpuLengthMM": 300.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0CQ5HNXZN"
+    },
+    {
+      "id": "caja-para-pc-de-torre-mediana-bitfenix-flow-negro",
+      "brand": "CAJA",
+      "model": "para PC de Torre Mediana BitFenix Flow (Negro)",
+      "slug": "caja-para-pc-de-torre-mediana-bitfenix-flow-negro",
+      "maxGpuLengthMM": 300.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0CQD3CRR7"
+    },
+    {
+      "id": "msi-mag-forge-320r-airflow-white-torre-atx-blanca-con-m-ximo-flujo-de-aire-cristal-templado-3-ventiladores-argb-usb-3-2-chasis-gaming-premium",
+      "brand": "MSI",
+      "model": "mag Forge 320R Airflow White – Torre ATX Blanca con Máximo Flujo de Aire, Cristal Templado, 3 Ventiladores ARGB, USB 3.2, Chasis Gaming Premium",
+      "slug": "msi-mag-forge-320r-airflow-white-torre-atx-blanca-con-m-ximo-flujo-de-aire-cristal-templado-3-ventiladores-argb-usb-3-2-chasis-gaming-premium",
+      "maxGpuLengthMM": 330.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0CXF9DWCG"
+    },
+    {
+      "id": "unykach-mir-b200-caja-pc-gaming-micro-atx-negra",
+      "brand": "UNYKACH",
+      "model": "MIR B200 Caja PC Gaming Micro ATX Negra",
+      "slug": "unykach-mir-b200-caja-pc-gaming-micro-atx-negra",
+      "maxGpuLengthMM": 280.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0CZ75PZHH"
+    },
+    {
+      "id": "unykach-caja-pc-gaming-micro-atx-mini-glayze-frontal-argb-cristal-templado-lateral-ventilador-argb-120-mm-usb-2-0-y-dos-usb-3-0",
+      "brand": "UNYKACH",
+      "model": "Caja PC Gaming Micro ATX Mini GLAYZE, Frontal ARGB, Cristal Templado Lateral, Ventilador ARGB 120 mm, USB 2.0 y Dos USB 3.0",
+      "slug": "unykach-caja-pc-gaming-micro-atx-mini-glayze-frontal-argb-cristal-templado-lateral-ventilador-argb-120-mm-usb-2-0-y-dos-usb-3-0",
+      "maxGpuLengthMM": 280.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0CZ772T2Q"
+    },
+    {
+      "id": "musetex-caja-pc-atx-soporte-360mm-rad-270-vista-completa-cristal-templado-caja-pc-gaming-con-type-c-3-ventiladores-sin-led-pre-instalados-caja-ordenador-mid-tower-atx-negro-y6",
+      "brand": "MUSETEX",
+      "model": "Caja PC ATX, Soporte 360MM RAD, 270° Vista Completa Cristal Templado Caja PC Gaming con Type-C, 3 Ventiladores Sin LED Pre-Instalados, Caja Ordenador Mid Tower ATX, Negro, Y6",
+      "slug": "musetex-caja-pc-atx-soporte-360mm-rad-270-vista-completa-cristal-templado-caja-pc-gaming-con-type-c-3-ventiladores-sin-led-pre-instalados-caja-ordenador-mid-tower-atx-negro-y6",
+      "maxGpuLengthMM": 400.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0D1NX61L7"
+    },
+    {
+      "id": "nox-xtreme-products-infinity-beta-semitorre-m-atx-itx-ventana-lateral-cristal-templado-frontal-mesh-espacio-para-8-ventiladores-compatible-con-gr-ficas-de-hasta-300mm-usb-3-0-color-negro",
+      "brand": "NOX",
+      "model": "Xtreme Products Infinity Beta - Semitorre M-ATX ITX, Ventana Lateral Cristal Templado, Frontal Mesh, Espacio para 8 Ventiladores, Compatible con gráficas de hasta 300mm, USB 3.0, Color Negro",
+      "slug": "nox-xtreme-products-infinity-beta-semitorre-m-atx-itx-ventana-lateral-cristal-templado-frontal-mesh-espacio-para-8-ventiladores-compatible-con-gr-ficas-de-hasta-300mm-usb-3-0-color-negro",
+      "maxGpuLengthMM": 300.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0D4ZH8JPQ"
+    },
+    {
+      "id": "corsair-frame-4000d-rs-argb-caja-modular-atx-mid-tower-para-pc-alto-flujo-de-aire-3-ventiladores-rs-argb-preinstalados-asus-btf-msi-project-zero-gigabyte-project-stealth-negro",
+      "brand": "CORSAIR",
+      "model": "Frame 4000D RS ARGB Caja Modular ATX Mid–Tower para PC – Alto Flujo de Aire, 3 Ventiladores RS ARGB preinstalados, ASUS BTF, MSI Project Zero, Gigabyte Project Stealth – Negro",
+      "slug": "corsair-frame-4000d-rs-argb-caja-modular-atx-mid-tower-para-pc-alto-flujo-de-aire-3-ventiladores-rs-argb-preinstalados-asus-btf-msi-project-zero-gigabyte-project-stealth-negro",
+      "maxGpuLengthMM": 420.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0DFHNV7TK"
+    },
+    {
+      "id": "foifkin-f300-caja-pc-atx-con-4-ventiladores-sin-rgb-caja-para-pc-gaming-caja-de-torre-media-con-vidrio-panor-mico-caja-atx-compatible-con-radiador-de-360-mm-type-c-alta-ventilaci-n-negro-f300",
+      "brand": "FOIFKIN",
+      "model": "F300 Caja PC ATX con 4 Ventiladores sin RGB, Caja para PC Gaming, Caja de Torre Media con Vidrio panorámico, Caja ATX, Compatible con radiador de 360 mm, Type-C, Alta ventilación(Negro, F300)",
+      "slug": "foifkin-f300-caja-pc-atx-con-4-ventiladores-sin-rgb-caja-para-pc-gaming-caja-de-torre-media-con-vidrio-panor-mico-caja-atx-compatible-con-radiador-de-360-mm-type-c-alta-ventilaci-n-negro-f300",
+      "maxGpuLengthMM": 400.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0DFR66MM5"
+    },
+    {
+      "id": "nzxt-h9-flow-caja-pc-atx-doble-c-mara-negro",
+      "brand": "NZXT",
+      "model": "H9 Flow - Caja PC ATX Doble Cámara - Negro",
+      "slug": "nzxt-h9-flow-caja-pc-atx-doble-c-mara-negro",
+      "maxGpuLengthMM": 435.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0DQPPKNSS"
+    },
+    {
+      "id": "nox-xtreme-products-hummer-bios-semitorre-atx-m-atx-itx-pantalla-lcd-8-personalizable-panel-frontal-metal-mesh-lateral-cristal-templado-espacio-11-ventiladores-usb-c-y-3-0-color-blanco",
+      "brand": "NOX",
+      "model": "Xtreme Products Hummer BIOS - Semitorre ATX | M-ATX | ITX, Pantalla LCD 8\" Personalizable, Panel Frontal Metal Mesh, Lateral Cristal Templado, Espacio 11 Ventiladores, USB-C y 3.0, Color Blanco",
+      "slug": "nox-xtreme-products-hummer-bios-semitorre-atx-m-atx-itx-pantalla-lcd-8-personalizable-panel-frontal-metal-mesh-lateral-cristal-templado-espacio-11-ventiladores-usb-c-y-3-0-color-blanco",
+      "maxGpuLengthMM": 170.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0DTPXJF5P"
+    },
+    {
+      "id": "ansaite-caja-para-pc-atx-9-ventiladores-pwm-argb-preinstalados-caja-para-pc-gaming-mid-tower-caja-de-ordenador-panor-mica-de-vidrio-templado-con-tipo-c-soporte-de-radiador-de-360-mm-negro-h-d9",
+      "brand": "ANSAITE",
+      "model": "Caja para PC ATX 9 Ventiladores PWM ARGB preinstalados, Caja para PC Gaming Mid-Tower, Caja de Ordenador panorámica de Vidrio Templado con Tipo C, Soporte de radiador de 360 mm, Negro(H-D9)",
+      "slug": "ansaite-caja-para-pc-atx-9-ventiladores-pwm-argb-preinstalados-caja-para-pc-gaming-mid-tower-caja-de-ordenador-panor-mica-de-vidrio-templado-con-tipo-c-soporte-de-radiador-de-360-mm-negro-h-d9",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0F49555MM"
+    },
+    {
+      "id": "mars-gaming-mc-se2-caja-gaming-microatx-cristal-templado-lateral-y-frontal-sin-marco-ventilador-frgb-120mm-estructura-de-doble-c-mara-minitorre-pc-compacta-con-amplia-capacidad-interna-negro",
+      "brand": "MARS",
+      "model": "Gaming MC-SE2, Caja Gaming MicroATX, Cristal Templado Lateral y Frontal Sin Marco, Ventilador FRGB 120mm, Estructura de Doble Cámara, Minitorre PC Compacta con Amplia Capacidad Interna, Negro",
+      "slug": "mars-gaming-mc-se2-caja-gaming-microatx-cristal-templado-lateral-y-frontal-sin-marco-ventilador-frgb-120mm-estructura-de-doble-c-mara-minitorre-pc-compacta-con-amplia-capacidad-interna-negro",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0FH4RDZG3"
+    },
+    {
+      "id": "corsair-frame-4500x-rs-r-argb-caja-de-pc-semitorre-con-cristal-panor-mico-sistema-de-montaje-de-infinirail-capacidad-para-dos-radiadores-de-360-mm-incluye-3-ventiladores-rs120r-blanco",
+      "brand": "CORSAIR",
+      "model": "Frame 4500X RS-R ARGB Caja de PC Semitorre con Cristal Panorámico – Sistema de Montaje de InfiniRail, Capacidad para Dos radiadores de 360 mm, Incluye 3 Ventiladores RS120R – Blanco",
+      "slug": "corsair-frame-4500x-rs-r-argb-caja-de-pc-semitorre-con-cristal-panor-mico-sistema-de-montaje-de-infinirail-capacidad-para-dos-radiadores-de-360-mm-incluye-3-ventiladores-rs120r-blanco",
+      "maxGpuLengthMM": 460.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0FJ2PYLFB"
+    },
+    {
+      "id": "corsair-frame-4500x-lx-r-rgb-link-caja-de-pc-semitorre-con-cristal-panor-mico-sistema-de-montaje-de-infinirail-capacidad-para-dos-radiadores-de-360-mm-incluye-3-ventiladores-lx120r-negro",
+      "brand": "CORSAIR",
+      "model": "Frame 4500X LX-R RGB Link Caja de PC Semitorre con Cristal Panorámico – Sistema de Montaje de InfiniRail, Capacidad para Dos radiadores de 360 mm, Incluye 3 Ventiladores LX120R – Negro",
+      "slug": "corsair-frame-4500x-lx-r-rgb-link-caja-de-pc-semitorre-con-cristal-panor-mico-sistema-de-montaje-de-infinirail-capacidad-para-dos-radiadores-de-360-mm-incluye-3-ventiladores-lx120r-negro",
+      "maxGpuLengthMM": 420.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0FJ2SRYHT"
+    },
+    {
+      "id": "corsair-3500x-rs-r-argb-caja-de-pc-semitorre-con-panel-de-cristal-panor-mico-3x-rs120-r-argb-incluidos-puede-incluir-hasta-10-ventiladores-de-120mm-compatible-con-placas-base-inversas-negro",
+      "brand": "CORSAIR",
+      "model": "3500X RS-R ARGB Caja de PC Semitorre con Panel de Cristal Panorámico – 3X RS120-R ARGB Incluidos, Puede Incluir hasta 10 Ventiladores de 120mm, Compatible con Placas Base Inversas – Negro",
+      "slug": "corsair-3500x-rs-r-argb-caja-de-pc-semitorre-con-panel-de-cristal-panor-mico-3x-rs120-r-argb-incluidos-puede-incluir-hasta-10-ventiladores-de-120mm-compatible-con-placas-base-inversas-negro",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0FJ2ZBK8J"
+    },
+    {
+      "id": "corsair-air-5400-rs-r-argb-caja-para-pc-semitorre-panor-mica-de-triple-c-mara-3-ventiladores-rs120-r-argb-reverse-rotor-preinstalados-conductos-de-alto-flujo-y-bajo-ruido-negro",
+      "brand": "CORSAIR",
+      "model": "Air 5400 RS-R ARGB Caja para PC semitorre panorámica de Triple cámara – 3 Ventiladores RS120-R ARGB Reverse-Rotor preinstalados – conductos de Alto Flujo y bajo Ruido – Negro",
+      "slug": "corsair-air-5400-rs-r-argb-caja-para-pc-semitorre-panor-mica-de-triple-c-mara-3-ventiladores-rs120-r-argb-reverse-rotor-preinstalados-conductos-de-alto-flujo-y-bajo-ruido-negro",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0FJ8SWG15"
+    },
+    {
+      "id": "musetex-caja-pc-atx-7-ventiladores-pwm-argb-pre-instalados-type-c-mid-tower-caja-de-ordenador-con-doble-cristal-templado-full-view-caja-pc-gaming-negro-k2",
+      "brand": "MUSETEX",
+      "model": "Caja PC ATX 7 Ventiladores PWM ARGB Pre-Instalados, Type-C Mid Tower Caja de Ordenador con Doble Cristal Templado Full View, Caja PC Gaming,Negro(K2)",
+      "slug": "musetex-caja-pc-atx-7-ventiladores-pwm-argb-pre-instalados-type-c-mid-tower-caja-de-ordenador-con-doble-cristal-templado-full-view-caja-pc-gaming-negro-k2",
+      "maxGpuLengthMM": 415.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0FNMJKRYR"
+    },
+    {
+      "id": "unykach-caja-atx-revelat-mesh-compact-edition",
+      "brand": "UNYKACH",
+      "model": "Caja ATX Revelat Mesh Compact Edition",
+      "slug": "unykach-caja-atx-revelat-mesh-compact-edition",
+      "maxGpuLengthMM": 340.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0FQC3C3NW"
+    },
+    {
+      "id": "mars-gaming-mc-3tcorelcd-caja-gaming-atx-pantalla-ips-7-2-personalizable-triple-cristal-templado-extra-ble-estructura-doble-c-mara-lateral-soporte-de-refrigeraci-n-l-quida-hasta-360mm-negro",
+      "brand": "MARS",
+      "model": "Gaming MC-3TCORELCD Caja Gaming ATX, Pantalla IPS 7,2” Personalizable, Triple Cristal Templado Extraíble, Estructura Doble Cámara Lateral, Soporte de Refrigeración Líquida hasta 360mm, Negro",
+      "slug": "mars-gaming-mc-3tcorelcd-caja-gaming-atx-pantalla-ips-7-2-personalizable-triple-cristal-templado-extra-ble-estructura-doble-c-mara-lateral-soporte-de-refrigeraci-n-l-quida-hasta-360mm-negro",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0FTMDC78K"
+    },
+    {
+      "id": "mars-gaming-mc-3tcorelcd-caja-gaming-atx-pantalla-ips-7-2-personalizable-triple-cristal-templado-extra-ble-estructura-doble-c-mara-lateral-soporte-de-refrigeraci-n-l-quida-hasta-360mm-blanco",
+      "brand": "MARS",
+      "model": "Gaming MC-3TCORELCD Caja Gaming ATX, Pantalla IPS 7,2” Personalizable, Triple Cristal Templado Extraíble, Estructura Doble Cámara Lateral, Soporte de Refrigeración Líquida hasta 360mm, Blanco",
+      "slug": "mars-gaming-mc-3tcorelcd-caja-gaming-atx-pantalla-ips-7-2-personalizable-triple-cristal-templado-extra-ble-estructura-doble-c-mara-lateral-soporte-de-refrigeraci-n-l-quida-hasta-360mm-blanco",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0FTMGYTMV"
+    },
+    {
+      "id": "teros-13121g-caja-pc-gaming-atx-caja-negra-torre-gaming-pc-de-hasta-5-ventiladores-frontal-argb-compacta",
+      "brand": "TEROS",
+      "model": "13121G Caja PC Gaming ATX Caja Negra Torre Gaming pc de hasta 5 Ventiladores Frontal ARGB, compacta",
+      "slug": "teros-13121g-caja-pc-gaming-atx-caja-negra-torre-gaming-pc-de-hasta-5-ventiladores-frontal-argb-compacta",
+      "maxGpuLengthMM": 317.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0FW5B3MDT"
+    },
+    {
+      "id": "teros-13122g-caja-pc-gaming-atx-caja-blanca-torre-de-hasta-5-ventiladores-frontal-argb-compacta",
+      "brand": "TEROS",
+      "model": "13122G Caja PC Gaming ATX Caja Blanca Torre de hasta 5 Ventiladores Frontal ARGB, compacta",
+      "slug": "teros-13122g-caja-pc-gaming-atx-caja-blanca-torre-de-hasta-5-ventiladores-frontal-argb-compacta",
+      "maxGpuLengthMM": 330.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0FW5FTZMK"
+    },
+    {
+      "id": "kediers-caja-pc-atx-7-ventiladores-pwm-argb-pre-instalados-type-c-mid-tower-caja-de-ordenador-con-doble-cristal-templado-full-view-caja-pc-gaming-negro",
+      "brand": "KEDIERS",
+      "model": "Caja PC ATX 7 Ventiladores PWM ARGB Pre-Instalados, Type-C Mid Tower Caja de Ordenador con Doble Cristal Templado Full View, Caja PC Gaming,Negro",
+      "slug": "kediers-caja-pc-atx-7-ventiladores-pwm-argb-pre-instalados-type-c-mid-tower-caja-de-ordenador-con-doble-cristal-templado-full-view-caja-pc-gaming-negro",
+      "maxGpuLengthMM": 440.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0FWCJJHBD"
+    },
+    {
+      "id": "abysm-gaming-arian-frame-a400-torre-atx-gaming-negra",
+      "brand": "ABYSM",
+      "model": "Gaming Arian Frame A400 Torre ATX Gaming Negra",
+      "slug": "abysm-gaming-arian-frame-a400-torre-atx-gaming-negra",
+      "maxGpuLengthMM": 420.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0FX55VC25"
+    },
+    {
+      "id": "musetex-y6-caja-pc-con-7-ventiladores-pwm-argb-de-espejo-infinito-preinstalados-caja-de-computadora-atx-de-torre-mediana-caja-pc-gaming-con-tipo-c-cristal-templado-de-vista-completa-de-270-negro",
+      "brand": "MUSETEX",
+      "model": "Y6 Caja PC, con 7 Ventiladores PWM ARGB de Espejo Infinito Preinstalados, Caja de Computadora ATX de Torre Mediana, Caja PC Gaming con Tipo-C, Cristal Templado de Vista Completa de 270°, Negro",
+      "slug": "musetex-y6-caja-pc-con-7-ventiladores-pwm-argb-de-espejo-infinito-preinstalados-caja-de-computadora-atx-de-torre-mediana-caja-pc-gaming-con-tipo-c-cristal-templado-de-vista-completa-de-270-negro",
+      "maxGpuLengthMM": 410.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0GDFFSFTF"
+    },
+    {
+      "id": "musetex-y6-caja-pc-con-7-ventiladores-pwm-argb-de-espejo-infinito-preinstalados-caja-de-computadora-atx-de-torre-mediana-caja-pc-gaming-con-tipo-c-cristal-templado-de-vista-completa-de-270-blanco",
+      "brand": "MUSETEX",
+      "model": "Y6 Caja PC, con 7 Ventiladores PWM ARGB de Espejo Infinito Preinstalados, Caja de Computadora ATX de Torre Mediana, Caja PC Gaming con Tipo-C, Cristal Templado de Vista Completa de 270°,Blanco",
+      "slug": "musetex-y6-caja-pc-con-7-ventiladores-pwm-argb-de-espejo-infinito-preinstalados-caja-de-computadora-atx-de-torre-mediana-caja-pc-gaming-con-tipo-c-cristal-templado-de-vista-completa-de-270-blanco",
+      "maxGpuLengthMM": 410.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0GDFRJB2K"
+    },
+    {
+      "id": "corsair-frame-4000d-wood-rs-chasis-para-pc-atx-semitorre-negro-y-nogal",
+      "brand": "CORSAIR",
+      "model": "Frame 4000D Wood RS Chasis para PC ATX Semitorre – Negro y Nogal",
+      "slug": "corsair-frame-4000d-wood-rs-chasis-para-pc-atx-semitorre-negro-y-nogal",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0GF9NW38F"
+    },
+    {
+      "id": "h3-2026-caja-pc-atx-preinstalado-con-6-ventiladores-infinity-mirror-pwm-argb-caja-pc-gaming-mid-tower-dual-c-mara-compacta-atx-con-type-c-3-2-negro",
+      "brand": "H3(2026)",
+      "model": "Caja PC ATX – Preinstalado con 6 Ventiladores Infinity Mirror PWM ARGB, Caja PC Gaming Mid Tower Dual Cámara Compacta ATX, con Type-C 3.2 (Negro)",
+      "slug": "h3-2026-caja-pc-atx-preinstalado-con-6-ventiladores-infinity-mirror-pwm-argb-caja-pc-gaming-mid-tower-dual-c-mara-compacta-atx-con-type-c-3-2-negro",
+      "maxGpuLengthMM": 400.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0GGQ7HV2J"
+    },
+    {
+      "id": "mars-gaming-mcv5-caja-pc-atx-cristal-templado-panor-mico-4x-ventiladores-argb-120mm-7-slots-pci-horizontales-2-slots-pci-verticales-compatible-con-placas-base-de-conector-inverso-usb-c-blanco",
+      "brand": "MARS",
+      "model": "Gaming MCV5, Caja PC ATX, Cristal Templado Panorámico, 4x Ventiladores ARGB 120mm, 7 Slots PCI Horizontales + 2 Slots PCI Verticales, Compatible con Placas Base de Conector Inverso, USB-C, Blanco",
+      "slug": "mars-gaming-mcv5-caja-pc-atx-cristal-templado-panor-mico-4x-ventiladores-argb-120mm-7-slots-pci-horizontales-2-slots-pci-verticales-compatible-con-placas-base-de-conector-inverso-usb-c-blanco",
+      "maxGpuLengthMM": 416.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0GT8W2WT6"
+    },
+    {
+      "id": "mars-gaming-mc-vector-caja-pc-gaming-micro-atx-y-mini-itx-4x-ventiladores-argb-fdb-120mm-cristal-templado-frontal-mesh-doble-c-mara-soporte-refrigeraci-n-l-quida-120mm-usb-c-blanco",
+      "brand": "MARS",
+      "model": "Gaming MC-Vector, Caja PC Gaming Micro-ATX y Mini-ITX, 4X Ventiladores ARGB FDB 120mm, Cristal Templado, Frontal Mesh, Doble Cámara, Soporte Refrigeración Líquida 120mm, USB-C, Blanco",
+      "slug": "mars-gaming-mc-vector-caja-pc-gaming-micro-atx-y-mini-itx-4x-ventiladores-argb-fdb-120mm-cristal-templado-frontal-mesh-doble-c-mara-soporte-refrigeraci-n-l-quida-120mm-usb-c-blanco",
+      "maxGpuLengthMM": 282.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0GT956YTD"
+    },
+    {
+      "id": "mars-gaming-mc-cube-caja-pc-microatx-formato-cubo-ultracompacto-cristal-templado-panor-mico-ventilador-trasero-argb-120mm-soporte-refrigeraciones-l-quidas-hasta-120mm-minitorre-con-usb-c-negro",
+      "brand": "MARS",
+      "model": "Gaming MC-Cube, Caja PC MicroATX, Formato Cubo Ultracompacto, Cristal Templado Panorámico, Ventilador Trasero ARGB 120mm, Soporte Refrigeraciones Líquidas hasta 120mm, Minitorre con USB-C, Negro",
+      "slug": "mars-gaming-mc-cube-caja-pc-microatx-formato-cubo-ultracompacto-cristal-templado-panor-mico-ventilador-trasero-argb-120mm-soporte-refrigeraciones-l-quidas-hasta-120mm-minitorre-con-usb-c-negro",
+      "maxGpuLengthMM": 260.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0GWHN8537"
+    },
+    {
+      "id": "mars-gaming-mc-cube-caja-pc-microatx-formato-cubo-ultracompacto-cristal-templado-panor-mico-ventilador-trasero-argb-120mm-soporte-refrigeraciones-l-quidas-hasta-120mm-minitorre-con-usb-c-blanco",
+      "brand": "MARS",
+      "model": "Gaming MC-CUBE, Caja PC MicroATX, Formato Cubo Ultracompacto, Cristal Templado Panorámico, Ventilador Trasero ARGB 120mm, Soporte Refrigeraciones Líquidas hasta 120mm, Minitorre con USB-C, Blanco",
+      "slug": "mars-gaming-mc-cube-caja-pc-microatx-formato-cubo-ultracompacto-cristal-templado-panor-mico-ventilador-trasero-argb-120mm-soporte-refrigeraciones-l-quidas-hasta-120mm-minitorre-con-usb-c-blanco",
+      "maxGpuLengthMM": 260.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0GWHNPXKP"
+    },
+    {
+      "id": "hiditec-h3-caja-pc-gaming-atx-usb-c-doble-c-mara-btf-blanca",
+      "brand": "HIDITEC",
+      "model": "H3 | Caja PC Gaming ATX | USB-C | Doble Cámara | BTF | Blanca",
+      "slug": "hiditec-h3-caja-pc-gaming-atx-usb-c-doble-c-mara-btf-blanca",
+      "maxGpuLengthMM": 400.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0GZVMZL1F"
+    },
+    {
+      "id": "mars-gaming-mcvpro-caja-pc-atx-5x-ventiladores-argb-dise-o-panor-mico",
+      "brand": "MARS",
+      "model": "Gaming MCVPRO Caja PC ATX 5X Ventiladores ARGB Diseño Panorámico",
+      "slug": "mars-gaming-mcvpro-caja-pc-atx-5x-ventiladores-argb-dise-o-panor-mico",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.amazon.es/dp/B0HF4KJP5Z"
+    },
+    {
+      "id": "caja-torre-deepcool-cg380-3f-argb-negro",
+      "brand": "CAJA/TORRE",
+      "model": "DeepCool CG380 3F ARGB Negro",
+      "slug": "caja-torre-deepcool-cg380-3f-argb-negro",
+      "maxGpuLengthMM": 410.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/deepcool-cg380-3f-argb-negro"
+    },
+    {
+      "id": "caja-torre-deepcool-cg530-4f-argb-negro",
+      "brand": "CAJA/TORRE",
+      "model": "DeepCool CG530 4F ARGB Negro",
+      "slug": "caja-torre-deepcool-cg530-4f-argb-negro",
+      "maxGpuLengthMM": 410.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/deepcool-cg530-4f-argb-negro"
+    },
+    {
+      "id": "caja-torre-deepcool-cg580-4f-negro",
+      "brand": "CAJA/TORRE",
+      "model": "DeepCool CG580 4F Negro",
+      "slug": "caja-torre-deepcool-cg580-4f-negro",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/deepcool-cg580-4f-negro"
+    },
+    {
+      "id": "caja-torre-fractal-design-north-negro",
+      "brand": "CAJA/TORRE",
+      "model": "Fractal Design North Negro",
+      "slug": "caja-torre-fractal-design-north-negro",
+      "maxGpuLengthMM": 355.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/fractal-design-north-negro"
+    },
+    {
+      "id": "caja-torre-fractal-design-north-xl-chalk-blanco",
+      "brand": "CAJA/TORRE",
+      "model": "Fractal Design North XL Chalk Blanco",
+      "slug": "caja-torre-fractal-design-north-xl-chalk-blanco",
+      "maxGpuLengthMM": 413.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/fractal-design-north-xl-chalk-blanco"
+    },
+    {
+      "id": "caja-torre-fractal-design-north-xl-charcoal-tg-dark-negro",
+      "brand": "CAJA/TORRE",
+      "model": "Fractal Design North XL Charcoal TG Dark Negro",
+      "slug": "caja-torre-fractal-design-north-xl-charcoal-tg-dark-negro",
+      "maxGpuLengthMM": 413.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/fractal-design-north-xl-charcoal-tg-dark-negro"
+    },
+    {
+      "id": "caja-torre-lian-li-lancool-206-argb-blanco",
+      "brand": "CAJA/TORRE",
+      "model": "Lian Li Lancool 206 ARGB Blanco",
+      "slug": "caja-torre-lian-li-lancool-206-argb-blanco",
+      "maxGpuLengthMM": 386.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/lian-li-lancool-206-argb-blanco"
+    },
+    {
+      "id": "caja-torre-lian-li-lancool-216-mesh-rgb-negro",
+      "brand": "CAJA/TORRE",
+      "model": "Lian Li Lancool 216 Mesh RGB Negro",
+      "slug": "caja-torre-lian-li-lancool-216-mesh-rgb-negro",
+      "maxGpuLengthMM": 392.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/lian-li-lancool-216-mesh-rgb"
+    },
+    {
+      "id": "caja-torre-lian-li-lancool-217-infinity-negra",
+      "brand": "CAJA/TORRE",
+      "model": "Lian Li Lancool 217 Infinity Negra",
+      "slug": "caja-torre-lian-li-lancool-217-infinity-negra",
+      "maxGpuLengthMM": 380.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/lian-li-lancool-217-infinity-negra"
+    },
+    {
+      "id": "caja-torre-lian-li-o11-dynamic-mini-v2-negro",
+      "brand": "CAJA/TORRE",
+      "model": "Lian Li O11 Dynamic Mini V2 Negro",
+      "slug": "caja-torre-lian-li-o11-dynamic-mini-v2-negro",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/lian-li-o11-dynamic-mini-v2-negro"
+    },
+    {
+      "id": "caja-torre-lian-li-o11d-evo-rgb-negro",
+      "brand": "CAJA/TORRE",
+      "model": "Lian Li O11D EVO RGB Negro",
+      "slug": "caja-torre-lian-li-o11d-evo-rgb-negro",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/lian-li-o11d-evo-rgb-negro"
+    },
+    {
+      "id": "caja-torre-msi-mag-forge-m100r",
+      "brand": "CAJA/TORRE",
+      "model": "MSI MAG FORGE M100R",
+      "slug": "caja-torre-msi-mag-forge-m100r",
+      "maxGpuLengthMM": 300.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/msi-mag-forge-m100r"
+    },
+    {
+      "id": "caja-torre-nzxt-h3-flow-2025-matx-negro",
+      "brand": "CAJA/TORRE",
+      "model": "NZXT H3 Flow (2025) mATX Negro",
+      "slug": "caja-torre-nzxt-h3-flow-2025-matx-negro",
+      "maxGpuLengthMM": 377.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/nzxt-h3-flow-2025-matx-negro"
+    },
+    {
+      "id": "caja-torre-nzxt-h5-flow-blanco",
+      "brand": "CAJA/TORRE",
+      "model": "NZXT H5 Flow Blanco",
+      "slug": "caja-torre-nzxt-h5-flow-blanco",
+      "maxGpuLengthMM": 410.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/nzxt-h5-flow-2024-blanco"
+    },
+    {
+      "id": "caja-torre-nzxt-h5-flow-negro",
+      "brand": "CAJA/TORRE",
+      "model": "NZXT H5 Flow Negro",
+      "slug": "caja-torre-nzxt-h5-flow-negro",
+      "maxGpuLengthMM": 410.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/nzxt-h5-flow-2024-negro"
+    },
+    {
+      "id": "caja-torre-nzxt-h5-flow-rgb-negro",
+      "brand": "CAJA/TORRE",
+      "model": "NZXT H5 Flow RGB Negro",
+      "slug": "caja-torre-nzxt-h5-flow-rgb-negro",
+      "maxGpuLengthMM": 410.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/nzxt-h5-flow-rgb-2024-negro"
+    },
+    {
+      "id": "caja-torre-nzxt-h6-flow-negro",
+      "brand": "CAJA/TORRE",
+      "model": "NZXT H6 Flow Negro",
+      "slug": "caja-torre-nzxt-h6-flow-negro",
+      "maxGpuLengthMM": 365.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/nzxt-h6-flow-negro"
+    },
+    {
+      "id": "caja-torre-nzxt-h6-flow-rgb-negro",
+      "brand": "CAJA/TORRE",
+      "model": "NZXT H6 Flow RGB Negro",
+      "slug": "caja-torre-nzxt-h6-flow-rgb-negro",
+      "maxGpuLengthMM": 365.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/nzxt-h6-flow-rgb-negro"
+    },
+    {
+      "id": "caja-torre-nzxt-h9-flow-2025-blanco",
+      "brand": "CAJA/TORRE",
+      "model": "NZXT H9 Flow (2025) Blanco",
+      "slug": "caja-torre-nzxt-h9-flow-2025-blanco",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/nzxt-h9-flow-2025-blanco"
+    },
+    {
+      "id": "caja-torre-nzxt-h9-flow-2025-negro",
+      "brand": "CAJA/TORRE",
+      "model": "NZXT H9 Flow (2025) Negro",
+      "slug": "caja-torre-nzxt-h9-flow-2025-negro",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/nzxt-h9-flow-2025-negro"
+    },
+    {
+      "id": "caja-torre-nzxt-h9-flow-rgb-plus-2025-blanco",
+      "brand": "CAJA/TORRE",
+      "model": "NZXT H9 Flow RGB Plus (2025) Blanco",
+      "slug": "caja-torre-nzxt-h9-flow-rgb-plus-2025-blanco",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/nzxt-h9-flow-rgb-plus-2025-blanco"
+    },
+    {
+      "id": "caja-torre-nzxt-h9-flow-rgb-plus-2025-negro",
+      "brand": "CAJA/TORRE",
+      "model": "NZXT H9 Flow RGB Plus (2025) Negro",
+      "slug": "caja-torre-nzxt-h9-flow-rgb-plus-2025-negro",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ],
+      "link": "https://www.coolmod.com/nzxt-h9-flow-rgb-plus-2025-negro"
     }
   ],
   "gpus": [

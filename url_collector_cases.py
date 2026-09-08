@@ -3,6 +3,24 @@ from playwright.sync_api import sync_playwright
 
 OUTPUT_FILE = "urls_cases_list.txt"
 
+TARGET_URLS = [
+    "https://www.pccomponentes.com/cajas-torres",
+    "https://www.coolmod.com/componentes-pc-torres-cajas/",
+    "https://www.amazon.es/s?k=caja+pc+gaming"
+]
+
+EXCLUDED_KEYWORDS = [
+    'cart', 'login', 'buscar', 'service', 'soporte', 'zendesk', 'privacy',
+    'flixcar', 'flixfacts', 'google', 'facebook', 'twitter', 'instagram',
+    'cookies', 'politica', 'condiciones', 'ayuda', 'blog', 'devoluciones',
+    'componentes-pc-torres-cajas', 'cajas-torres', 'sillas', 'portatiles',
+    'smartphones', 'teclados', 'ratones', 'monitores', 'auriculares'
+]
+
+def es_url_valida(url):
+    url_lower = url.lower()
+    return not any(keyword in url_lower for keyword in EXCLUDED_KEYWORDS)
+
 def recolectar_cajas():
     collected_urls = set()
 
@@ -18,41 +36,69 @@ def recolectar_cajas():
         page = context.new_page()
         page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
-        print("🔍 Navegando a la sección de Cajas/Cases...")
-        try:
-            # Apuntamos directamente a la categoría de Cases en la sección de reviews
-            page.goto("https://www.techpowerup.com/review/?category=Cases", timeout=60000, wait_until="domcontentloaded")
-            
-            # Esperamos a que cargue la lista o rejilla de artículos
-            page.wait_for_selector("article, div.review, table.reviews", timeout=20000)
-            
-            # Scroll para forzar la carga de más cajas
-            for _ in range(5):
-                page.evaluate("window.scrollBy(0, 800)")
-                time.sleep(1)
+        for target_url in TARGET_URLS:
+            print(f"🔍 Navegando a: {target_url}...")
+            try:
+                page.goto(target_url, timeout=60000, wait_until="domcontentloaded")
+                time.sleep(2)
 
-            # Buscamos todos los enlaces a reviews dentro de la página
-            hrefs = page.eval_on_selector_all(
-                "a[href*='/review/']", 
-                "elements => elements.map(el => el.getAttribute('href'))"
-            )
+                for _ in range(5):
+                    page.evaluate("window.scrollBy(0, 800)")
+                    time.sleep(1)
 
-            for href in hrefs:
-                # Filtramos para asegurarnos de que es una review individual de una caja
-                if href and href.count('/') >= 2 and not href.endswith('/review/') and not 'category=' in href:
-                    full_url = f"https://www.techpowerup.com{href}" if href.startswith('/') else href
-                    # Guardamos la página principal de la review (página 1)
-                    clean_url = full_url.split('/page-')[0] if '/page-' in full_url else full_url
-                    collected_urls.add(clean_url)
+                hrefs = page.eval_on_selector_all(
+                    "a[href]",
+                    "elements => elements.map(el => el.getAttribute('href'))"
+                )
 
-            print(f"  └─ ✅ Capturadas {len(collected_urls)} URLs de Cajas únicas.")
+                subtotal = len(collected_urls)
 
-        except Exception as e:
-            print(f"❌ Error durante la recolección: {e}")
+                for href in hrefs:
+                    if not href or href.startswith('#') or href.startswith('javascript:'):
+                        continue
+
+                    if href.startswith('/'):
+                        if "pccomponentes.com" in target_url:
+                            full_url = f"https://www.pccomponentes.com{href}"
+                        elif "coolmod.com" in target_url:
+                            full_url = f"https://www.coolmod.com{href}"
+                        elif "amazon.es" in target_url:
+                            full_url = f"https://www.amazon.es{href}"
+                        else:
+                            full_url = href
+                    else:
+                        full_url = href
+
+                    clean_url = full_url.split('?')[0].rstrip('/')
+
+                    if not es_url_valida(clean_url):
+                        continue
+
+                    if "pccomponentes.com" in target_url:
+                        if clean_url.startswith("https://www.pccomponentes.com/") and len(clean_url.split('/')) == 4:
+                            collected_urls.add(clean_url)
+
+                    elif "coolmod.com" in target_url:
+                        # Filtrar exclusivamente productos que sean torres/cajas
+                        if any(k in clean_url for k in ['caja', 'torre', 'lian-li', 'nzxt', 'corsair', 'fractal', 'deepcool', 'msi-mag', 'phanteks', 'unykach']):
+                            if len(clean_url.split('/')) == 4:
+                                collected_urls.add(clean_url)
+
+                    elif "amazon.es" in target_url and "/dp/" in href:
+                        parts = href.split('/dp/')
+                        if len(parts) > 1:
+                            asin = parts[1].split('/')[0].split('?')[0]
+                            if len(asin) == 10 and asin.isalnum():
+                                collected_urls.add(f"https://www.amazon.es/dp/{asin}")
+
+                nuevas = len(collected_urls) - subtotal
+                print(f"   └─ ✅ Capturadas {nuevas} URLs de cajas válidas.")
+
+            except Exception as e:
+                print(f"❌ Error procesando {target_url}: {e}")
 
         browser.close()
 
-    # Guardado de URLs
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         for url in sorted(collected_urls):
             f.write(f"{url}\n")
