@@ -1,5 +1,28 @@
 {
+  "aios": [
+    {
+      "id": "none",
+      "slug": "none",
+      "brand": "Ninguno",
+      "model": "Sin AIO Frontal",
+      "sizeMM": 0,
+      "thicknessMM": 0
+    }
+  ],
   "cases": [
+    {
+      "id": "nzxt-h2-flow",
+      "brand": "NZXT",
+      "model": "H2 Flow",
+      "slug": "nzxt-h2-flow",
+      "maxGpuLengthMM": 360.0,
+      "maxAioSizeMM": 360,
+      "supportedFormFactors": [
+        "ATX",
+        "Micro-ATX",
+        "Mini-ITX"
+      ]
+    },
     {
       "id": "corsair-4000d-airflow",
       "brand": "Corsair",
@@ -66,12 +89,6 @@
       "maxCpuCoolerHeightMM": 175.0,
       "psuShroudDepthMM": 0.0,
       "radiatorFrontSupport": true
-    },
-    {
-      
-    },
-    {
-    
     },
     {
       "id": "antec-flux-pro-noctua-edition",
@@ -359,18 +376,11 @@
         "Mini-ITX"
       ]
     },
-    
-      
-      ]
-    },
     {
- 
-    },
-    {
-      "id": "nzxt-h2-flow",
+      "id": "nzxt-h2-flow-duplicate",
       "brand": "NZXT",
-      "model": "H2 Flow",
-      "slug": "nzxt-h2-flow",
+      "model": "H2 Flow v2",
+      "slug": "nzxt-h2-flow-v2",
       "maxGpuLengthMM": 360.0,
       "maxAioSizeMM": 360,
       "supportedFormFactors": [
@@ -379,17 +389,6 @@
         "Mini-ITX"
       ]
     },
-    {
- 
-    },
-    {
-   
-      
-    },
-    {
-  
-    },
-    
     {
       "id": "thermal-grizzly-der8auer-benchtable",
       "brand": "THERMAL",
