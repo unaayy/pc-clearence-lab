@@ -1,13 +1,13 @@
 import { defineConfig } from 'astro/config';
-import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
+import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://pc-clearence-lab.vercel.app',
+  site: 'https://www.gridcube.com',
   integrations: [
-    react(),
     tailwind(),
+    react(),
     sitemap()
   ]
 });
