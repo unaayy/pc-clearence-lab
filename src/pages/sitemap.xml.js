@@ -1,4 +1,6 @@
-export async function getServerSideProps({ res }) {
+import type { APIRoute } from 'astro';
+
+export const GET: APIRoute = () => {
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -9,13 +11,9 @@ export async function getServerSideProps({ res }) {
   </url>
 </urlset>`;
 
-  res.setHeader('Content-Type', 'text/xml');
-  res.write(sitemap);
-  res.end();
-
-  return { props: {} };
-}
-
-export default function Sitemap() {
-  return null;
-}
+  return new Response(sitemap, {
+    headers: {
+      'Content-Type': 'application/xml',
+    },
+  });
+};
