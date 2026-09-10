@@ -5,15 +5,15 @@ import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
 const { cases, gpus } = hardwareData;
-const canonicalURL = new URL(Astro.url.pathname, 'https://www.gridcube.com');
+const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 ---
 
 <html lang="es">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GridCube - Comprobador Físico de Hardware y Compatibilidad</title>
-    <meta name="description" content="Verifica el espacio libre, holguras y compatibilidad física entre tu chasis y tarjeta gráfica en GridCube." />
+    <title>Lidunax - Comprobador Físico de Hardware y Compatibilidad</title>
+    <meta name="description" content="Verifica el espacio libre, holguras y compatibilidad física entre tu chasis y tarjeta gráfica en Lidunax." />
 
     <!-- Canonical URL -->
     <link rel="canonical" href={canonicalURL} />
@@ -35,16 +35,16 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.gridcube.com');
     <div class="fixed -bottom-40 -right-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
     <div>
-      <!-- Navbar Superior con marca GRIDCUBE -->
+      <!-- Navbar Superior con marca LIDUNAX -->
       <header class="relative z-50 border-b border-white/10 backdrop-blur-md bg-black/40">
         <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
           
-          <!-- Logo GridCube -->
+          <!-- Logo Lidunax -->
           <a href="/" class="flex items-center gap-3 group">
             <div class="w-10 h-10 rounded-xl bg-black border border-[#00F0FF]/50 flex items-center justify-center shadow-[0_0_10px_rgba(0,240,255,0.2)] group-hover:border-[#00F0FF] transition">
-              <span class="text-[#00F0FF] text-sm font-bold" style="font-family: 'Orbitron', sans-serif;">GC</span>
+              <span class="text-[#00F0FF] text-sm font-bold" style="font-family: 'Orbitron', sans-serif;">LDX</span>
             </div>
-            <span class="text-lg tracking-wider font-bold text-white" style="font-family: 'Orbitron', sans-serif;">GRID<span class="text-[#00F0FF]">CUBE</span></span>
+            <span class="text-lg tracking-wider font-bold text-white" style="font-family: 'Orbitron', sans-serif;">LID<span class="text-[#00F0FF]">UNAX</span></span>
           </a>
 
           <!-- Iniciar Sesión -->
@@ -66,7 +66,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.gridcube.com');
         <div class="text-center space-y-4">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#00F0FF]/30 bg-[#00F0FF]/10 text-[#00F0FF] text-xs font-mono">
             <span class="w-2 h-2 rounded-full bg-[#00F0FF] animate-pulse"></span>
-            GRIDCUBE HARDWARE MATRIX
+            HARDWARE MATRIX
           </div>
 
           <h1 class="text-3xl sm:text-5xl font-extrabold tracking-wide text-white uppercase" style="font-family: 'Orbitron', sans-serif;">
@@ -82,7 +82,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.gridcube.com');
 
         <!-- Tagline de afiliados bajo el buscador -->
         <p class="text-center text-xs text-slate-500 font-mono">
-          * GridCube analiza las métricas de espacio libre mediante la base de datos oficial de fabricantes.
+          * Lidunax analiza las métricas de espacio libre mediante la base de datos oficial de fabricantes.
         </p>
 
         <!-- Combinaciones Frecuentes -->
