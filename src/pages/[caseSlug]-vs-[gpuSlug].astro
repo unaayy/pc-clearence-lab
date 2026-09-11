@@ -1,83 +1,134 @@
 ---
 import hardwareData from '../data/hardware.json';
 import { calculateClearance } from '../utils/clearanceEngine';
-import { ClearanceCanvas } from '../components/ClearanceCanvas';
 import { AffiliateBanners } from '../components/AffiliateBanners';
+import { ClearanceCanvas } from '../components/ClearanceCanvas';
+import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
-// Esta función es el corazón del pSEO. Le dice a Astro qué URLs debe fabricar.
-export function getStaticPaths() {
-  // Add ': any[]' to explicitly type the paths array
-  const paths: any[] = []; 
+export async function getStaticPaths() {
+  const { cases, gpus } = hardwareData;
+  const paths = [];
 
-  // ... rest of your code
-
-  // Cruzamos todas las cajas con todas las GPUs
-  hardwareData.cases.forEach((caseItem) => {
-    hardwareData.gpus.forEach((gpuItem) => {
+  for (const caseItem of cases) {
+    for (const gpuItem of gpus) {
       paths.push({
-        params: {
-          caseSlug: caseItem.slug,
-          gpuSlug: gpuItem.slug,
-        },
-        props: {
-          caseObj: caseItem,
-          gpuObj: gpuItem,
-          // Para el análisis base SEO asumimos que no hay refrigeración líquida frontal (AIO "none")
-          aioObj: hardwareData.aios.find(aio => aio.slug === 'none') || hardwareData.aios[0],
-        },
+        params: { caseSlug: caseItem.slug, gpuSlug: gpuItem.slug },
+        props: { caseObj: caseItem, gpuObj: gpuItem },
       });
-    });
-  });
-
-  return paths; // Con tus datos actuales, esto devolverá 9 páginas distintas
+    }
+  }
+  return paths;
 }
 
-// Extraemos los datos que getStaticPaths acaba de inyectar para la URL actual
-const { caseObj, gpuObj, aioObj } = Astro.props;
-const result = calculateClearance(caseObj, gpuObj, aioObj);
+const { caseObj, gpuObj } = Astro.props;
+const result = calculateClearance(caseObj, gpuObj);
+const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 ---
 
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>¿Cabe la {gpuObj.brand} {gpuObj.model} en la {caseObj.brand} {caseObj.model}? - PC Clearance Lab</title>
-    <meta name="description" content={`Comprueba visualmente si la tarjeta gráfica ${gpuObj.brand} ${gpuObj.model} cabe en la caja ${caseObj.brand} ${caseObj.model}. Análisis de colisión y conector 12VHPWR.`} />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>¿Es compatible la {gpuObj.brand} {gpuObj.model} con la caja {caseObj.brand} {caseObj.model}? - Lidunax</title>
+    <meta name="description" content={`Análisis técnico de compatibilidad física entre la tarjeta gráfica ${gpuObj.brand} ${gpuObj.model} y la caja ${caseObj.brand} ${caseObj.model}.`} />
+    <link rel="canonical" href={canonicalURL} />
   </head>
-  <body class="bg-[#0B0F17] text-slate-200 min-h-screen p-4 md:p-8 font-sans">
-    <main class="max-w-4xl mx-auto space-y-8">
-      
-      <header class="text-center space-y-2">
-        <h1 
-  class="text-3xl sm:text-4xl font-extrabold tracking-wide text-white uppercase text-center" 
-  style="font-family: 'Zen Dots', sans-serif;"
->
-  Analisis de Compatibilidad
-</h1>
-        <p class="text-slate-400">
-          Caja: <span class="text-[#00F0FF]">{caseObj.brand} {caseObj.model}</span> | GPU: <span class="text-white">{gpuObj.brand} {gpuObj.model}</span>
-        </p>
+
+  <body class="bg-black text-slate-100 min-h-screen font-sans flex flex-col justify-between selection:bg-[#00F0FF] selection:text-black">
+    <div>
+      <header class="border-b border-white/10 backdrop-blur-md bg-black/40">
+        <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+          <a href="/" class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-black border border-[#00F0FF]/50 flex items-center justify-center shadow-[0_0_10px_rgba(0,240,255,0.2)]">
+              <span class="text-[#00F0FF] text-sm font-bold" style="font-family: 'Orbitron', sans-serif;">LDX</span>
+            </div>
+            <span class="text-lg tracking-wider font-bold text-white" style="font-family: 'Orbitron', sans-serif;">LID<span class="text-[#00F0FF]">UNAX</span></span>
+          </a>
+        </div>
       </header>
 
-<ClearanceCanvas
-  caseObj={caseObj}
-  gpuObj={gpuObj}
-  status={result.status} 
-  client:load
-/>
-      
-      <AffiliateBanners 
-        caseObj={caseObj} 
-        gpuObj={gpuObj} 
-        result={result} 
-      />
+      <main class="max-w-4xl mx-auto px-4 py-12 space-y-10">
+        
+        <div class="text-center space-y-3">
+          <h1 class="text-2xl sm:text-4xl font-extrabold text-white" style="font-family: 'Orbitron', sans-serif;">
+            {caseObj.brand} {caseObj.model} <span class="text-[#00F0FF]">VS</span> {gpuObj.brand} {gpuObj.model}
+          </h1>
+          <p class="text-slate-400 font-mono text-sm">
+            Informe técnico de tolerancia física, espacio libre y flujo de aire.
+          </p>
+        </div>
 
-    </main>
+        <!-- GRÁFICA VISUAL -->
+        <div class="w-full flex justify-center py-4">
+          <ClearanceCanvas client:load caseObj={caseObj} gpuObj={gpuObj} />
+        </div>
+
+        <!-- Banners de Afiliación & Resultado -->
+        <AffiliateBanners client:load result={result} gpuObj={gpuObj} caseObj={caseObj} />
+
+        <!-- Tabla de Especificaciones Comparativas -->
+        <section class="bg-slate-950/60 border border-white/10 p-6 rounded-2xl space-y-4">
+          <h2 class="text-lg font-bold text-white uppercase tracking-wider font-mono">
+            Métricas de Dimensiones Comparadas
+          </h2>
+          
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm font-mono border-collapse">
+              <thead>
+                <tr class="border-b border-white/10 text-[#00F0FF]">
+                  <th class="py-3 px-2">Parámetro</th>
+                  <th class="py-3 px-2">Caja: {caseObj.model}</th>
+                  <th class="py-3 px-2">GPU: {gpuObj.model}</th>
+                  <th class="py-3 px-2">Resultado / Margen</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/5 text-slate-300">
+                <tr>
+                  <td class="py-3 px-2 font-semibold">Longitud Máxima</td>
+                  <td class="py-3 px-2">{caseObj.maxGpuLengthMM} mm</td>
+                  <td class="py-3 px-2">{gpuObj.dimensions.lengthMM} mm</td>
+                  <td class="py-3 px-2 font-bold text-[#00F0FF]">{result.frontMarginMM} mm libres</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-2 font-semibold">Ancho / Margen Lateral</td>
+                  <td class="py-3 px-2">{caseObj.internalWidthMM} mm</td>
+                  <td class="py-3 px-2">{gpuObj.dimensions.widthMM} mm</td>
+                  <td class="py-3 px-2">{result.lateralMarginMM} mm para cable</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-2 font-semibold">Conector / Alimentación</td>
+                  <td class="py-3 px-2">-</td>
+                  <td class="py-3 px-2">{gpuObj.connectorType}</td>
+                  <td class="py-3 px-2">{result.status === 'RED' ? 'Incompatible' : 'Compatible'}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Párrafos Explicativos Dinámicos sobre Airflow y Montaje -->
+        <section class="bg-slate-950/40 border border-white/10 p-6 rounded-2xl space-y-4 text-sm font-mono text-slate-300 leading-relaxed">
+          <h2 class="text-lg font-bold text-white uppercase tracking-wider font-mono">
+            Análisis de Ensamblaje y Flujo de Aire
+          </h2>
+          
+          <p>
+            Al instalar la <strong>{gpuObj.brand} {gpuObj.model}</strong> (con una longitud de <strong>{gpuObj.dimensions.lengthMM} mm</strong>) dentro del chasis <strong>{caseObj.brand} {caseObj.model}</strong> (capaz de albergar hasta <strong>{caseObj.maxGpuLengthMM} mm</strong>), el espacio frontal restante es de <strong>{result.frontMarginMM} mm</strong> (descontando el grosor estándar de instalación frontal).
+          </p>
+
+          <div class="space-y-2 mt-4">
+            {result.warnings.map((warning) => (
+              <p class={result.status === 'GREEN' ? "text-[#00FF66]" : result.status === 'YELLOW' ? "text-[#FFCC00]" : "text-[#FF0055]"}>
+                <strong>Aviso técnico:</strong> {warning}
+              </p>
+            ))}
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <Footer />
   </body>
 </html>

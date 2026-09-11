@@ -1,0 +1,55 @@
+---
+---
+<div id="cookie-banner" class="fixed bottom-0 left-0 w-full bg-slate-950/95 border-t border-white/10 backdrop-blur-md z-[100] transform translate-y-full transition-transform duration-500 hidden">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-sm">
+    <div class="text-slate-300">
+      <p>
+        <strong>Lidunax</strong> utiliza cookies técnicas y de terceros (Google AdSense, Amazon Afiliados) para analizar el tráfico y mostrar publicidad personalizada. 
+        Al continuar navegando, aceptas nuestra <a href="/privacidad" class="text-[#00F0FF] hover:underline">Política de Privacidad</a> y el uso de cookies.
+      </p>
+    </div>
+    <div class="flex items-center gap-3 shrink-0">
+      <button id="btn-rechazar" class="px-4 py-2 rounded-lg text-slate-400 hover:text-white border border-transparent hover:border-white/10 transition">
+        Rechazar
+      </button>
+      <button id="btn-aceptar" class="px-5 py-2 rounded-lg bg-[#00F0FF]/10 text-[#00F0FF] border border-[#00F0FF]/50 hover:bg-[#00F0FF] hover:text-black font-bold transition">
+        Aceptar Cookies
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const banner = document.getElementById('cookie-banner');
+    const btnAceptar = document.getElementById('btn-aceptar');
+    const btnRechazar = document.getElementById('btn-rechazar');
+
+    // Comprobar si ya hay una cookie guardada
+    if (!localStorage.getItem('lidunax_cookies_accepted')) {
+      banner.classList.remove('hidden');
+      // Pequeño retraso para que la animación de subida se vea fluida
+      setTimeout(() => {
+        banner.classList.remove('translate-y-full');
+      }, 100);
+    }
+
+    const ocultarBanner = () => {
+      banner.classList.add('translate-y-full');
+      setTimeout(() => {
+        banner.classList.add('hidden');
+      }, 500);
+    };
+
+    btnAceptar.addEventListener('click', () => {
+      localStorage.setItem('lidunax_cookies_accepted', 'true');
+      ocultarBanner();
+      // Aquí podrías inyectar el script de AdSense si quieres ser muy estricto con el GDPR
+    });
+
+    btnRechazar.addEventListener('click', () => {
+      localStorage.setItem('lidunax_cookies_accepted', 'false');
+      ocultarBanner();
+    });
+  });
+</script>
