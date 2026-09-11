@@ -4,4 +4,4 @@ Allow: /
 User-agent: Mediapartners-Google
 Allow: /
 
-Sitemap: https://www.lidunax.com/sitemap.xml
+Sitemap: https://www.lidunax.com/sitemap-index.xml
