@@ -8,7 +8,7 @@ interface AffiliateBannersProps {
 }
 
 export const AffiliateBanners: React.FC<AffiliateBannersProps> = ({ result, gpuObj, caseObj }) => {
-  const AMAZON_TAG = 'gridcube-21';
+  const AMAZON_TAG = 'lidunax-21';
 
   if (result.status === 'GREEN') {
     const gpuUrl = `https://www.amazon.es/s?k=${encodeURIComponent(gpuObj.brand + ' ' + gpuObj.model)}&tag=${AMAZON_TAG}`;
