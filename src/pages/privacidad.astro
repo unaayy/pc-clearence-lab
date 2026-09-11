@@ -1,0 +1,29 @@
+---
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Política de Privacidad - Lidunax</title>
+  </head>
+  <body class="bg-black text-slate-100 min-h-screen font-sans flex flex-col justify-between">
+    <header class="border-b border-white/10 p-6">
+      <a href="/" class="text-lg font-bold text-white font-mono">LID<span class="text-[#00F0FF]">UNAX</span></a>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-6 py-12 space-y-6 text-slate-300">
+      <h1 class="text-3xl font-bold text-white">Política de Privacidad</h1>
+      <p>En <strong>Lidunax</strong> (accesible desde lidunax.com), una de nuestras principales prioridades es la privacidad de nuestros visitantes.</p>
+      
+      <h2 class="text-xl font-bold text-white pt-4">1. Información que recopilamos</h2>
+      <p>Lidunax no requiere registro de usuario ni almacena datos personales sensibles. Como herramienta analítica, recopilamos únicamente métricas anónimas de uso a través de cookies técnicas para mejorar la experiencia de navegación.</p>
+
+      <h2 class="text-xl font-bold text-white pt-4">2. Publicidad y Afiliación (Google AdSense y Amazon)</h2>
+      <p>Este sitio web utiliza servicios de terceros como Google AdSense y el Programa de Afiliados de Amazon. Estos proveedores pueden usar cookies para mostrar anuncios basados en las visitas previas del usuario a este u otros sitios web.</p>
+    </main>
+
+    <Footer />
+  </body>
+</html>
