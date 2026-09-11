@@ -41,16 +41,14 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
       "headline": `Compatibilidad: ${caseObj.brand} ${caseObj.model} vs ${gpuObj.brand} ${gpuObj.model}`,
       "description": `Informe técnico de tolerancia física, espacio libre y holgura entre la caja ${caseObj.brand} ${caseObj.model} y la gráfica ${gpuObj.brand} ${gpuObj.model}.`,
       "url": canonicalURL.toString(),
-      "mainEntity": [
+      "about": [
         {
-          "@type": "Product",
-          "name": `${caseObj.brand} ${caseObj.model}`,
-          "category": "PC Case"
+          "@type": "Thing",
+          "name": `${caseObj.brand} ${caseObj.model}`
         },
         {
-          "@type": "Product",
-          "name": `${gpuObj.brand} ${gpuObj.model}`,
-          "category": "Graphics Card"
+          "@type": "Thing",
+          "name": `${gpuObj.brand} ${gpuObj.model}`
         }
       ]
     })} />
