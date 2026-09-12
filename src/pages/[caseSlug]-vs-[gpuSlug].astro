@@ -33,6 +33,9 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
     <meta name="description" content={`Análisis técnico de compatibilidad física entre la tarjeta gráfica ${gpuObj.brand} ${gpuObj.model} y la caja ${caseObj.brand} ${caseObj.model}.`} />
     <link rel="canonical" href={canonicalURL} />
 
+    <!-- Script de Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7430010369815892" crossorigin="anonymous"></script>
+
     <!-- Datos Estructurados JSON-LD Schema.org -->
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
@@ -72,6 +75,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
           <nav class="flex gap-6 text-sm font-mono text-slate-300">
             <a href="/" class="hover:text-[#00F0FF] transition-colors">Inicio</a>
             <a href="/faq" class="hover:text-[#00F0FF] transition-colors">FAQ</a>
+            <a href="/about" class="hover:text-[#00F0FF] transition-colors">Sobre Nosotros</a>
           </nav>
         </div>
       </header>

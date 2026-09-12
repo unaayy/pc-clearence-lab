@@ -21,6 +21,9 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
     <!-- Verificación de Google Search Console -->
     <meta name="google-site-verification" content="oW0LQ9UeXUlzYGx2i7G0AKePLsI9r4p7-o7MxJE0oAI" />
     
+    <!-- Script de Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7430010369815892" crossorigin="anonymous"></script>
+
     <!-- Carga de la fuente Zen Dots -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,6 +53,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
           <nav class="flex gap-6 text-sm font-mono text-slate-300">
             <a href="/" class="text-[#00F0FF] font-bold">Inicio</a>
             <a href="/faq" class="hover:text-[#00F0FF] transition-colors">FAQ</a>
+            <a href="/about" class="hover:text-[#00F0FF] transition-colors">Sobre Nosotros</a>
           </nav>
         </div>
       </header>
@@ -163,7 +167,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
       </main>
     </div>
 
-    <!-- Footer Global con aviso de Amazon -->
+    <!-- Footer Global -->
     <Footer />
 
   </body>
