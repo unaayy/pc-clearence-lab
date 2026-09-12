@@ -1,7 +1,6 @@
 ---
 import hardwareData from '../data/hardware.json';
 import { calculateClearance } from '../utils/clearanceEngine';
-import { AffiliateBanners } from '../components/AffiliateBanners';
 import { ClearanceCanvas } from '../components/ClearanceCanvas';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
@@ -57,12 +56,12 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
   <body class="bg-black text-slate-100 min-h-screen font-sans flex flex-col justify-between selection:bg-[#00F0FF] selection:text-black">
     <div>
       <header class="border-b border-white/10 backdrop-blur-md bg-black/40">
-        <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+        <div class="max-w-6xl mx-auto px-6 h-16 sm:h-20 flex items-center justify-between">
           <a href="/" class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-black border border-[#00F0FF]/50 flex items-center justify-center shadow-[0_0_10px_rgba(0,240,255,0.2)]">
-              <span class="text-[#00F0FF] text-sm font-bold" style="font-family: 'Orbitron', sans-serif;">LDX</span>
+            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-black border border-[#00F0FF]/50 flex items-center justify-center shadow-[0_0_10px_rgba(0,240,255,0.2)]">
+              <span class="text-[#00F0FF] text-xs sm:text-sm font-bold" style="font-family: 'Orbitron', sans-serif;">LDX</span>
             </div>
-            <span class="text-lg tracking-wider font-bold text-white" style="font-family: 'Orbitron', sans-serif;">LID<span class="text-[#00F0FF]">UNAX</span></span>
+            <span class="text-base sm:text-lg tracking-wider font-bold text-white" style="font-family: 'Orbitron', sans-serif;">LID<span class="text-[#00F0FF]">UNAX</span></span>
           </a>
 
           <nav class="flex gap-6 text-sm font-mono text-slate-300">
@@ -72,24 +71,137 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
         </div>
       </header>
 
-      <main class="max-w-4xl mx-auto px-4 py-12 space-y-10">
+      <main class="max-w-6xl mx-auto px-4 py-6 sm:py-8 space-y-8">
         
-        <div class="text-center space-y-3">
-          <h1 class="text-2xl sm:text-4xl font-extrabold text-white" style="font-family: 'Orbitron', sans-serif;">
+        <!-- Título Compacto -->
+        <div class="text-center space-y-1">
+          <h1 class="text-xl sm:text-3xl font-extrabold text-white" style="font-family: 'Orbitron', sans-serif;">
             {caseObj.brand} {caseObj.model} <span class="text-[#00F0FF]">VS</span> {gpuObj.brand} {gpuObj.model}
           </h1>
-          <p class="text-slate-400 font-mono text-sm">
-            Informe técnico de tolerancia física, espacio libre y flujo de aire.
+          <p class="text-slate-400 font-mono text-xs sm:text-sm">
+            Tolerancia física y comprobación de holgura.
           </p>
         </div>
 
-        <!-- GRÁFICA VISUAL -->
-        <div class="w-full flex justify-center py-4">
-          <ClearanceCanvas client:load caseObj={caseObj} gpuObj={gpuObj} />
-        </div>
+        <!-- BLOQUE HERÓICO 2 COLUMNAS (ABOVE THE FOLD) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          
+          <!-- Columna Izquierda: Gráfico Visual Completo Sin Scroll (7 cols) -->
+          <div class="lg:col-span-7 bg-slate-950/60 border border-white/10 p-4 rounded-2xl flex items-center justify-center backdrop-blur-sm overflow-hidden">
+            <div class="w-full flex justify-center [&>svg]:w-full [&>svg]:h-auto [&>svg]:max-h-[380px]">
+              <ClearanceCanvas client:load caseObj={caseObj} gpuObj={gpuObj} />
+            </div>
+          </div>
 
-        <!-- Banners de Afiliación & Resultado -->
-        <AffiliateBanners client:load result={result} gpuObj={gpuObj} caseObj={caseObj} />
+          <!-- Columna Derecha: Resultado & Tiendas con enlaces a Caja y Gráfica (5 cols) -->
+          <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
+            
+            <!-- Panel de Estado -->
+            <div class={`p-4 rounded-2xl border ${
+              result.status === 'GREEN' 
+                ? 'bg-emerald-950/30 border-emerald-500/40 text-emerald-400' 
+                : result.status === 'YELLOW' 
+                ? 'bg-amber-950/30 border-amber-500/40 text-amber-400' 
+                : 'bg-rose-950/30 border-rose-500/40 text-rose-400'
+            }`}>
+              <div class="flex items-center gap-2">
+                <span class={`w-3 h-3 rounded-full animate-pulse ${
+                  result.status === 'GREEN' ? 'bg-emerald-400' : result.status === 'YELLOW' ? 'bg-amber-400' : 'bg-rose-500'
+                }`}></span>
+                <h2 class="font-bold text-sm sm:text-base font-mono uppercase tracking-wide">
+                  {result.status === 'GREEN' && 'Compatibilidad Confirmada'}
+                  {result.status === 'YELLOW' && 'Espacio Ajustado / Precaución'}
+                  {result.status === 'RED' && 'Incompatibilidad Física'}
+                </h2>
+              </div>
+              <p class="text-xs font-mono mt-2 text-slate-300 leading-relaxed">
+                Holgura bruta: <strong class="text-white">+{result.grossFrontMarginMM} mm</strong>. Libre neto: <strong class="text-white">{result.frontMarginMM} mm</strong> (descontando {result.frontDiscount}mm de ventilación).
+              </p>
+            </div>
+
+            <!-- Bloques de Tiendas (Filas con enlaces a Caja y Gráfica) -->
+            <div class="bg-slate-950/80 border border-white/10 p-4 rounded-2xl space-y-3 flex-1 flex flex-col justify-center">
+              <span class="text-xs font-mono text-slate-400 uppercase tracking-wider block">
+                Comprobar precios por tienda:
+              </span>
+
+              <div class="space-y-3 font-mono text-xs">
+                
+                <!-- TIENDA 1: Amazon -->
+                <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2">
+                  <div class="flex items-center justify-between text-amber-400 font-bold text-sm">
+                    <span class="flex items-center gap-1.5">📦 Amazon ES</span>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2">
+                    <a 
+                      href={`https://www.amazon.es/s?k=${encodeURIComponent(caseObj.brand + ' ' + caseObj.model)}&tag=lidunax-21`}
+                      target="_blank" rel="noopener noreferrer"
+                      class="px-2.5 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 rounded-lg text-center font-semibold transition-colors truncate"
+                    >
+                      Caja Amazon →
+                    </a>
+                    <a 
+                      href={`https://www.amazon.es/s?k=${encodeURIComponent(gpuObj.brand + ' ' + gpuObj.model)}&tag=lidunax-21`}
+                      target="_blank" rel="noopener noreferrer"
+                      class="px-2.5 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 rounded-lg text-center font-semibold transition-colors truncate"
+                    >
+                      GPU Amazon →
+                    </a>
+                  </div>
+                </div>
+
+                <!-- TIENDA 2: PcComponentes -->
+                <div class="p-3 rounded-xl bg-orange-500/10 border border-orange-500/30 space-y-2">
+                  <div class="flex items-center justify-between text-orange-400 font-bold text-sm">
+                    <span class="flex items-center gap-1.5">🛒 PcComponentes</span>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2">
+                    <a 
+                      href={`https://www.pccomponentes.com/buscar/?query=${encodeURIComponent(caseObj.brand + ' ' + caseObj.model)}`}
+                      target="_blank" rel="noopener noreferrer"
+                      class="px-2.5 py-1.5 bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 rounded-lg text-center font-semibold transition-colors truncate"
+                    >
+                      Caja PcComp →
+                    </a>
+                    <a 
+                      href={`https://www.pccomponentes.com/buscar/?query=${encodeURIComponent(gpuObj.brand + ' ' + gpuObj.model)}`}
+                      target="_blank" rel="noopener noreferrer"
+                      class="px-2.5 py-1.5 bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 rounded-lg text-center font-semibold transition-colors truncate"
+                    >
+                      GPU PcComp →
+                    </a>
+                  </div>
+                </div>
+
+                <!-- TIENDA 3: Coolmod -->
+                <div class="p-3 rounded-xl bg-blue-500/10 border border-blue-500/30 space-y-2">
+                  <div class="flex items-center justify-between text-blue-400 font-bold text-sm">
+                    <span class="flex items-center gap-1.5">⚡ Coolmod</span>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2">
+                    <a 
+                      href={`https://www.coolmod.com/buscar/?search=${encodeURIComponent(caseObj.brand + ' ' + caseObj.model)}`}
+                      target="_blank" rel="noopener noreferrer"
+                      class="px-2.5 py-1.5 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg text-center font-semibold transition-colors truncate"
+                    >
+                      Caja Coolmod →
+                    </a>
+                    <a 
+                      href={`https://www.coolmod.com/buscar/?search=${encodeURIComponent(gpuObj.brand + ' ' + gpuObj.model)}`}
+                      target="_blank" rel="noopener noreferrer"
+                      class="px-2.5 py-1.5 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg text-center font-semibold transition-colors truncate"
+                    >
+                      GPU Coolmod →
+                    </a>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+        </div>
 
         <!-- Tabla de Especificaciones Comparativas -->
         <section class="bg-slate-950/60 border border-white/10 p-6 rounded-2xl space-y-4">
@@ -112,7 +224,10 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
                   <td class="py-3 px-2 font-semibold">Longitud Máxima</td>
                   <td class="py-3 px-2">{caseObj.maxGpuLengthMM} mm</td>
                   <td class="py-3 px-2">{gpuObj.dimensions.lengthMM} mm</td>
-                  <td class="py-3 px-2 font-bold text-[#00F0FF]">{result.frontMarginMM} mm libres</td>
+                  <td class="py-3 px-2">
+                    <span class="font-bold text-[#00F0FF]">+{result.grossFrontMarginMM} mm brutos</span>
+                    <span class="text-xs text-slate-400 block">({result.frontMarginMM} mm libres restando {result.frontDiscount}mm de ventilación)</span>
+                  </td>
                 </tr>
                 <tr>
                   <td class="py-3 px-2 font-semibold">Ancho / Margen Lateral</td>
@@ -138,13 +253,13 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
           </h2>
           
           <p>
-            Al instalar la <strong>{gpuObj.brand} {gpuObj.model}</strong> (longitud de <strong>{gpuObj.dimensions.lengthMM} mm</strong>) dentro del chasis <strong>{caseObj.brand} {caseObj.model}</strong> (capaz de albergar hasta <strong>{caseObj.maxGpuLengthMM} mm</strong>), el espacio frontal restante es de <strong>{result.frontMarginMM} mm</strong> (descontando el grosor estándar de instalación frontal).
+            Al instalar la <strong>{gpuObj.brand} {gpuObj.model}</strong> (longitud de <strong>{gpuObj.dimensions.lengthMM} mm</strong>) dentro del chasis <strong>{caseObj.brand} {caseObj.model}</strong> (capaz de albergar hasta <strong>{caseObj.maxGpuLengthMM} mm</strong>), el espacio frontal restante bruto es de <strong>+{result.grossFrontMarginMM} mm</strong>. Tras instalar los ventiladores frontales estándar ({result.frontDiscount} mm), la holgura neta para la tarjeta es de <strong>{result.frontMarginMM} mm</strong>.
           </p>
 
           <!-- Condicional por margen frontal (AIO/Refrigeración) -->
           {result.frontMarginMM < 15 && result.frontMarginMM >= 0 && (
             <p class="text-amber-400">
-              <strong>Nota sobre AIO/Refrigeración:</strong> El espacio libre es estrecho ({result.frontMarginMM} mm). Si planeas montar un radiador de refrigeración líquida frontal, recuerda que los radiadores estándar ocupan ~27 mm (más 25 mm de ventiladores), por lo que deberás montar el AIO en el panel superior.
+              <strong>Nota sobre AIO/Refrigeración:</strong> El espacio libre neto es ajustado ({result.frontMarginMM} mm). Si planeas montar un radiador de refrigeración líquida frontal, recuerda que un AIO añade entre 27 mm y 55 mm extra (radiador + ventiladores), por lo que se recomienda instalar la refrigeración líquida en el panel superior.
             </p>
           )}
 
