@@ -29,14 +29,13 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
   <body class="bg-black text-slate-100 min-h-screen font-sans selection:bg-[#00F0FF] selection:text-black relative overflow-x-hidden flex flex-col justify-between">
     
-    <!-- Fondo Estilo Grid Cyberpunk -->
-    <div class="fixed inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none"></div>
-    <div class="fixed -top-40 -left-40 w-96 h-96 bg-[#00F0FF]/10 rounded-full blur-[120px] pointer-events-none"></div>
-    <div class="fixed -bottom-40 -right-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <!-- FONDO: Malla de puntitos + Luz Cian Potente desde la Esquina Superior Izquierda -->
+    <div class="fixed inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-45 pointer-events-none"></div>
+    <div class="fixed -top-32 -left-32 w-[1000px] h-[800px] bg-gradient-to-br from-[#00F0FF]/50 via-[#00F0FF]/15 to-transparent blur-[140px] pointer-events-none"></div>
 
-    <div>
+    <div class="relative z-10">
       <!-- Navbar Superior con marca LIDUNAX y Menú -->
-      <header class="relative z-50 border-b border-white/10 backdrop-blur-md bg-black/40">
+      <header class="border-b border-white/10 backdrop-blur-md bg-black/40">
         <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
           
           <!-- Logo Lidunax -->
@@ -56,7 +55,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
       </header>
 
       <!-- Bloque Principal -->
-      <main class="relative z-10 max-w-4xl mx-auto px-4 pt-16 pb-12 space-y-12">
+      <main class="max-w-4xl mx-auto px-4 pt-16 pb-12 space-y-12">
         
         <!-- Título Principal -->
         <div class="text-center space-y-4">
@@ -91,21 +90,21 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
           <!-- Cuadrícula de Métricas Clave -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-slate-950/60 border border-white/10 p-5 rounded-2xl space-y-2">
+            <div class="bg-slate-950/60 border border-white/10 p-5 rounded-2xl space-y-2 backdrop-blur-sm">
               <div class="text-[#00F0FF] font-bold text-base font-mono">01 // Holgura Longitudinal</div>
               <p class="text-slate-400 text-xs leading-relaxed font-mono">
                 Medimos la longitud total de la GPU frente al espacio máximo del chasis, restando 30mm si se monta un radiador de refrigeración líquida AIO en el frontal.
               </p>
             </div>
 
-            <div class="bg-slate-950/60 border border-white/10 p-5 rounded-2xl space-y-2">
+            <div class="bg-slate-950/60 border border-white/10 p-5 rounded-2xl space-y-2 backdrop-blur-sm">
               <div class="text-[#00F0FF] font-bold text-base font-mono">02 // Espacio Lateral 12VHPWR</div>
               <p class="text-slate-400 text-xs leading-relaxed font-mono">
                 Las gráficas modernas sufren sobrecalentamiento si el cable se dobla contra el cristal. Garantizamos un margen mínimo de 35mm para evitar el estrés del conector.
               </p>
             </div>
 
-            <div class="bg-slate-950/60 border border-white/10 p-5 rounded-2xl space-y-2">
+            <div class="bg-slate-950/60 border border-white/10 p-5 rounded-2xl space-y-2 backdrop-blur-sm">
               <div class="text-[#00F0FF] font-bold text-base font-mono">03 // Grosor de Ranuras PCIe</div>
               <p class="text-slate-400 text-xs leading-relaxed font-mono">
                 Verificamos las ranuras de expansión (slots) requeridas para asegurar que el disipador de la gráfica no colisione con el cobertor de la fuente de alimentación.
@@ -118,14 +117,14 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
             <h3 class="text-lg font-bold text-white uppercase tracking-wider font-mono">Preguntas Frecuentes sobre Montaje de PC</h3>
             
             <div class="space-y-4 text-sm font-mono">
-              <div class="border border-white/10 bg-slate-950/40 p-4 rounded-xl space-y-2">
+              <div class="border border-white/10 bg-slate-950/40 p-4 rounded-xl space-y-2 backdrop-blur-sm">
                 <h4 class="text-slate-100 font-bold">¿Qué ocurre si la holgura entre la GPU y el chasis es inferior a 10 mm?</h4>
                 <p class="text-slate-400 text-xs leading-relaxed">
                   Aunque la tarjeta quepa físicamente, un espacio inferior a 10 mm restringe el flujo de aire entrante desde los ventiladores frontales, aumentando las temperaturas de funcionamiento e impactando el rendimiento térmico.
                 </p>
               </div>
 
-              <div class="border border-white/10 bg-slate-950/40 p-4 rounded-xl space-y-2">
+              <div class="border border-white/10 bg-slate-950/40 p-4 rounded-xl space-y-2 backdrop-blur-sm">
                 <h4 class="text-slate-100 font-bold">¿Por qué es importante usar un adaptador acodado a 90°?</h4>
                 <p class="text-slate-400 text-xs leading-relaxed">
                   En conectores 12VHPWR/12V-2x6, doblar excesivamente el cable de alimentación principal al cerrar el panel de cristal templado puede causar una mala inserción de los pines y generar un fallo eléctrico.
