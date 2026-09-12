@@ -64,6 +64,11 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
             </div>
             <span class="text-lg tracking-wider font-bold text-white" style="font-family: 'Orbitron', sans-serif;">LID<span class="text-[#00F0FF]">UNAX</span></span>
           </a>
+
+          <nav class="flex gap-6 text-sm font-mono text-slate-300">
+            <a href="/" class="hover:text-[#00F0FF] transition-colors">Inicio</a>
+            <a href="/faq" class="hover:text-[#00F0FF] transition-colors">FAQ</a>
+          </nav>
         </div>
       </header>
 
@@ -126,16 +131,31 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
           </div>
         </section>
 
-        <!-- Párrafos Explicativos Dinámicos sobre Airflow y Montaje -->
+        <!-- Análisis Técnico y Evaluación Dinámica -->
         <section class="bg-slate-950/40 border border-white/10 p-6 rounded-2xl space-y-4 text-sm font-mono text-slate-300 leading-relaxed">
           <h2 class="text-lg font-bold text-white uppercase tracking-wider font-mono">
             Análisis de Ensamblaje y Flujo de Aire
           </h2>
           
           <p>
-            Al instalar la <strong>{gpuObj.brand} {gpuObj.model}</strong> (con una longitud de <strong>{gpuObj.dimensions.lengthMM} mm</strong>) dentro del chasis <strong>{caseObj.brand} {caseObj.model}</strong> (capaz de albergar hasta <strong>{caseObj.maxGpuLengthMM} mm</strong>), el espacio frontal restante es de <strong>{result.frontMarginMM} mm</strong> (descontando el grosor estándar de instalación frontal).
+            Al instalar la <strong>{gpuObj.brand} {gpuObj.model}</strong> (longitud de <strong>{gpuObj.dimensions.lengthMM} mm</strong>) dentro del chasis <strong>{caseObj.brand} {caseObj.model}</strong> (capaz de albergar hasta <strong>{caseObj.maxGpuLengthMM} mm</strong>), el espacio frontal restante es de <strong>{result.frontMarginMM} mm</strong> (descontando el grosor estándar de instalación frontal).
           </p>
 
+          <!-- Condicional por margen frontal (AIO/Refrigeración) -->
+          {result.frontMarginMM < 15 && result.frontMarginMM >= 0 && (
+            <p class="text-amber-400">
+              <strong>Nota sobre AIO/Refrigeración:</strong> El espacio libre es estrecho ({result.frontMarginMM} mm). Si planeas montar un radiador de refrigeración líquida frontal, recuerda que los radiadores estándar ocupan ~27 mm (más 25 mm de ventiladores), por lo que deberás montar el AIO en el panel superior.
+            </p>
+          )}
+
+          <!-- Condicional por conector 12VHPWR / Alimentación -->
+          {gpuObj.connectorType?.includes('16-pin') || gpuObj.connectorType?.includes('12VHPWR') ? (
+            <p class="text-slate-300">
+              <strong>Gestión de Cableado:</strong> Esta tarjeta gráfica utiliza el conector <strong>{gpuObj.connectorType}</strong>. Se recomienda verificar que la holgura lateral supere los 30 mm respecto al panel lateral de cristal para evitar doblados pronunciados en el cable de alimentación.
+            </p>
+          ) : null}
+
+          <!-- Lista de avisos del motor de compatibilidad -->
           <div class="space-y-2 mt-4">
             {result.warnings.map((warning) => (
               <p class={result.status === 'GREEN' ? "text-[#00FF66]" : result.status === 'YELLOW' ? "text-[#FFCC00]" : "text-[#FF0055]"}>

@@ -35,7 +35,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
     <div class="fixed -bottom-40 -right-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
     <div>
-      <!-- Navbar Superior con marca LIDUNAX -->
+      <!-- Navbar Superior con marca LIDUNAX y Menú -->
       <header class="relative z-50 border-b border-white/10 backdrop-blur-md bg-black/40">
         <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
           
@@ -47,8 +47,11 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
             <span class="text-lg tracking-wider font-bold text-white" style="font-family: 'Orbitron', sans-serif;">LID<span class="text-[#00F0FF]">UNAX</span></span>
           </a>
 
-          <!-- Espacio vacío (Botón de 'Iniciar sesión' eliminado) -->
-          <div></div>
+          <!-- Menú de Navegación -->
+          <nav class="flex gap-6 text-sm font-mono text-slate-300">
+            <a href="/" class="text-[#00F0FF] font-bold">Inicio</a>
+            <a href="/faq" class="hover:text-[#00F0FF] transition-colors">FAQ</a>
+          </nav>
         </div>
       </header>
 

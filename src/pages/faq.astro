@@ -1,0 +1,93 @@
+---
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
+
+const faqs = [
+  {
+    question: "¿Cómo calcula Lidunax la compatibilidad entre una caja y una GPU?",
+    answer: "Utilizamos nuestro motor de cálculo personalizado (ClearanceEngine) que contrasta la longitud máxima permitida por el chasis con la longitud real de la tarjeta gráfica, descontando márgenes para ventilación o radiadores frontales."
+  },
+  {
+    question: "¿Qué margen de holgura se considera seguro para la instalación?",
+    answer: "Recomendamos un margen mínimo de 10 a 15 mm en la parte frontal para evitar interferencias con ventiladores, y al menos 20 mm de holgura lateral para no forzar el curvado de cables de alimentación como el conector 12VHPWR / PCIe Gen 5."
+  },
+  {
+    question: "¿Tienen en cuenta los radiadores de refrigeración líquida (AIO)?",
+    answer: "Sí. Si instalas un radiador AIO en el frontal del chasis, debes restar entre 27 mm y 55 mm (según si incluye ventiladores en configuración push/pull) a la longitud máxima de la GPU que especifica la caja."
+  },
+  {
+    question: "¿Con qué frecuencia se actualiza la base de datos de componentes?",
+    answer: "Nuestra base de datos (hardware.json) se actualiza continuamente con las últimas tarjetas gráficas de NVIDIA, AMD e Intel, así como los nuevos chasis de los principales fabricantes del mercado."
+  }
+];
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Preguntas Frecuentes (FAQ) - Lidunax</title>
+    <meta name="description" content="Resolvemos tus dudas sobre holguras, tolerancias de montaje, conectores 12VHPWR y medidas entre cajas y tarjetas gráficas." />
+    <link rel="canonical" href={canonicalURL} />
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    })} />
+  </head>
+
+  <body class="bg-black text-slate-100 min-h-screen font-sans flex flex-col justify-between selection:bg-[#00F0FF] selection:text-black">
+    <div>
+      <header class="border-b border-white/10 backdrop-blur-md bg-black/40">
+        <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+          <a href="/" class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-black border border-[#00F0FF]/50 flex items-center justify-center shadow-[0_0_10px_rgba(0,240,255,0.2)]">
+              <span class="text-[#00F0FF] text-sm font-bold" style="font-family: 'Orbitron', sans-serif;">LDX</span>
+            </div>
+            <span class="text-lg tracking-wider font-bold text-white" style="font-family: 'Orbitron', sans-serif;">LID<span class="text-[#00F0FF]">UNAX</span></span>
+          </a>
+          <nav class="flex gap-6 text-sm font-mono text-slate-300">
+            <a href="/" class="hover:text-[#00F0FF] transition-colors">Inicio</a>
+            <a href="/faq" class="text-[#00F0FF] font-bold">FAQ</a>
+          </nav>
+        </div>
+      </header>
+
+      <main class="max-w-4xl mx-auto px-4 py-12 space-y-10">
+        <div class="text-center space-y-3">
+          <h1 class="text-3xl sm:text-5xl font-extrabold text-white" style="font-family: 'Orbitron', sans-serif;">
+            Preguntas <span class="text-[#00F0FF]">Frecuentes</span>
+          </h1>
+          <p class="text-slate-400 font-mono text-sm max-w-xl mx-auto">
+            Guía técnica sobre la metrología, compatibilidad física y estándares de ensamblaje en Lidunax.
+          </p>
+        </div>
+
+        <div class="space-y-6">
+          {faqs.map((faq) => (
+            <div class="bg-slate-950/60 border border-white/10 p-6 rounded-2xl space-y-2 backdrop-blur-sm">
+              <h2 class="text-lg font-bold text-white font-mono flex items-center gap-2">
+                <span class="text-[#00F0FF]">?</span> {faq.question}
+              </h2>
+              <p class="text-slate-300 text-sm leading-relaxed font-mono">
+                {faq.answer}
+              </p>
+            </div>
+          ))}
+        </div>
+      </main>
+    </div>
+
+    <Footer />
+  </body>
+</html>
