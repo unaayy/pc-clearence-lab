@@ -1,27 +1,56 @@
 ---
 import hardwareData from '../data/hardware.json';
-import { calculateClearance } from '../utils/clearanceEngine';
-import { ClearanceCanvas } from '../components/ClearanceCanvas';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
+// 1. GENERADOR DE RUTAS (pSEO)
 export async function getStaticPaths() {
-  const { cases, gpus } = hardwareData;
-  const paths = [];
+  const cases = (hardwareData.cases && hardwareData.cases.length > 0) ? hardwareData.cases : [
+    { slug: 'corsair-4000d-airflow', brand: 'Corsair', model: '4000D Airflow', maxGpuLengthMM: 360 }
+  ];
+  
+  const gpus = (hardwareData.gpus && hardwareData.gpus.length > 0) ? hardwareData.gpus : [
+    { slug: 'rtx-4090', brand: 'NVIDIA', model: 'GeForce RTX 4090', dimensions: { lengthMM: 358 } }
+  ];
 
-  for (const caseItem of cases) {
-    for (const gpuItem of gpus) {
+  const paths = [];
+  for (const pcCase of cases) {
+    for (const gpu of gpus) {
       paths.push({
-        params: { caseSlug: caseItem.slug, gpuSlug: gpuItem.slug },
-        props: { caseObj: caseItem, gpuObj: gpuItem },
+        params: { caseSlug: pcCase.slug, gpuSlug: gpu.slug },
+        props: { pcCase, gpu }
       });
     }
   }
   return paths;
 }
 
-const { caseObj, gpuObj } = Astro.props;
-const result = calculateClearance(caseObj, gpuObj);
+// 2. DATOS ACTUALES Y LÓGICA DE CÁLCULO
+const { pcCase, gpu } = Astro.props;
+
+const caseMaxLength = pcCase.maxGpuLengthMM || pcCase.maxGpuLength || 350;
+const gpuLength = gpu.dimensions?.lengthMM || gpu.length || gpu.lengthMM || 300;
+
+const margin = caseMaxLength - gpuLength;
+
+// Determinación de estado (Verde, Amarillo, Rojo)
+let status = 'verde';
+let colorHex = '#10b981'; // Emerald
+let statusText = 'COMPATIBILIDAD ÓPTIMA';
+let statusMessage = 'HOLGURA CONFIRMADA';
+
+if (margin < 0) {
+  status = 'rojo';
+  colorHex = '#f43f5e'; // Rose
+  statusText = 'INCOMPATIBILIDAD FÍSICA';
+  statusMessage = 'COLISIÓN FRONTAL INMINENTE';
+} else if (margin <= 15) {
+  status = 'amarillo';
+  colorHex = '#fbbf24'; // Amber
+  statusText = 'COMPATIBILIDAD AJUSTADA';
+  statusMessage = 'ESPACIO EXTREMADAMENTE REDUCIDO';
+}
+
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 ---
 
@@ -29,268 +58,329 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>¿Es compatible la {gpuObj.brand} {gpuObj.model} con la caja {caseObj.brand} {caseObj.model}? - Lidunax</title>
-    <meta name="description" content={`Análisis técnico de compatibilidad física entre la tarjeta gráfica ${gpuObj.brand} ${gpuObj.model} y la caja ${caseObj.brand} ${caseObj.model}.`} />
+    <title>¿Entra la {gpu.brand} {gpu.model} en la caja {pcCase.brand} {pcCase.model}? - LIDUNAX</title>
+    <link rel="icon" type="image/png" href="/logo2.png?v=5" />
+    <meta name="description" content={`Comprueba la compatibilidad física: La gráfica ${gpu.model} mide ${gpuLength}mm. Descubre si cabe en el chasis ${pcCase.model} (máximo ${caseMaxLength}mm).`} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="canonical" href={canonicalURL} />
-
-    <!-- Script de Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7430010369815892" crossorigin="anonymous"></script>
-
-    <!-- Datos Estructurados JSON-LD Schema.org -->
-    <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "TechArticle",
-      "headline": `Compatibilidad: ${caseObj.brand} ${caseObj.model} vs ${gpuObj.brand} ${gpuObj.model}`,
-      "description": `Informe técnico de tolerancia física, espacio libre y holgura entre la caja ${caseObj.brand} ${caseObj.model} y la gráfica ${gpuObj.brand} ${gpuObj.model}.`,
-      "url": canonicalURL.toString(),
-      "about": [
-        {
-          "@type": "Thing",
-          "name": `${caseObj.brand} ${caseObj.model}`
-        },
-        {
-          "@type": "Thing",
-          "name": `${gpuObj.brand} ${gpuObj.model}`
-        }
-      ]
-    })} />
   </head>
 
-  <body class="bg-black text-slate-100 min-h-screen font-sans flex flex-col justify-between selection:bg-[#00F0FF] selection:text-black relative overflow-x-hidden">
+  <body class="bg-[#050507] text-white min-h-screen font-sans selection:bg-[#00ffff] selection:text-black">
     
-    <!-- FONDO: Malla de puntitos + Degradado cian (#00F0FF) desde Esquina Izquierda -->
-    <div class="fixed inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-45 pointer-events-none"></div>
-    <div class="fixed -top-20 -left-20 w-[900px] h-[700px] bg-gradient-to-br from-[#00F0FF]/35 via-[#00F0FF]/10 to-transparent blur-[140px] pointer-events-none"></div>
+    <!-- Animaciones Globales Refinadas -->
+    <style is:global>
+      @keyframes dashFlow {
+        from { stroke-dashoffset: 0; }
+        to { stroke-dashoffset: -36; }
+      }
+      .animate-cable {
+        animation: dashFlow 1.2s linear infinite;
+      }
+      
+      @keyframes pulseGlow {
+        0%, 100% { opacity: 0.8; }
+        50% { opacity: 0.3; }
+      }
+      .animate-glow {
+        animation: pulseGlow 2.5s ease-in-out infinite;
+      }
+      
+      @keyframes fanSpin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      .fan-spin { 
+        animation: fanSpin 4s linear infinite; 
+      }
+      
+      /* Flujo de aire horizontal hacia atrás (Túnel de viento) */
+      @keyframes breeze {
+        0% { transform: translateX(0); opacity: 0; }
+        20% { opacity: 0.3; } /* Pico de visibilidad aumentado un poco */
+        70% { opacity: 0.15; }
+        100% { transform: translateX(-240px); opacity: 0; }
+      }
+      .animate-breeze {
+        animation: breeze 4s linear infinite;
+      }
+      
+      /* Mini torbellinos hacia abajo (GPU) */
+      @keyframes whirlwind {
+        0% { transform: translateY(0) scaleY(0.9); opacity: 0; }
+        25% { opacity: 0.25; }
+        75% { opacity: 0.1; }
+        100% { transform: translateY(30px) scaleY(1.2); opacity: 0; }
+      }
+      .animate-whirlwind {
+        animation: whirlwind 3s ease-out infinite;
+      }
+    </style>
 
-    <div class="relative z-10">
-      <header class="border-b border-white/10 backdrop-blur-md bg-black/40">
-        <div class="max-w-6xl mx-auto px-6 h-16 sm:h-20 flex items-center justify-between">
-          <a href="/" class="flex items-center gap-3">
-            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-black border border-[#00F0FF]/50 flex items-center justify-center shadow-[0_0_10px_rgba(0,240,255,0.2)]">
-              <span class="text-[#00F0FF] text-xs sm:text-sm font-bold" style="font-family: 'Orbitron', sans-serif;">LDX</span>
-            </div>
-            <span class="text-base sm:text-lg tracking-wider font-bold text-white" style="font-family: 'Orbitron', sans-serif;">LID<span class="text-[#00F0FF]">UNAX</span></span>
-          </a>
+    <!-- Navbar -->
+    <header class="border-b border-white/10 bg-black/50 backdrop-blur-md sticky top-0 z-50">
+      <div class="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-3">
+          <img src="/logoancho.png" alt="LDX" class="h-8 w-auto object-contain" />
+          <span class="font-orbitron font-bold tracking-widest hidden sm:block">LIDUNAX</span>
+        </a>
+        <nav class="flex gap-6 text-sm font-orbitron tracking-wider text-slate-400">
+          <a href="/" class="hover:text-[#00ffff] transition-colors">← VOLVER AL BUSCADOR</a>
+        </nav>
+      </div>
+    </header>
 
-          <nav class="flex gap-6 text-sm font-mono text-slate-300">
-            <a href="/" class="hover:text-[#00F0FF] transition-colors">Inicio</a>
-            <a href="/faq" class="hover:text-[#00F0FF] transition-colors">FAQ</a>
-            <a href="/about" class="hover:text-[#00F0FF] transition-colors">Sobre Nosotros</a>
-          </nav>
-        </div>
-      </header>
+    <main class="max-w-[1200px] mx-auto px-4 sm:px-6 py-12">
+      
+      <!-- ENCABEZADO -->
+      <div class="mb-10 text-center sm:text-left">
+        <h1 class="text-3xl sm:text-4xl font-bold font-orbitron mb-3 uppercase tracking-wide">
+          <span class="text-slate-400 block text-lg mb-1">Informe de Compatibilidad Dimensional</span>
+          {pcCase.brand} {pcCase.model}
+        </h1>
+        <p class="text-slate-400 max-w-2xl text-sm sm:text-base">
+          Analizando el despeje volumétrico al instalar la tarjeta gráfica <strong class="text-white">{gpu.brand} {gpu.model}</strong>.
+        </p>
+      </div>
 
-      <main class="max-w-6xl mx-auto px-4 py-6 sm:py-8 space-y-8">
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 mb-12">
         
-        <!-- Título Compacto -->
-        <div class="text-center space-y-1">
-          <h1 class="text-xl sm:text-3xl font-extrabold text-white" style="font-family: 'Orbitron', sans-serif;">
-            {caseObj.brand} {caseObj.model} <span class="text-[#00F0FF]">VS</span> {gpuObj.brand} {gpuObj.model}
-          </h1>
-          <p class="text-slate-400 font-mono text-xs sm:text-sm">
-            Tolerancia física y comprobación de holgura.
-          </p>
-        </div>
-
-        <!-- BLOQUE HERÓICO 2 COLUMNAS (ABOVE THE FOLD) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <!-- DIAGRAMA VISUAL -->
+        <div class="relative bg-[#0a0a0c] border border-white/5 rounded-[24px] overflow-hidden min-h-[460px] flex items-center justify-center p-4 sm:p-8 shadow-[inset_0_0_80px_rgba(0,0,0,0.8)]">
+          <div class="absolute inset-0 opacity-[0.15]" style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"></div>
           
-          <!-- Columna Izquierda: Gráfico Visual Completo Sin Scroll (7 cols) -->
-          <div class="lg:col-span-7 bg-slate-950/60 border border-white/10 p-4 rounded-2xl flex items-center justify-center backdrop-blur-sm overflow-hidden">
-            <div class="w-full flex justify-center [&>svg]:w-full [&>svg]:h-auto [&>svg]:max-h-[380px]">
-              <ClearanceCanvas client:load caseObj={caseObj} gpuObj={gpuObj} />
-            </div>
-          </div>
+          <svg viewBox="0 0 500 400" class="w-full max-w-[500px] relative z-10 drop-shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+            <defs>
+              <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="4" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <pattern id="dotPattern" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+                <rect x="0" y="0" width="3" height="3" fill="white" opacity="0.3"/>
+              </pattern>
+            </defs>
 
-          <!-- Columna Derecha: Resultado & Tiendas Estilizadas (5 cols) -->
-          <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
-            
-            <!-- Panel de Estado -->
-            <div class={`p-4 rounded-2xl border backdrop-blur-sm ${
-              result.status === 'GREEN' 
-                ? 'bg-emerald-950/20 border-emerald-500/40 text-emerald-400' 
-                : result.status === 'YELLOW' 
-                ? 'bg-amber-950/20 border-amber-500/40 text-amber-400' 
-                : 'bg-rose-950/20 border-rose-500/40 text-rose-400'
-            }`}>
-              <div class="flex items-center gap-2">
-                <span class={`w-3 h-3 rounded-full animate-pulse ${
-                  result.status === 'GREEN' ? 'bg-emerald-400' : result.status === 'YELLOW' ? 'bg-amber-400' : 'bg-rose-500'
-                }`}></span>
-                <h2 class="font-bold text-sm sm:text-base font-mono uppercase tracking-wide">
-                  {result.status === 'GREEN' && 'Compatibilidad Confirmada'}
-                  {result.status === 'YELLOW' && 'Espacio Ajustado / Precaución'}
-                  {result.status === 'RED' && 'Incompatibilidad Física'}
-                </h2>
-              </div>
-              <p class="text-xs font-mono mt-2 text-slate-300 leading-relaxed">
-                Holgura bruta: <strong class="text-white">+{result.grossFrontMarginMM} mm</strong>. Libre neto: <strong class="text-white">{result.frontMarginMM} mm</strong> (descontando {result.frontDiscount}mm de ventilación).
-              </p>
-            </div>
+            <g transform="translate(50, 40)">
+              <!-- CHASIS Y ESTRUCTURA -->
+              <path d="M 20 0 L 380 0 L 400 20 L 400 280 L 380 300 L 20 300 L 0 280 L 0 20 Z" fill="none" stroke={colorHex} stroke-width="3" filter="url(#glow)"/>
+              <path d="M 25 10 L 375 10 L 390 25 L 390 275 L 375 290 L 25 290 L 10 275 L 10 25 Z" fill="none" stroke={colorHex} stroke-width="1" opacity="0.4"/>
+              
+              <path d="M 40 300 L 60 320 L 100 320 L 100 300 Z" fill="#111" stroke={colorHex} stroke-width="1.5" />
+              <path d="M 300 300 L 300 320 L 340 320 L 360 300 Z" fill="#111" stroke={colorHex} stroke-width="1.5" />
+              <rect x="382" y="40" width="10" height="220" fill="none" stroke={colorHex} stroke-width="1" stroke-dasharray="4 4" opacity="0.3"/>
+              
+              <rect x="25" y="30" width="220" height="190" rx="4" fill="none" stroke="white" stroke-width="1" stroke-opacity="0.15"/>
+              <text x="35" y="50" fill="#555" font-family="Orbitron" font-size="10" letter-spacing="1">MOTHERBOARD ATX</text>
 
-            <!-- Bloques de Tiendas (Bordes de color, texto blanco neutro) -->
-            <div class="bg-slate-950/60 border border-white/10 p-4 rounded-2xl space-y-3 flex-1 flex flex-col justify-center backdrop-blur-sm">
-              <span class="text-xs font-mono text-slate-400 uppercase tracking-wider block">
-                Comprobar precios por tienda:
-              </span>
+              <!-- VENTILADORES FRONTALES -->
+              <g opacity="0.5">
+                <g class="fan-spin" style="transform-origin: 366px 80px;">
+                  <circle cx="366" cy="80" r="16" fill="none" stroke={colorHex} stroke-width="1" opacity="0.3"/>
+                  <path d="M 366 64 L 366 96 M 350 80 L 382 80 M 355 69 L 377 91 M 355 91 L 377 69" stroke={colorHex} stroke-width="1.5" opacity="0.5"/>
+                </g>
+                <g class="fan-spin" style="transform-origin: 366px 145px;">
+                  <circle cx="366" cy="145" r="16" fill="none" stroke={colorHex} stroke-width="1" opacity="0.3"/>
+                  <path d="M 366 129 L 366 161 M 350 145 L 382 145 M 355 134 L 377 156 M 355 156 L 377 134" stroke={colorHex} stroke-width="1.5" opacity="0.5"/>
+                </g>
+                <g class="fan-spin" style="transform-origin: 366px 210px;">
+                  <circle cx="366" cy="210" r="16" fill="none" stroke={colorHex} stroke-width="1" opacity="0.3"/>
+                  <path d="M 366 194 L 366 226 M 350 210 L 382 210 M 355 199 L 377 221 M 355 221 L 377 199" stroke={colorHex} stroke-width="1.5" opacity="0.5"/>
+                </g>
+              </g>
 
-              <div class="space-y-3 font-mono text-xs">
+              <!-- ESTELAS DE VIENTO HORIZONTALES (Hacia atrás) -->
+              <g stroke="#00ffff" stroke-width="1.2" fill="none" stroke-linecap="round">
+                <!-- Viento superior -->
+                <path d="M 340 80 Q 250 82 150 75" class="animate-breeze" style="animation-delay: 0s;" opacity="0"/>
+                <!-- Viento medio -->
+                <path d="M 340 145 Q 250 145 150 145" class="animate-breeze" style="animation-delay: 1.5s;" opacity="0"/>
+                <!-- Viento inferior -->
+                <path d="M 340 210 Q 250 208 150 215" class="animate-breeze" style="animation-delay: 3s;" opacity="0"/>
+                <!-- Capas extra para dar sensación de flujo constante -->
+                <path d="M 340 110 Q 250 110 150 110" class="animate-breeze" style="animation-delay: 0.8s;" opacity="0"/>
+                <path d="M 340 175 Q 250 175 150 175" class="animate-breeze" style="animation-delay: 2.2s;" opacity="0"/>
+              </g>
+
+              <!-- TARJETA GRÁFICA (GPU) -->
+              {(() => {
+                const maxGpuWidthSvg = 325; 
+                const gpuWidthSvg = Math.min((gpuLength / caseMaxLength) * maxGpuWidthSvg, maxGpuWidthSvg);
                 
-                <!-- TIENDA 1: Amazon (Borde Dorado / Texto Neutro) -->
-                <div class="p-3 rounded-xl bg-black/50 border border-amber-500/50 space-y-2">
-                  <div class="text-slate-200 font-bold text-xs uppercase tracking-wider">
-                    Amazon ES
-                  </div>
-                  <div class="grid grid-cols-2 gap-2">
-                    <a 
-                      href={`https://www.amazon.es/s?k=${encodeURIComponent(caseObj.brand + ' ' + caseObj.model)}&tag=lidunax-21`}
-                      target="_blank" rel="noopener noreferrer"
-                      class="px-2.5 py-1.5 bg-black/60 border border-amber-500/30 hover:border-amber-400 text-slate-200 hover:text-white rounded-lg text-center font-semibold transition-all truncate"
-                    >
-                      Caja Amazon →
-                    </a>
-                    <a 
-                      href={`https://www.amazon.es/s?k=${encodeURIComponent(gpuObj.brand + ' ' + gpuObj.model)}&tag=lidunax-21`}
-                      target="_blank" rel="noopener noreferrer"
-                      class="px-2.5 py-1.5 bg-black/60 border border-amber-500/30 hover:border-amber-400 text-slate-200 hover:text-white rounded-lg text-center font-semibold transition-all truncate"
-                    >
-                      GPU Amazon →
-                    </a>
-                  </div>
-                </div>
+                // Calculamos cuántos mini-torbellinos caben bajo la GPU
+                const whirlwinds = Array.from({ length: Math.floor(gpuWidthSvg / 50) });
 
-                <!-- TIENDA 2: PcComponentes (Borde Naranja / Texto Neutro) -->
-                <div class="p-3 rounded-xl bg-black/50 border border-orange-500/50 space-y-2">
-                  <div class="text-slate-200 font-bold text-xs uppercase tracking-wider">
-                    PcComponentes
-                  </div>
-                  <div class="grid grid-cols-2 gap-2">
-                    <a 
-                      href={`https://www.pccomponentes.com/buscar/?query=${encodeURIComponent(caseObj.brand + ' ' + caseObj.model)}`}
-                      target="_blank" rel="noopener noreferrer"
-                      class="px-2.5 py-1.5 bg-black/60 border border-orange-500/30 hover:border-orange-400 text-slate-200 hover:text-white rounded-lg text-center font-semibold transition-all truncate"
-                    >
-                      Caja PcComp →
-                    </a>
-                    <a 
-                      href={`https://www.pccomponentes.com/buscar/?query=${encodeURIComponent(gpuObj.brand + ' ' + gpuObj.model)}`}
-                      target="_blank" rel="noopener noreferrer"
-                      class="px-2.5 py-1.5 bg-black/60 border border-orange-500/30 hover:border-orange-400 text-slate-200 hover:text-white rounded-lg text-center font-semibold transition-all truncate"
-                    >
-                      GPU PcComp →
-                    </a>
-                  </div>
-                </div>
+                return (
+                  <g transform="translate(15, 170)">
+                    
+                    <!-- Cables -->
+                    <path d={`M ${gpuWidthSvg - 45} 0 C ${gpuWidthSvg - 30} -40, ${gpuWidthSvg + 20} 50, ${gpuWidthSvg + 10} 120`} fill="none" stroke={colorHex} stroke-width="3" stroke-dasharray="10 8" class="animate-cable" filter="url(#glow)"/>
+                    <path d={`M ${gpuWidthSvg - 35} 0 C ${gpuWidthSvg - 20} -40, ${gpuWidthSvg + 30} 50, ${gpuWidthSvg + 20} 120`} fill="none" stroke={colorHex} stroke-width="3" stroke-dasharray="10 8" class="animate-cable" filter="url(#glow)"/>
+                    
+                    <rect x={gpuWidthSvg - 50} y="-12" width="22" height="12" rx="2" fill="#111" stroke={colorHex} stroke-width="1.5"/>
 
-                <!-- TIENDA 3: Coolmod (Borde Azul / Texto Neutro) -->
-                <div class="p-3 rounded-xl bg-black/50 border border-blue-500/50 space-y-2">
-                  <div class="text-slate-200 font-bold text-xs uppercase tracking-wider">
-                    Coolmod
-                  </div>
-                  <div class="grid grid-cols-2 gap-2">
-                    <a 
-                      href={`https://www.coolmod.com/buscar/?search=${encodeURIComponent(caseObj.brand + ' ' + caseObj.model)}`}
-                      target="_blank" rel="noopener noreferrer"
-                      class="px-2.5 py-1.5 bg-black/60 border border-blue-500/30 hover:border-blue-400 text-slate-200 hover:text-white rounded-lg text-center font-semibold transition-all truncate"
-                    >
-                      Caja Coolmod →
-                    </a>
-                    <a 
-                      href={`https://www.coolmod.com/buscar/?search=${encodeURIComponent(gpuObj.brand + ' ' + gpuObj.model)}`}
-                      target="_blank" rel="noopener noreferrer"
-                      class="px-2.5 py-1.5 bg-black/60 border border-blue-500/30 hover:border-blue-400 text-slate-200 hover:text-white rounded-lg text-center font-semibold transition-all truncate"
-                    >
-                      GPU Coolmod →
-                    </a>
-                  </div>
-                </div>
+                    <rect x="0" y="0" width={gpuWidthSvg} height="40" rx="4" fill="#0d1117" stroke={colorHex} stroke-width="2" filter="url(#glow)"/>
+                    <rect x="15" y="10" width={gpuWidthSvg - 30} height="20" fill="url(#dotPattern)" />
+                    
+                    <rect x={(gpuWidthSvg / 2) - 110} y="10" width="220" height="20" fill="#0d1117" rx="2" />
+                    <text x={gpuWidthSvg / 2} y="24" fill="white" font-family="Orbitron" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="0.5">{gpu.brand} {gpu.model}</text>
 
-              </div>
-            </div>
+                    <!-- MINI TORBELLINOS DE CALOR HACIA ABAJO -->
+                    <g stroke={colorHex} stroke-width="1.2" fill="none" stroke-linecap="round">
+                      {whirlwinds.map((_, i) => {
+                        const startX = 25 + i * 50;
+                        const delay = i * 0.6; // Desfase para que no bajen todos a la vez
+                        return (
+                          /* Curva de Bezier para simular un vórtice de aire bajando */
+                          <path 
+                            d={`M ${startX} 42 C ${startX - 15} 55, ${startX + 15} 65, ${startX - 5} 78`} 
+                            class="animate-whirlwind" 
+                            style={`animation-delay: ${delay}s;`} 
+                            opacity="0"
+                          />
+                        );
+                      })}
+                    </g>
 
-          </div>
-
+                    <!-- ETIQUETA DEL MARGEN -->
+                    <g transform={`translate(${gpuWidthSvg + 15}, 0)`}>
+                      <line x1="0" y1="20" x2="35" y2="20" stroke={colorHex} stroke-width="1.5" stroke-dasharray="4 4" class="animate-glow"/>
+                      <rect x="15" y="5" width="60" height="26" rx="13" fill="#0d1117" stroke={colorHex} stroke-width="1.5" filter="url(#glow)"/>
+                      <text x="45" y="22" fill={colorHex} font-family="Orbitron" font-size="11" font-weight="bold" text-anchor="middle">{margin > 0 ? `+${margin}mm` : `${margin}mm`}</text>
+                    </g>
+                  </g>
+                );
+              })()}
+            </g>
+          </svg>
         </div>
 
-        <!-- Tabla de Especificaciones Comparativas -->
-        <section class="bg-slate-950/60 border border-white/10 p-6 rounded-2xl space-y-4 backdrop-blur-sm">
-          <h2 class="text-lg font-bold text-white uppercase tracking-wider font-mono">
-            Métricas de Dimensiones Comparadas
-          </h2>
+        <!-- PANEL LATERAL: DIAGNÓSTICO Y ESCÁNER DE TIENDAS -->
+        <div class="flex flex-col gap-4">
           
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm font-mono border-collapse">
-              <thead>
-                <tr class="border-b border-white/10 text-[#00F0FF]">
-                  <th class="py-3 px-2">Parámetro</th>
-                  <th class="py-3 px-2">Caja: {caseObj.model}</th>
-                  <th class="py-3 px-2">GPU: {gpuObj.model}</th>
-                  <th class="py-3 px-2">Resultado / Margen</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-white/5 text-slate-300">
-                <tr>
-                  <td class="py-3 px-2 font-semibold">Longitud Máxima</td>
-                  <td class="py-3 px-2">{caseObj.maxGpuLengthMM} mm</td>
-                  <td class="py-3 px-2">{gpuObj.dimensions.lengthMM} mm</td>
-                  <td class="py-3 px-2">
-                    <span class="font-bold text-[#00F0FF]">+{result.grossFrontMarginMM} mm brutos</span>
-                    <span class="text-xs text-slate-400 block">({result.frontMarginMM} mm libres restando {result.frontDiscount}mm de ventilación)</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="py-3 px-2 font-semibold">Ancho / Margen Lateral</td>
-                  <td class="py-3 px-2">{caseObj.internalWidthMM} mm</td>
-                  <td class="py-3 px-2">{gpuObj.dimensions.widthMM} mm</td>
-                  <td class="py-3 px-2">{result.lateralMarginMM} mm para cable</td>
-                </tr>
-                <tr>
-                  <td class="py-3 px-2 font-semibold">Conector / Alimentación</td>
-                  <td class="py-3 px-2">-</td>
-                  <td class="py-3 px-2">{gpuObj.connectorType}</td>
-                  <td class="py-3 px-2">{result.status === 'RED' ? 'Incompatible' : 'Compatible'}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
+          <div class="bg-[#0a0a0c] border border-white/5 rounded-[24px] p-6 shadow-xl relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1" style={`background-color: ${colorHex}`}></div>
+            
+            <div class="flex items-center gap-3 mb-6">
+              <span class="relative flex h-3 w-3">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={`background-color: ${colorHex}`}></span>
+                <span class="relative inline-flex rounded-full h-3 w-3" style={`background-color: ${colorHex}`}></span>
+              </span>
+              <h2 class="font-orbitron font-bold tracking-widest text-sm uppercase" style={`color: ${colorHex}`}>
+                {statusText}
+              </h2>
+            </div>
 
-        <!-- Análisis Técnico y Evaluación Dinámica -->
-        <section class="bg-slate-950/40 border border-white/10 p-6 rounded-2xl space-y-4 text-sm font-mono text-slate-300 leading-relaxed backdrop-blur-sm">
-          <h2 class="text-lg font-bold text-white uppercase tracking-wider font-mono">
-            Análisis de Ensamblaje y Flujo de Aire
-          </h2>
-          
-          <p>
-            Al instalar la <strong>{gpuObj.brand} {gpuObj.model}</strong> (longitud de <strong>{gpuObj.dimensions.lengthMM} mm</strong>) dentro del chasis <strong>{caseObj.brand} {caseObj.model}</strong> (capaz de albergar hasta <strong>{caseObj.maxGpuLengthMM} mm</strong>), el espacio frontal restante bruto es de <strong>+{result.grossFrontMarginMM} mm</strong>. Tras instalar los ventiladores frontales estándar ({result.frontDiscount} mm), la holgura neta para la tarjeta es de <strong>{result.frontMarginMM} mm</strong>.
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <span class="block text-[10px] text-slate-500 uppercase tracking-widest font-mono mb-1">LONGITUD MÁXIMA</span>
+                <span class="font-orbitron font-bold text-2xl text-white">{caseMaxLength} <small class="text-[0.5em] text-slate-400">mm</small></span>
+              </div>
+              <div>
+                <span class="block text-[10px] text-slate-500 uppercase tracking-widest font-mono mb-1">MARGEN TOTAL</span>
+                <span class="font-orbitron font-bold text-2xl" style={`color: ${colorHex}`}>{margin > 0 ? `+${margin}` : margin} <small class="text-[0.5em]">mm</small></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-[#0a0a0c] border border-white/5 rounded-[24px] p-6 shadow-2xl flex flex-col justify-between flex-1">
+            <h3 class="font-orbitron text-xs tracking-[0.2em] text-slate-400 mb-4 uppercase">
+              ESCÁNER DE DISPONIBILIDAD:
+            </h3>
+
+            <div class="space-y-3">
+              <div class="bg-[#141210]/90 border border-white/5 rounded-2xl p-4 transition-all hover:border-white/10">
+                <span class="font-orbitron text-[11px] font-bold tracking-wider text-white block mb-3 uppercase">AMAZON ES</span>
+                <div class="grid grid-cols-2 gap-3">
+                  <a href="#" class="font-orbitron text-xs py-2.5 px-4 bg-white/[0.04] hover:bg-[#00ffff]/10 border border-white/5 hover:border-[#00ffff]/30 rounded-xl text-center text-slate-300 hover:text-[#00ffff] transition-all">Caja →</a>
+                  <a href="#" class="font-orbitron text-xs py-2.5 px-4 bg-white/[0.04] hover:bg-[#00ffff]/10 border border-white/5 hover:border-[#00ffff]/30 rounded-xl text-center text-slate-300 hover:text-[#00ffff] transition-all">GPU →</a>
+                </div>
+              </div>
+
+              <div class="bg-[#18120d]/90 border border-white/5 rounded-2xl p-4 transition-all hover:border-white/10">
+                <span class="font-orbitron text-[11px] font-bold tracking-wider text-white block mb-3 uppercase">PCCOMPONENTES</span>
+                <div class="grid grid-cols-2 gap-3">
+                  <a href="#" class="font-orbitron text-xs py-2.5 px-4 bg-white/[0.04] hover:bg-[#00ffff]/10 border border-white/5 hover:border-[#00ffff]/30 rounded-xl text-center text-slate-300 hover:text-[#00ffff] transition-all">Caja →</a>
+                  <a href="#" class="font-orbitron text-xs py-2.5 px-4 bg-white/[0.04] hover:bg-[#00ffff]/10 border border-white/5 hover:border-[#00ffff]/30 rounded-xl text-center text-slate-300 hover:text-[#00ffff] transition-all">GPU →</a>
+                </div>
+              </div>
+
+              <div class="bg-[#0e111a]/90 border border-white/5 rounded-2xl p-4 transition-all hover:border-white/10">
+                <span class="font-orbitron text-[11px] font-bold tracking-wider text-white block mb-3 uppercase">COOLMOD</span>
+                <div class="grid grid-cols-2 gap-3">
+                  <a href="#" class="font-orbitron text-xs py-2.5 px-4 bg-white/[0.04] hover:bg-[#00ffff]/10 border border-white/5 hover:border-[#00ffff]/30 rounded-xl text-center text-slate-300 hover:text-[#00ffff] transition-all">Caja →</a>
+                  <a href="#" class="font-orbitron text-xs py-2.5 px-4 bg-white/[0.04] hover:bg-[#00ffff]/10 border border-white/5 hover:border-[#00ffff]/30 rounded-xl text-center text-slate-300 hover:text-[#00ffff] transition-all">GPU →</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TABLA DE MÉTRICAS -->
+      <h2 class="text-2xl font-bold font-orbitron mb-6 mt-12">Métricas de Dimensiones Comparadas</h2>
+      <div class="bg-[#0a0a0c] border border-white/5 rounded-[20px] overflow-hidden mb-12 text-sm sm:text-base">
+        <div class="grid grid-cols-4 px-6 py-4 border-b border-white/5 text-[10px] sm:text-xs font-orbitron text-[#00ffff] tracking-widest uppercase">
+          <div>Parámetro</div>
+          <div>Chasis</div>
+          <div>Tarjeta GPU</div>
+          <div>Margen</div>
+        </div>
+
+        <div class="grid grid-cols-4 px-6 py-5 border-b border-white/5 items-center">
+          <div class="font-bold">Longitud Máxima</div>
+          <div class="text-slate-300">{caseMaxLength} mm</div>
+          <div class="text-slate-300">{gpuLength} mm</div>
+          <div class="font-orbitron font-bold" style={`color: ${colorHex}`}>{margin > 0 ? `+${margin} mm` : `${margin} mm`}</div>
+        </div>
+
+        <div class="grid grid-cols-4 px-6 py-5 items-center bg-white/[0.02]">
+          <div class="font-bold">Holgura con Frontal</div>
+          <div class="text-slate-300">- 25 mm (Ventiladores)</div>
+          <div class="text-slate-300">-</div>
+          <div class="font-orbitron font-bold" style={`color: ${colorHex}`}>{margin - 25 > 0 ? `+${margin - 25} mm Libres` : 'Ajustado / Colisión'}</div>
+        </div>
+      </div>
+
+      <!-- ANÁLISIS SEO Y TEXTO DINÁMICO -->
+      <h2 class="text-2xl font-bold font-orbitron mb-6">Análisis de Ensamblaje</h2>
+      <div class="bg-[#0a0a0c] border border-white/5 rounded-[20px] p-6 sm:p-8 mb-16 text-slate-300 leading-relaxed">
+        <p class="mb-6">
+          Al instalar la <strong class="text-white">{gpu.brand} {gpu.model}</strong> (longitud de <strong class="text-[#00ffff]">{gpuLength} mm</strong>) dentro del chasis <strong class="text-white">{pcCase.brand} {pcCase.model}</strong>, el espacio frontal restante es de <strong>{margin > 0 ? `+${margin}` : margin} mm</strong>.
+        </p>
+
+        <div class="bg-[#111] border border-white/10 rounded-xl p-5 mb-6">
+          <strong class="font-orbitron text-[11px] text-white tracking-widest uppercase mb-2 block">GESTIÓN DE CABLEADO (12VHPWR):</strong>
+          <p class="text-sm">
+            Debido al conector de esta gráfica y su rigidez, recomendamos usar un cable acodado a 90º o adaptador lateral para evitar presionar los pines contra el cristal templado lateral.
           </p>
+        </div>
 
-          <!-- Condicional por margen frontal (AIO/Refrigeración) -->
-          {result.frontMarginMM < 15 && result.frontMarginMM >= 0 && (
-            <p class="text-amber-400">
-              <strong>Nota sobre AIO/Refrigeración:</strong> El espacio libre neto es ajustado ({result.frontMarginMM} mm). Si planeas montar un radiador de refrigeración líquida frontal, recuerda que un AIO añade entre 27 mm y 55 mm extra (radiador + ventiladores), por lo que se recomienda instalar la refrigeración líquida en el panel superior.
-            </p>
+        <ul class="space-y-3 text-sm">
+          {status === 'verde' && (
+            <li class="flex items-start gap-2 text-emerald-400">
+              <span>↳</span> <span class="text-slate-300"><strong class="text-emerald-400 font-normal">Holgura ideal:</strong> Con {margin}mm libres, el flujo de aire frontal no se verá obstruido y la instalación será sumamente sencilla, incluso con radiadores líquidos (AIO) instalados en el frontal.</span>
+            </li>
           )}
+          {status === 'amarillo' && (
+            <li class="flex items-start gap-2 text-amber-400">
+              <span>↳</span> <span class="text-slate-300"><strong class="text-amber-400 font-normal">Montaje difícil:</strong> Entra muy justa ({margin}mm libres). Tendrás que introducir la tarjeta en ángulo. Si planeas instalar un radiador de refrigeración líquida en el panel frontal, no cabrá.</span>
+            </li>
+          )}
+          {status === 'rojo' && (
+            <li class="flex items-start gap-2 text-rose-500">
+              <span>↳</span> <span class="text-slate-300"><strong class="text-rose-500 font-normal">Colisión física:</strong> Faltan {Math.abs(margin)}mm para que la GPU quepa. Te sugerimos buscar una caja con un chasis de mayor formato o una tarjeta gráfica más corta.</span>
+            </li>
+          )}
+        </ul>
+      </div>
 
-          <!-- Condicional por conector 12VHPWR / Alimentación -->
-          {gpuObj.connectorType?.includes('16-pin') || gpuObj.connectorType?.includes('12VHPWR') ? (
-            <p class="text-slate-300">
-              <strong>Gestión de Cableado:</strong> Esta tarjeta gráfica utiliza el conector <strong>{gpuObj.connectorType}</strong>. Se recomienda verificar que la holgura lateral supere los 30 mm respecto al panel lateral de cristal para evitar doblados pronunciados en el cable de alimentación.
-            </p>
-          ) : null}
-
-          <!-- Lista de avisos del motor de compatibilidad -->
-          <div class="space-y-2 mt-4">
-            {result.warnings.map((warning) => (
-              <p class={result.status === 'GREEN' ? "text-[#00FF66]" : result.status === 'YELLOW' ? "text-[#FFCC00]" : "text-[#FF0055]"}>
-                <strong>Aviso técnico:</strong> {warning}
-              </p>
-            ))}
-          </div>
-        </section>
-
-      </main>
-    </div>
+    </main>
 
     <Footer />
   </body>

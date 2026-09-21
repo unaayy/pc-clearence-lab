@@ -1,4 +1,4 @@
-// src/components/SearchInterface.jsx - Interfaz HUD Caja vs GPU sin spoilers
+// src/components/PsuSearchInterface.jsx
 import React, { useId, useMemo, useRef, useState } from 'react';
 
 const MAX_RESULTS = 40;
@@ -9,6 +9,11 @@ const normalize = (s) =>
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');
+
+const toNum = (v) => {
+  const n = Number(v);
+  return Number.isFinite(n) && n > 0 ? n : null;
+};
 
 /* ───────── Iconos Técnicos HUD ───────── */
 const IconSearch = () => (
@@ -178,19 +183,20 @@ function HudCombobox({ label, placeholder, items, selected, onSelect, onChosen, 
   );
 }
 
-/* ───────── Componente Principal (Caja vs GPU) ───────── */
-export default function SearchInterface({ cases = [], gpus = [] }) {
-  const [selectedCase, setSelectedCase] = useState(null);
+/* ───────── Componente Principal Ramificado ───────── */
+export default function PsuSearchInterface({ psus = [], gpus = [], cpus = [] }) {
+  const [selectedPsu, setSelectedPsu] = useState(null);
   const [selectedGpu, setSelectedGpu] = useState(null);
+  const [selectedCpu, setSelectedCpu] = useState(null);
   const [isVerifying, setIsVerifying] = useState(false);
 
-  const caseInput = useRef(null);
+  const psuInput = useRef(null);
   const gpuInput = useRef(null);
+  const cpuInput = useRef(null);
 
-  const ready = Boolean(selectedCase && selectedGpu);
+  const ready = Boolean(selectedPsu && selectedGpu && selectedCpu);
 
-  // Redirige a la página autogenerada [caseSlug]-vs-[gpuSlug].astro (asegúrate de que exista en src/pages/)
-  const targetUrl = ready ? `/${selectedCase.slug}-vs-${selectedGpu.slug}` : '#';
+  const targetUrl = ready ? `/${selectedPsu.slug}-vs-${selectedGpu.slug}-vs-${selectedCpu.slug}` : '#';
 
   const handleNavigate = (e) => {
     e.preventDefault();
@@ -199,8 +205,9 @@ export default function SearchInterface({ cases = [], gpus = [] }) {
     window.location.href = targetUrl;
   };
 
-  const afterCase = () => setTimeout(() => (selectedGpu ? null : gpuInput).current?.focus(), 0);
-  const afterGpu = () => setTimeout(() => (selectedCase ? null : caseInput).current?.focus(), 0);
+  const afterPsu = () => setTimeout(() => (selectedGpu ? (selectedCpu ? null : cpuInput) : gpuInput).current?.focus(), 0);
+  const afterGpu = () => setTimeout(() => (selectedCpu ? (selectedPsu ? null : psuInput) : cpuInput).current?.focus(), 0);
+  const afterCpu = () => setTimeout(() => (selectedPsu && selectedGpu ? null : psuInput).current?.focus(), 0);
 
   return (
     <div className="relative w-full max-w-[920px] mx-auto z-20 mt-8 sm:mt-12">
@@ -230,42 +237,51 @@ export default function SearchInterface({ cases = [], gpus = [] }) {
         
         <div className="relative z-10 flex flex-col items-center">
           
-          {/* LAYOUT EN PARALELO: Caja vs GPU */}
-          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 w-full z-20">
-            
-            <div className="flex-1 w-full">
-              <HudCombobox
-                label="CHASIS DETALLE"
-                step="01"
-                placeholder="NZXT, CORSAIR, LIAN LI..."
-                items={cases}
-                selected={selectedCase}
-                onSelect={setSelectedCase}
-                onChosen={afterCase}
-                inputRef={caseInput}
-              />
-            </div>
+          {/* NODO RAÍZ (ARRIBA): FUENTE DE ALIMENTACIÓN */}
+          <div className="w-full max-w-lg z-30">
+            <HudCombobox
+              label="ALIMENTACIÓN CENTRAL"
+              step="01"
+              placeholder="CORSAIR, MSI, ASUS..."
+              items={psus}
+              selected={selectedPsu}
+              onSelect={setSelectedPsu}
+              onChosen={afterPsu}
+              inputRef={psuInput}
+            />
+          </div>
 
-            {/* Rombo VS central (Oculto en móvil, visible en escritorio) */}
-            <div className="hidden md:flex items-center justify-center w-10 h-10 bg-[#08080a] border border-white/10 rounded-sm rotate-45 shadow-[0_0_15px_rgba(0,255,255,0.05)] shrink-0 mt-4 transition-all duration-500">
-              <span className={`rotate-[-45deg] font-orbitron text-[10px] tracking-widest font-bold transition-colors duration-500 ${ready ? 'text-[#00ffff] drop-shadow-[0_0_5px_rgba(0,255,255,0.8)]' : 'text-white/30'}`}>
-                VS
-              </span>
-            </div>
+          {/* LÍNEAS TÉCNICAS DE RAMIFICACIÓN HUD */}
+          <div className="relative h-12 w-full my-2 pointer-events-none hidden sm:block z-10">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-6 bg-gradient-to-b from-[#00ffff] to-[#00ffff]/40 shadow-[0_0_8px_#00ffff]"></div>
+            <div className="absolute top-6 left-1/4 right-1/4 h-0.5 bg-[#00ffff]/30 border-t border-dashed border-[#00ffff]/60"></div>
+            <div className="absolute top-6 left-1/4 w-0.5 h-6 bg-[#00ffff]/40"></div>
+            <div className="absolute top-6 right-1/4 w-0.5 h-6 bg-[#00ffff]/40"></div>
+          </div>
 
-            <div className="flex-1 w-full">
-              <HudCombobox
-                label="TARGET GPU"
-                step="02"
-                placeholder="RTX 4090, RX 7900..."
-                items={gpus}
-                selected={selectedGpu}
-                onSelect={setSelectedGpu}
-                onChosen={afterGpu}
-                inputRef={gpuInput}
-              />
-            </div>
+          {/* NODOS DERIVADOS (ABAJO): GPU Y CPU EN PARALELO */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mt-2 sm:mt-0 z-20">
+            <HudCombobox
+              label="TARGET GPU"
+              step="02"
+              placeholder="RTX 4090, RX 7900..."
+              items={gpus}
+              selected={selectedGpu}
+              onSelect={setSelectedGpu}
+              onChosen={afterGpu}
+              inputRef={gpuInput}
+            />
 
+            <HudCombobox
+              label="TARGET CPU"
+              step="03"
+              placeholder="I9-14900K, R7 7800X3D..."
+              items={cpus}
+              selected={selectedCpu}
+              onSelect={setSelectedCpu}
+              onChosen={afterCpu}
+              inputRef={cpuInput}
+            />
           </div>
 
           {/* BARRA INFERIOR: ESTADO NEUTRAL + BOTÓN DE ANÁLISIS */}
@@ -280,20 +296,19 @@ export default function SearchInterface({ cases = [], gpus = [] }) {
                     </svg>
                   </div>
                   <p className="text-xs text-[#00ffff] font-orbitron tracking-widest uppercase leading-relaxed">
-                    Nodos físicos vinculados.<br/>Listo para escáner de dimensiones.
+                    Nodos vinculados.<br/>Listo para análisis térmico.
                   </p>
                 </div>
               ) : (
                 <div className="flex items-center gap-4 opacity-50">
                   <div className="w-10 h-10 rounded-full border border-dashed border-[#00ffff]/40 animate-[spin_10s_linear_infinite]"></div>
                   <p className="text-xs text-[#86868b] font-orbitron tracking-widest uppercase leading-relaxed">
-                    A la espera de enlazar<br/>los 2 nodos de hardware...
+                    A la espera de enlazar<br/>los 3 nodos de hardware...
                   </p>
                 </div>
               )}
             </div>
 
-            {/* ENLACE DIRECTO DE REDIRECCIÓN */}
             <a 
               href={targetUrl}
               onClick={handleNavigate}

@@ -6,6 +6,7 @@
       "model": "H2 Flow",
       "slug": "nzxt-h2-flow",
       "maxGpuLengthMM": 360.0,
+      "maxGpuLength": 360.0,
       "maxCpuCoolerHeightMM": 165.0,
       "maxAioSizeMM": 360,
       "supportedFormFactors": ["ATX", "Micro-ATX", "Mini-ITX"]
@@ -16,6 +17,7 @@
       "model": "4000D Airflow",
       "slug": "corsair-4000d-airflow",
       "maxGpuLengthMM": 360.0,
+      "maxGpuLength": 360.0,
       "maxCpuCoolerHeightMM": 170.0,
       "internalWidthMM": 180,
       "supportedFormFactors": ["ATX", "Micro-ATX", "Mini-ITX"]
@@ -26,6 +28,7 @@
       "model": "H5 Flow",
       "slug": "nzxt-h5-flow",
       "maxGpuLengthMM": 365.0,
+      "maxGpuLength": 365.0,
       "maxCpuCoolerHeightMM": 165.0,
       "internalWidthMM": 175,
       "supportedFormFactors": ["ATX", "Micro-ATX", "Mini-ITX"]
@@ -36,6 +39,7 @@
       "model": "O11 Dynamic EVO",
       "slug": "lian-li-o11-dynamic-evo",
       "maxGpuLengthMM": 422.0,
+      "maxGpuLength": 422.0,
       "maxCpuCoolerHeightMM": 167.0,
       "internalWidthMM": 190,
       "supportedFormFactors": ["E-ATX", "ATX", "Micro-ATX", "Mini-ITX"]
@@ -46,6 +50,7 @@
       "model": "North",
       "slug": "fractal-design-north",
       "maxGpuLengthMM": 355.0,
+      "maxGpuLength": 355.0,
       "maxCpuCoolerHeightMM": 170.0,
       "maxAioSizeMM": 360,
       "supportedFormFactors": ["ATX", "Micro-ATX", "Mini-ITX"]
@@ -56,6 +61,7 @@
       "model": "Y60",
       "slug": "hyte-y60",
       "maxGpuLengthMM": 375.0,
+      "maxGpuLength": 375.0,
       "maxCpuCoolerHeightMM": 160.0,
       "supportedFormFactors": ["E-ATX", "ATX", "Micro-ATX", "Mini-ITX"]
     },
@@ -65,6 +71,7 @@
       "model": "CH560 Digital",
       "slug": "deepcool-ch560-digital",
       "maxGpuLengthMM": 380.0,
+      "maxGpuLength": 380.0,
       "maxCpuCoolerHeightMM": 175.0,
       "supportedFormFactors": ["E-ATX", "ATX", "Micro-ATX", "Mini-ITX"]
     },
@@ -74,6 +81,7 @@
       "model": "KING 95 PRO",
       "slug": "montech-king-95-pro",
       "maxGpuLengthMM": 420.0,
+      "maxGpuLength": 420.0,
       "maxCpuCoolerHeightMM": 175.0,
       "supportedFormFactors": ["ATX", "Micro-ATX", "Mini-ITX"]
     },
@@ -83,6 +91,7 @@
       "model": "Flux Pro Noctua Edition",
       "slug": "antec-flux-pro-noctua",
       "maxGpuLengthMM": 360.0,
+      "maxGpuLength": 360.0,
       "maxAioSizeMM": 360,
       "supportedFormFactors": ["ATX", "Micro-ATX", "Mini-ITX"]
     },
@@ -92,6 +101,7 @@
       "model": "Prime AP201",
       "slug": "asus-prime-ap201",
       "maxGpuLengthMM": 360.0,
+      "maxGpuLength": 360.0,
       "maxAioSizeMM": 360,
       "supportedFormFactors": ["Micro-ATX", "Mini-ITX"]
     },
@@ -101,6 +111,7 @@
       "model": "Light Base 500 LX",
       "slug": "be-quiet-light-base-500-lx",
       "maxGpuLengthMM": 360.0,
+      "maxGpuLength": 360.0,
       "maxAioSizeMM": 360,
       "supportedFormFactors": ["ATX", "Micro-ATX", "Mini-ITX"]
     },
@@ -110,6 +121,7 @@
       "model": "MasterFrame 360 Panorama",
       "slug": "cooler-master-masterframe-360",
       "maxGpuLengthMM": 360.0,
+      "maxGpuLength": 360.0,
       "maxAioSizeMM": 360,
       "supportedFormFactors": ["ATX", "Micro-ATX", "Mini-ITX"]
     },
@@ -119,6 +131,7 @@
       "model": "3200D RS ARGB",
       "slug": "corsair-3200d-rs-argb",
       "maxGpuLengthMM": 360.0,
+      "maxGpuLength": 360.0,
       "maxAioSizeMM": 360,
       "supportedFormFactors": ["ATX", "Micro-ATX", "Mini-ITX"]
     },
@@ -128,6 +141,7 @@
       "model": "North XL",
       "slug": "fractal-design-north-xl",
       "maxGpuLengthMM": 413.0,
+      "maxGpuLength": 413.0,
       "maxAioSizeMM": 360,
       "supportedFormFactors": ["E-ATX", "ATX", "Micro-ATX", "Mini-ITX"]
     },
@@ -137,6 +151,7 @@
       "model": "MC300",
       "slug": "mars-gaming-mc300",
       "maxGpuLengthMM": 330.0,
+      "maxGpuLength": 330.0,
       "maxAioSizeMM": 240,
       "supportedFormFactors": ["Micro-ATX", "Mini-ITX"]
     },
@@ -146,6 +161,7 @@
       "model": "NN8 Mid-Tower",
       "slug": "musetex-nn8",
       "maxGpuLengthMM": 320.0,
+      "maxGpuLength": 320.0,
       "maxAioSizeMM": 360,
       "supportedFormFactors": ["ATX", "Micro-ATX", "Mini-ITX"]
     },
@@ -155,6 +171,7 @@
       "model": "MAG Forge M100R",
       "slug": "msi-mag-forge-m100r",
       "maxGpuLengthMM": 300.0,
+      "maxGpuLength": 300.0,
       "maxAioSizeMM": 240,
       "supportedFormFactors": ["Micro-ATX", "Mini-ITX"]
     },
@@ -164,6 +181,7 @@
       "model": "MAG Forge 112R",
       "slug": "msi-mag-forge-112r",
       "maxGpuLengthMM": 330.0,
+      "maxGpuLength": 330.0,
       "maxAioSizeMM": 360,
       "supportedFormFactors": ["ATX", "Micro-ATX", "Mini-ITX"]
     },
@@ -173,6 +191,7 @@
       "model": "MAG Pano 110R PZ",
       "slug": "msi-mag-pano-110r-pz",
       "maxGpuLengthMM": 400.0,
+      "maxGpuLength": 400.0,
       "maxAioSizeMM": 360,
       "supportedFormFactors": ["ATX", "Micro-ATX"]
     },
@@ -182,6 +201,7 @@
       "model": "Hummer Vision",
       "slug": "nox-hummer-vision",
       "maxGpuLengthMM": 300.0,
+      "maxGpuLength": 300.0,
       "maxAioSizeMM": 240,
       "supportedFormFactors": ["ATX", "Micro-ATX"]
     },
@@ -191,6 +211,7 @@
       "model": "H6 Flow",
       "slug": "nzxt-h6-flow",
       "maxGpuLengthMM": 365.0,
+      "maxGpuLength": 365.0,
       "maxAioSizeMM": 360,
       "supportedFormFactors": ["ATX", "Micro-ATX", "Mini-ITX"]
     },
@@ -200,6 +221,7 @@
       "model": "Frame 4000D RS ARGB",
       "slug": "corsair-frame-4000d-rs-argb",
       "maxGpuLengthMM": 420.0,
+      "maxGpuLength": 420.0,
       "maxAioSizeMM": 360,
       "supportedFormFactors": ["ATX", "Micro-ATX", "Mini-ITX"]
     },
@@ -209,6 +231,7 @@
       "model": "H9 Flow",
       "slug": "nzxt-h9-flow",
       "maxGpuLengthMM": 435.0,
+      "maxGpuLength": 435.0,
       "maxAioSizeMM": 360,
       "supportedFormFactors": ["ATX", "Micro-ATX", "Mini-ITX"]
     },
@@ -218,6 +241,7 @@
       "model": "Frame 4500X RS-R ARGB",
       "slug": "corsair-frame-4500x-rs-r",
       "maxGpuLengthMM": 460.0,
+      "maxGpuLength": 460.0,
       "maxAioSizeMM": 360,
       "supportedFormFactors": ["ATX", "Micro-ATX", "Mini-ITX"]
     },
@@ -227,6 +251,7 @@
       "model": "3500X RS-R ARGB",
       "slug": "corsair-3500x-rs-r-argb",
       "maxGpuLengthMM": 360.0,
+      "maxGpuLength": 360.0,
       "maxAioSizeMM": 360,
       "supportedFormFactors": ["ATX", "Micro-ATX", "Mini-ITX"]
     },
@@ -236,6 +261,7 @@
       "model": "Lancool 216 Mesh RGB",
       "slug": "lian-li-lancool-216-mesh",
       "maxGpuLengthMM": 392.0,
+      "maxGpuLength": 392.0,
       "maxAioSizeMM": 360,
       "supportedFormFactors": ["E-ATX", "ATX", "Micro-ATX", "Mini-ITX"]
     },
@@ -245,6 +271,7 @@
       "model": "O11D EVO RGB",
       "slug": "lian-li-o11d-evo-rgb",
       "maxGpuLengthMM": 455.0,
+      "maxGpuLength": 455.0,
       "maxAioSizeMM": 420,
       "supportedFormFactors": ["E-ATX", "ATX", "Micro-ATX", "Mini-ITX"]
     }
@@ -256,6 +283,8 @@
       "model": "ROG Strix RTX 4090",
       "slug": "asus-rog-strix-rtx-4090",
       "connectorType": "12VHPWR",
+      "length": 357.6,
+      "tdp": 450,
       "dimensions": {
         "lengthMM": 357.6,
         "widthMM": 149.3,
@@ -268,6 +297,8 @@
       "model": "RTX 4080 Super Ventus 3X",
       "slug": "msi-rtx-4080-super-ventus",
       "connectorType": "12VHPWR",
+      "length": 322.0,
+      "tdp": 320,
       "dimensions": {
         "lengthMM": 322.0,
         "widthMM": 136.0,
@@ -280,6 +311,8 @@
       "model": "Nitro+ RX 7900 XTX",
       "slug": "sapphire-nitro-rx-7900-xtx",
       "connectorType": "8PIN",
+      "length": 320.0,
+      "tdp": 355,
       "dimensions": {
         "lengthMM": 320.0,
         "widthMM": 133.75,
@@ -292,6 +325,8 @@
       "model": "RTX 4070 Ti SUPER Gaming OC",
       "slug": "gigabyte-rtx-4070-ti-super-gaming-oc",
       "connectorType": "12VHPWR",
+      "length": 300.0,
+      "tdp": 285,
       "dimensions": {
         "lengthMM": 300.0,
         "widthMM": 130.0,
@@ -304,6 +339,8 @@
       "model": "RTX 4070 SUPER Gaming X Slim",
       "slug": "msi-rtx-4070-super-gaming-x-slim",
       "connectorType": "12VHPWR",
+      "length": 307.0,
+      "tdp": 220,
       "dimensions": {
         "lengthMM": 307.0,
         "widthMM": 125.0,
@@ -316,6 +353,8 @@
       "model": "TUF Gaming RTX 4080 SUPER",
       "slug": "asus-tuf-gaming-rtx-4080-super",
       "connectorType": "12VHPWR",
+      "length": 348.2,
+      "tdp": 320,
       "dimensions": {
         "lengthMM": 348.2,
         "widthMM": 150.0,
@@ -328,6 +367,8 @@
       "model": "Gaming RTX 4060 Twin Edge",
       "slug": "zotac-gaming-rtx-4060-twin-edge",
       "connectorType": "8PIN",
+      "length": 221.4,
+      "tdp": 115,
       "dimensions": {
         "lengthMM": 221.4,
         "widthMM": 122.7,
@@ -340,6 +381,8 @@
       "model": "Hellhound RX 7800 XT",
       "slug": "powercolor-hellhound-rx-7800-xt",
       "connectorType": "8PIN",
+      "length": 322.0,
+      "tdp": 263,
       "dimensions": {
         "lengthMM": 322.0,
         "widthMM": 134.0,
@@ -352,6 +395,8 @@
       "model": "PULSE RX 7700 XT",
       "slug": "sapphire-pulse-rx-7700-xt",
       "connectorType": "8PIN",
+      "length": 280.0,
+      "tdp": 245,
       "dimensions": {
         "lengthMM": 280.0,
         "widthMM": 128.7,
@@ -364,6 +409,8 @@
       "model": "Speedster QICK 319 RX 7800 XT",
       "slug": "xfx-speedster-qick-319-rx-7800-xt",
       "connectorType": "8PIN",
+      "length": 335.0,
+      "tdp": 263,
       "dimensions": {
         "lengthMM": 335.0,
         "widthMM": 130.0,
@@ -376,6 +423,8 @@
       "model": "AORUS GeForce RTX 4090 MASTER",
       "slug": "gigabyte-aorus-geforce-rtx-4090-master",
       "connectorType": "12VHPWR",
+      "length": 358.0,
+      "tdp": 450,
       "dimensions": {
         "lengthMM": 358.0,
         "widthMM": 162.8,
@@ -383,7 +432,176 @@
       }
     }
   ],
-  "cpus": [],
-  "coolers": [],
-  "psus": []
+  "cpus": [
+    {
+      "id": "intel-core-i9-14900k",
+      "brand": "Intel",
+      "model": "Core i9-14900K",
+      "slug": "core-i9-14900k",
+      "socket": "LGA1700",
+      "tdp": 253,
+      "watts": 253
+    },
+    {
+      "id": "intel-core-i7-14700k",
+      "brand": "Intel",
+      "model": "Core i7-14700K",
+      "slug": "core-i7-14700k",
+      "socket": "LGA1700",
+      "tdp": 253,
+      "watts": 253
+    },
+    {
+      "id": "intel-core-i5-14600k",
+      "brand": "Intel",
+      "model": "Core i5-14600K",
+      "slug": "core-i5-14600k",
+      "socket": "LGA1700",
+      "tdp": 181,
+      "watts": 181
+    },
+    {
+      "id": "amd-ryzen-9-7950x3d",
+      "brand": "AMD",
+      "model": "Ryzen 9 7950X3D",
+      "slug": "ryzen-9-7950x3d",
+      "socket": "AM5",
+      "tdp": 162,
+      "watts": 162
+    },
+    {
+      "id": "amd-ryzen-7-7800x3d",
+      "brand": "AMD",
+      "model": "Ryzen 7 7800X3D",
+      "slug": "ryzen-7-7800x3d",
+      "socket": "AM5",
+      "tdp": 120,
+      "watts": 120
+    },
+    {
+      "id": "amd-ryzen-5-7600",
+      "brand": "AMD",
+      "model": "Ryzen 5 7600",
+      "slug": "ryzen-5-7600",
+      "socket": "AM5",
+      "tdp": 88,
+      "watts": 88
+    }
+  ],
+  "coolers": [
+    {
+      "id": "noctua-nh-d15",
+      "brand": "Noctua",
+      "model": "NH-D15 chromax.black",
+      "slug": "noctua-nh-d15",
+      "type": "AIR",
+      "heightMM": 165.0
+    },
+    {
+      "id": "thermalright-peerless-assassin-120-se",
+      "brand": "Thermalright",
+      "model": "Peerless Assassin 120 SE",
+      "slug": "thermalright-peerless-assassin-120-se",
+      "type": "AIR",
+      "heightMM": 155.0
+    },
+    {
+      "id": "arctic-liquid-freezer-iii-360",
+      "brand": "Arctic",
+      "model": "Liquid Freezer III 360",
+      "slug": "arctic-liquid-freezer-iii-360",
+      "type": "AIO",
+      "radiatorSizeMM": 360
+    },
+    {
+      "id": "deepcool-ak620",
+      "brand": "DeepCool",
+      "model": "AK620 Digital",
+      "slug": "deepcool-ak620",
+      "type": "AIR",
+      "heightMM": 162.0
+    }
+  ],
+  "psus": [
+    {
+      "id": "corsair-rm1000e",
+      "brand": "Corsair",
+      "model": "RM1000e",
+      "slug": "corsair-rm1000e",
+      "wattage": 1000,
+      "watts": 1000,
+      "has12VHPWR": true,
+      "formFactor": "ATX"
+    },
+    {
+      "id": "corsair-rm850e",
+      "brand": "Corsair",
+      "model": "RM850e",
+      "slug": "corsair-rm850e",
+      "wattage": 850,
+      "watts": 850,
+      "has12VHPWR": true,
+      "formFactor": "ATX"
+    },
+    {
+      "id": "corsair-rm750e",
+      "brand": "Corsair",
+      "model": "RM750e",
+      "slug": "corsair-rm750e",
+      "wattage": 750,
+      "watts": 750,
+      "has12VHPWR": true,
+      "formFactor": "ATX"
+    },
+    {
+      "id": "corsair-rm650",
+      "brand": "Corsair",
+      "model": "RM650",
+      "slug": "corsair-rm650",
+      "wattage": 650,
+      "watts": 650,
+      "has12VHPWR": false,
+      "formFactor": "ATX"
+    },
+    {
+      "id": "msi-mag-a850gl",
+      "brand": "MSI",
+      "model": "MAG A850GL PCIE5",
+      "slug": "msi-mag-a850gl",
+      "wattage": 850,
+      "watts": 850,
+      "has12VHPWR": true,
+      "formFactor": "ATX"
+    },
+    {
+      "id": "evga-supernova-650-g5",
+      "brand": "EVGA",
+      "model": "SuperNOVA 650 G5",
+      "slug": "evga-supernova-650-g5",
+      "wattage": 650,
+      "watts": 650,
+      "has12VHPWR": false,
+      "formFactor": "ATX"
+    },
+    {
+      "id": "asus-rog-loki-850",
+      "brand": "ASUS",
+      "model": "ROG Loki SFX-L 850W",
+      "slug": "asus-rog-loki-850",
+      "wattage": 850,
+      "watts": 850,
+      "has12VHPWR": true,
+      "formFactor": "SFX-L"
+    },
+    {
+      "id": "seasonic-focus-gx-1000",
+      "brand": "Seasonic",
+      "model": "FOCUS GX-1000 ATX 3.0",
+      "slug": "seasonic-focus-gx-1000",
+      "wattage": 1000,
+      "watts": 1000,
+      "has12VHPWR": true,
+      "formFactor": "ATX"
+    }
+  ]
 }
