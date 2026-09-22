@@ -1,22 +1,16 @@
 ---
-// src/pages/[psuSlug]-vs-[gpuSlug]-vs-[cpuSlug].astro
-import hardwareData from '../data/hardware.json';
+import psusData from '../data/psus.json';
+import gpusData from '../data/gpus.json';
+import cpusData from '../data/cpus.json';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
-// 1. GENERADOR DE RUTAS DINÁMICAS (pSEO)
+// 1. GENERADOR DE RUTAS (REQUERIDO POR ASTRO EN MODO ESTÁTICO)
 export async function getStaticPaths() {
-  const psus = (hardwareData.psus && hardwareData.psus.length > 0) 
-    ? hardwareData.psus 
-    : [{ slug: 'corsair-rm850e', brand: 'Corsair', model: 'RM850e', wattage: 850, has12VHPWR: true }];
-
-  const gpus = (hardwareData.gpus && hardwareData.gpus.length > 0) 
-    ? hardwareData.gpus 
-    : [{ slug: 'rtx-4090', brand: 'NVIDIA', model: 'RTX 4090', tdp: 450 }];
-
-  const cpus = (hardwareData.cpus && hardwareData.cpus.length > 0) 
-    ? hardwareData.cpus 
-    : [{ slug: 'core-i9-14900k', brand: 'Intel', model: 'Core i9-14900K', tdp: 253 }];
+  // ATENCIÓN: Limitamos a 30 elementos por componente para evitar tiempos de compilación extremos (30 * 30 * 30 = 27,000 páginas)
+  const psus = psusData.slice(0, 30);
+  const gpus = gpusData.slice(0, 30);
+  const cpus = cpusData.slice(0, 30);
 
   const paths = [];
   for (const psu of psus) {
@@ -39,7 +33,11 @@ export async function getStaticPaths() {
 // 2. RECUPERAR DATOS DE LA COMBINACIÓN ACTUAL
 const { psu, gpu, cpu } = Astro.props;
 
-// 3. MOTOR DE CÁLCULO ENERGÉTICO
+if (!psu || !gpu || !cpu) {
+  return Astro.redirect('/404');
+}
+
+// 3. MOTOR DE CÁLCULO ENERGÉTICO (Intacto)
 const overhead = 80; // Placa base, RAM, SSD, ventiladores
 const rawDemand = (gpu.tdp || gpu.watts || 250) + (cpu.tdp || cpu.watts || 120) + overhead;
 const recommendedDemand = Math.ceil(rawDemand * 1.25); // Margen de seguridad +25%

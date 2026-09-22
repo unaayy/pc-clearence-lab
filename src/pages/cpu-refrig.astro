@@ -1,12 +1,12 @@
 ---
 // src/pages/cpu-refrig.astro
-import hardwareData from '../data/hardware.json';
 import CpuCoolerSearchInterface from '../components/CpuCoolerSearchInterface.jsx';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
-const cpus = hardwareData.cpus || [];
-const coolers = hardwareData.coolers || [];
+// Importamos directamente los archivos individuales de hardware
+import cpus from '../data/cpus.json';
+import coolers from '../data/coolers.json';
 
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 

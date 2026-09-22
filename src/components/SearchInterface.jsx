@@ -1,4 +1,4 @@
-// src/components/SearchInterface.jsx - Interfaz HUD Caja vs GPU sin spoilers
+// src/components/SearchInterface.jsx - Interfaz HUD Caja vs GPU (Corregido)
 import React, { useId, useMemo, useRef, useState } from 'react';
 
 const MAX_RESULTS = 40;
@@ -31,7 +31,7 @@ const IconClear = () => (
 );
 
 /* ───────── Input HUD ───────── */
-function HudCombobox({ label, placeholder, items, selected, onSelect, onChosen, inputRef, step }) {
+function HudCombobox({ label, placeholder, items = [], selected, onSelect, onChosen, inputRef, step }) {
   const uid = useId();
   const inputId = `${uid}-input`;
 
@@ -53,7 +53,8 @@ function HudCombobox({ label, placeholder, items, selected, onSelect, onChosen, 
   const current = Math.min(active, Math.max(results.length - 1, 0));
 
   const choose = (item) => {
-    setQuery(`${item.brand} ${item.model}`);
+    const brandText = item.brand && !item.brand.toLowerCase().includes('genér') ? `${item.brand} ` : '';
+    setQuery(`${brandText}${item.model}`);
     setOpen(false);
     onSelect(item);
     onChosen?.();
@@ -102,9 +103,9 @@ function HudCombobox({ label, placeholder, items, selected, onSelect, onChosen, 
         <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-[#00ffff]/0 group-focus-within:border-[#00ffff]/80 transition-all duration-300 translate-x-1 translate-y-1 group-focus-within:translate-x-0 group-focus-within:translate-y-0 z-20 pointer-events-none"></div>
 
         <div className={`relative flex items-center w-full h-14 pl-4 pr-3 overflow-hidden backdrop-blur-md transition-all duration-300 z-10 border ${
-          isLocked 
-            ? 'bg-gradient-to-r from-[#00ffff]/10 to-transparent border-[#00ffff]/40 shadow-[inset_0_0_20px_rgba(0,255,255,0.1)] rounded-lg' 
-            : open 
+          isLocked
+            ? 'bg-gradient-to-r from-[#00ffff]/10 to-transparent border-[#00ffff]/40 shadow-[inset_0_0_20px_rgba(0,255,255,0.1)] rounded-lg'
+            : open
             ? 'bg-black/90 border-[#00ffff]/50 shadow-[0_0_20px_rgba(0,255,255,0.15)] rounded-t-xl rounded-b-none'
             : 'bg-white/[0.03] border-white/10 hover:border-white/30 rounded-xl'
         }`}>
@@ -154,19 +155,29 @@ function HudCombobox({ label, placeholder, items, selected, onSelect, onChosen, 
               const isSelected = i === current;
               return (
                 <div
-                  key={it.slug}
+                  key={it.slug || i}
                   className={`relative flex items-center justify-between px-4 py-3 rounded-lg text-sm cursor-pointer transition-all duration-200 overflow-hidden group/item animate-item-enter ${
                     isSelected ? 'bg-[#00ffff]/10 border border-[#00ffff]/30' : 'bg-transparent border border-transparent hover:bg-white/5'
                   }`}
                   style={{ animationDelay: `${i * 35}ms` }}
                   onMouseEnter={() => setActive(i)}
-                  onClick={() => choose(it)}
+                  onMouseDown={(e) => {
+                    // Evita que el evento Blur del input cancele el clic antes de registrar la selección
+                    e.preventDefault();
+                    choose(it);
+                  }}
                 >
                   {isSelected && <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#00ffff] shadow-[0_0_10px_#00ffff]"></div>}
                   
                   <span className="truncate pr-4 flex-1">
-                    <span className={`font-orbitron font-bold tracking-wide mr-1 ${isSelected ? 'text-[#00ffff]' : 'text-slate-300 group-hover/item:text-white'}`}>{it.brand}</span>
-                    <span className={`font-sans font-light ${isSelected ? 'text-white' : 'text-slate-400 group-hover/item:text-slate-200'}`}>{it.model}</span>
+                    {it.brand && !it.brand.toLowerCase().includes('genér') && !it.brand.toLowerCase().includes('gener') && (
+                      <span className={`font-orbitron font-bold tracking-wide mr-1 ${isSelected ? 'text-[#00ffff]' : 'text-slate-300 group-hover/item:text-white'}`}>
+                        {it.brand}
+                      </span>
+                    )}
+                    <span className={`font-sans font-light ${isSelected ? 'text-white' : 'text-slate-400 group-hover/item:text-slate-200'}`}>
+                      {it.model}
+                    </span>
                   </span>
                 </div>
               );
@@ -189,12 +200,14 @@ export default function SearchInterface({ cases = [], gpus = [] }) {
 
   const ready = Boolean(selectedCase && selectedGpu);
 
-  // Redirige a la página autogenerada [caseSlug]-vs-[gpuSlug].astro (asegúrate de que exista en src/pages/)
-  const targetUrl = ready ? `/${selectedCase.slug}-vs-${selectedGpu.slug}` : '#';
+  const caseSlug = selectedCase?.slug;
+  const gpuSlug = selectedGpu?.slug;
+
+  const targetUrl = (caseSlug && gpuSlug) ? `/${caseSlug}-vs-${gpuSlug}` : '#';
 
   const handleNavigate = (e) => {
     e.preventDefault();
-    if (!ready || isVerifying) return;
+    if (!ready || !caseSlug || !gpuSlug || isVerifying) return;
     setIsVerifying(true);
     window.location.href = targetUrl;
   };
@@ -246,7 +259,7 @@ export default function SearchInterface({ cases = [], gpus = [] }) {
               />
             </div>
 
-            {/* Rombo VS central (Oculto en móvil, visible en escritorio) */}
+            {/* Rombo VS central */}
             <div className="hidden md:flex items-center justify-center w-10 h-10 bg-[#08080a] border border-white/10 rounded-sm rotate-45 shadow-[0_0_15px_rgba(0,255,255,0.05)] shrink-0 mt-4 transition-all duration-500">
               <span className={`rotate-[-45deg] font-orbitron text-[10px] tracking-widest font-bold transition-colors duration-500 ${ready ? 'text-[#00ffff] drop-shadow-[0_0_5px_rgba(0,255,255,0.8)]' : 'text-white/30'}`}>
                 VS
@@ -294,7 +307,7 @@ export default function SearchInterface({ cases = [], gpus = [] }) {
             </div>
 
             {/* ENLACE DIRECTO DE REDIRECCIÓN */}
-            <a 
+            <a
               href={targetUrl}
               onClick={handleNavigate}
               className={`flex-none w-full md:w-auto h-14 px-10 rounded-xl font-orbitron font-bold text-xs tracking-[0.2em] uppercase transition-all duration-300 flex items-center justify-center gap-3 relative overflow-hidden group ${

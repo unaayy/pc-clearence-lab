@@ -9,9 +9,9 @@ export default function FullPcAnalyzer({ db }) {
       if (typeof window === 'undefined') return;
       const params = new URLSearchParams(window.location.search);
       
-      // Failsafe seguro por si db no ha cargado bien
+      // Failsafe seguro para buscar en los datasets particionados
       const getComp = (type, slug) => {
-        if (!db || !db[type]) return undefined;
+        if (!db || !db[type] || !slug) return undefined;
         return db[type].find(c => c.slug === slug);
       };
 
@@ -23,7 +23,7 @@ export default function FullPcAnalyzer({ db }) {
         cooler: getComp('coolers', params.get('cooler')),
         mb: getComp('motherboards', params.get('mb')),
         ram: getComp('rams', params.get('ram')),
-        storage: getComp('storages', params.get('storage')),
+        storage: getComp('storage', params.get('storage')), // Corregido: 'storage' en singular
       });
       setLoading(false);
     } catch (error) {
@@ -41,20 +41,20 @@ export default function FullPcAnalyzer({ db }) {
     );
   }
 
-  // --- 1. CÁLCULOS TÉCNICOS SEGUROS ---
-  const cpuTdp = build.cpu?.tdp || build.cpu?.watts || 120;
+  // --- 1. CÁLCULOS TÉCNICOS ADAPTADOS A LOS JSONS INDIVIDUALES ---
+  const cpuTdp = build.cpu?.tdp || 120;
   const gpuTdp = build.gpu?.tdp || 250;
   const rawPower = cpuTdp + gpuTdp + 80;
   const reqPower = Math.ceil(rawPower * 1.25);
-  const psuPower = build.psu?.wattage || build.psu?.watts || 0;
+  const psuPower = build.psu?.wattage || 0;
   const psuOk = build.psu ? psuPower >= reqPower : false;
 
-  const gpuLen = build.gpu?.length || build.gpu?.dimensions?.lengthMM || 0;
-  const caseMaxGpu = build.case?.maxGpuLengthMM || build.case?.maxGpuLength || 0;
-  const gpuOk = build.gpu && build.case ? gpuLen <= caseMaxGpu : false;
+  const gpuLen = build.gpu?.lengthMM || 0;
+  const caseMaxGpu = build.case?.maxGpuLengthMM || 0;
+  const gpuOk = build.gpu && build.case ? (caseMaxGpu > 0 ? gpuLen <= caseMaxGpu : true) : false;
 
   const caseWidthCap = build.case?.maxCpuCoolerHeightMM || 165;
-  const gpuWidth = build.gpu?.dimensions?.widthMM || build.gpu?.width || 135;
+  const gpuWidth = build.gpu?.widthMM || 135;
   const cableClearance = caseWidthCap - gpuWidth;
   
   // Semáforo del cable GPU vs Cristal
@@ -79,12 +79,13 @@ export default function FullPcAnalyzer({ db }) {
   let coolerOk = false;
   let coolerDesc = 'Falta Disipador o Chasis';
   if (build.cooler && build.case) {
-    if (build.cooler.type === 'AIR') {
-      coolerOk = build.cooler.heightMM <= (build.case.maxCpuCoolerHeightMM || 999);
-      coolerDesc = `Torre: ${build.cooler.heightMM}mm. Límite: ${build.case.maxCpuCoolerHeightMM || 165}mm.`;
-    } else if (build.cooler.type === 'AIO') {
-      coolerOk = (build.cooler.radiatorSizeMM || 240) <= (build.case.maxAioSizeMM || 360);
-      coolerDesc = `Radiador AIO: ${build.cooler.radiatorSizeMM}mm. Límite: ${build.case.maxAioSizeMM || 360}mm.`;
+    if (build.cooler.isLiquid) {
+      coolerOk = (build.cooler.radiatorSizeMM || 240) <= 360;
+      coolerDesc = `Radiador AIO: ${build.cooler.radiatorSizeMM || 240}mm. Límite chasis OK.`;
+    } else {
+      const height = build.cooler.heightMM || 155;
+      coolerOk = height <= (build.case.maxCpuCoolerHeightMM || 999);
+      coolerDesc = `Torre: ${height}mm. Límite: ${build.case.maxCpuCoolerHeightMM || 165}mm.`;
     }
   }
 
@@ -96,7 +97,7 @@ export default function FullPcAnalyzer({ db }) {
   const mainStatusColor = allClear ? '#10b981' : '#f43f5e';
   const statusMessage = allClear ? 'ENSAMBLAJE TOTALMENTE VIABLE' : 'INCOMPATIBILIDAD O RIESGO ESTRUCTURAL';
 
-  const isAIO = build.cooler?.type === 'AIO';
+  const isAIO = build.cooler?.isLiquid;
 
   // Coordenadas Dinámicas SVG
   const gpuWidthSvg = gpuLen > 330 ? 240 : 200;
@@ -116,35 +117,43 @@ export default function FullPcAnalyzer({ db }) {
   ].filter(c => c.data);
 
   const getStoreLink = (store, item) => {
-    if (!item || !item.brand || !item.model) return '#';
-    const query = encodeURIComponent(`${item.brand} ${item.model}`);
+    if (!item || !item.model) return '#';
+    const brandName = item.brand && !item.brand.toLowerCase().includes('genér') ? item.brand : '';
+    const query = encodeURIComponent(`${brandName} ${item.model}`.trim());
     if (store === 'amazon') return `https://www.amazon.es/s?k=${query}&tag=TU_TAG_AFILIADO_AQUI-21`;
     if (store === 'pcc') return `https://www.pccomponentes.com/buscar/?query=${query}`;
     if (store === 'coolmod') return `https://www.coolmod.com/buscar/?search=${query}`;
     return '#';
   };
 
+  // Helper para mostrar nombres limpios en el inventario
+  const formatName = (comp) => {
+    if (!comp) return null;
+    const brandName = comp.brand && !comp.brand.toLowerCase().includes('genér') ? comp.brand : '';
+    return `${brandName} ${comp.model}`.trim();
+  };
+
   // --- 3. GENERACIÓN DE TEXTOS SEO NARRATIVOS ---
   const physicalText = gpuOk && !cableCritical
-    ? `La arquitectura interna del chasis ${build.case?.model || ''} proporciona una holgura verificada para la gráfica ${build.gpu?.model || ''}. Con ${caseMaxGpu - gpuLen}mm de margen de tolerancia frontal y ${Math.round(cableClearance)}mm laterales, se asegura el cierre hermético del panel de cristal templado sin flexionar en exceso el conector de alimentación principal 12VHPWR.`
+    ? `La arquitectura interna del chasis ${formatName(build.case) || ''} proporciona una holgura verificada para la gráfica ${formatName(build.gpu) || ''}. Con ${caseMaxGpu - gpuLen}mm de margen de tolerancia frontal y ${Math.round(cableClearance)}mm laterales, se asegura el cierre hermético del panel de cristal templado sin flexionar en exceso el conector de alimentación principal 12VHPWR.`
     : build.gpu && build.case 
     ? `RIESGO DE COLISIÓN: Las cotas de la tarjeta gráfica (${gpuLen}mm de largo y ${gpuWidth}mm de ancho) entran en conflicto directo con los límites físicos del habitáculo del chasis. Se imposibilitará la instalación correcta o el enrutamiento seguro de los cables de potencia PCIe.` 
     : 'Faltan datos de chasis o tarjeta gráfica para realizar el cálculo de holgura volumétrica.';
 
   const thermalText = coolerOk 
-    ? `El perfil térmico del sistema está asegurado. La solución ${build.cooler?.model || ''} se integra perfectamente. Esto asegura que la CPU ${build.cpu?.model || ''} mantenga frecuencias de reloj óptimas (boost clocks) constantes, evitando el temido 'thermal throttling' y prolongando la vida útil del silicio al disipar los ${cpuTdp}W de TDP.`
+    ? `El perfil térmico del sistema está asegurado. La solución ${formatName(build.cooler) || ''} se integra perfectamente. Esto asegura que la CPU ${formatName(build.cpu) || ''} mantenga frecuencias de reloj óptimas (boost clocks) constantes, evitando el temido 'thermal throttling' y prolongando la vida útil del silicio al disipar los ${cpuTdp}W de TDP.`
     : build.cooler && build.case 
     ? `CONFLICTO TÉRMICO: El sistema de refrigeración seleccionado supera las cotas de tolerancia de la caja. El panel lateral no podrá cerrarse o no existen anclajes compatibles para el radiador requerido.`
     : 'Datos térmicos insuficientes para elaborar el pronóstico de disipación de calor.';
 
   const powerText = psuOk 
-    ? `La topología eléctrica está garantizada por la fuente ${build.psu?.model || ''}. Tras cruzar las curvas de consumo, calculamos una demanda pico de ${reqPower}W frente a los ${psuPower}W de entrega nominal. Este generoso margen asegura eficiencia óptima y evita apagones por picos transitorios (power spikes).`
+    ? `La topología eléctrica está garantizada por la fuente ${formatName(build.psu) || ''}. Tras cruzar las curvas de consumo, calculamos una demanda pico de ${reqPower}W frente a los ${psuPower}W de entrega nominal. Este generoso margen asegura eficiencia óptima y evita apagones por picos transitorios (power spikes).`
     : build.psu 
     ? `DÉFICIT ENERGÉTICO: La capacidad de ${psuPower}W es insuficiente para sostener los picos requeridos (${reqPower}W). Riesgo inminente de activación de los sistemas de protección (OCP/OPP).`
     : 'Análisis de demanda energética suspendido por ausencia de unidad de suministro (PSU).';
 
   const platformText = socketOk && build.mb && build.cpu
-    ? `La interconexión central (bus de datos) está correctamente emparejada. La placa base ${build.mb?.model || ''} alberga nativamente el procesador bajo el zócalo ${build.cpu?.socket || ''}, habilitando la transferencia ultrarrápida de datos PCI-Express hacia la memoria y la unidad de almacenamiento sólido NVMe M.2.`
+    ? `La interconexión central (bus de datos) está correctamente emparejada. La placa base ${formatName(build.mb) || ''} alberga nativamente el procesador bajo el zócalo ${build.cpu?.socket || ''}, habilitando la transferencia ultrarrápida de datos PCI-Express hacia la memoria y la unidad de almacenamiento sólido NVMe M.2.`
     : !socketOk 
     ? `INCOMPATIBILIDAD ESTRUCTURAL: Intento de emparejar el procesador (${build.cpu?.socket}) con un zócalo incompatible en la placa base (${build.mb?.socket}). Imposible proceder con el ensamble.`
     : 'Faltan componentes de placa base o CPU para validar el ecosistema de procesamiento.';
@@ -152,7 +161,6 @@ export default function FullPcAnalyzer({ db }) {
   return (
     <div className="w-full font-sans animate-[fadeIn_0.5s_ease-out]">
       
-      {/* CSS SEGURO Y NATIVO PARA ANIMACIONES FLUIDAS */}
       <style>{`
         @keyframes flowReverse { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 24; } }
         .cable-fluid { stroke-dasharray: 12 12; animation: flowReverse 0.8s linear infinite; }
@@ -171,7 +179,7 @@ export default function FullPcAnalyzer({ db }) {
       <div className="mb-10 text-center sm:text-left">
         <h1 className="text-3xl sm:text-4xl font-bold font-orbitron mb-3 uppercase tracking-wide">
           <span className="text-slate-400 block text-lg mb-1">Centro de Auditoría y Adquisición</span>
-          {build.case ? `${build.case?.brand || ''} ${build.case?.model || ''}` : 'CONFIGURACIÓN PERSONALIZADA'}
+          {build.case ? formatName(build.case) : 'CONFIGURACIÓN PERSONALIZADA'}
         </h1>
         <p className="text-slate-400 max-w-2xl text-sm sm:text-base">
           Verifica las tolerancias milimétricas en el diagrama y adquiere las piezas compatibles directamente desde las plataformas oficiales.
@@ -204,7 +212,7 @@ export default function FullPcAnalyzer({ db }) {
               {/* PLACA BASE */}
               <rect x="60" y="60" width="220" height="240" rx="4" fill="#0d1117" stroke={build.mb ? '#00ffff' : '#333'} strokeWidth="1.5" strokeOpacity="0.5"/>
               <text x="170" y="290" fill="#555" fontFamily="Orbitron" fontSize="8" textAnchor="middle" letterSpacing="1">
-                MOTHERBOARD {build.mb ? `| ${build.mb.socket}` : ''}
+                MOTHERBOARD {build.mb ? `| ${build.mb.socket || ''}` : ''}
               </text>
 
               {/* NVMe SSD */}
@@ -379,16 +387,16 @@ export default function FullPcAnalyzer({ db }) {
           {[
             { tag: '01 // CPU', v: build.cpu, sub: build.cpu ? `${build.cpu.tdp || 120}W TDP` : '' },
             { tag: '02 // GRÁFICA', v: build.gpu, sub: build.gpu ? `${gpuLen}mm L | ${gpuWidth}mm A` : '' },
-            { tag: '03 // PLACA BASE', v: build.mb, sub: build.mb ? `Socket ${build.mb.socket}` : '' },
-            { tag: '04 // COOLER', v: build.cooler, sub: build.cooler ? build.cooler.type : '' },
-            { tag: '05 // RAM', v: build.ram, sub: build.ram ? `${build.ram.type} ${build.ram.speed}MHz` : '' },
-            { tag: '06 // ALMACENAM.', v: build.storage, sub: build.storage ? `PCIe M.2` : '' },
-            { tag: '07 // FUENTE', v: build.psu, sub: build.psu ? `${build.psu.watts || psuPower}W` : '' },
+            { tag: '03 // PLACA BASE', v: build.mb, sub: build.mb ? `Socket ${build.mb.socket || ''}` : '' },
+            { tag: '04 // COOLER', v: build.cooler, sub: build.cooler ? (build.cooler.isLiquid ? 'Líquida AIO' : 'Torre Aire') : '' },
+            { tag: '05 // RAM', v: build.ram, sub: build.ram ? `${build.ram.ramType || ''}` : '' },
+            { tag: '06 // ALMACENAM.', v: build.storage, sub: build.storage ? `NVMe M.2` : '' },
+            { tag: '07 // FUENTE', v: build.psu, sub: build.psu ? `${build.psu.wattage || psuPower}W` : '' },
             { tag: '08 // CHASIS', v: build.case, sub: build.case ? `Max GPU: ${caseMaxGpu}mm` : '' },
           ].map((item, idx) => (
             <div key={idx} className="bg-[#0a0a0c]/80 backdrop-blur-sm border border-white/5 rounded-2xl p-5 transition-all hover:border-[#00ffff]/30 hover:bg-[#00ffff]/[0.02] group shadow-lg">
               <span className="text-[#00ffff] font-bold text-[10px] tracking-[0.2em] font-orbitron opacity-90 group-hover:opacity-100 transition-opacity block mb-2">{item.tag}</span>
-              <h4 className="text-white font-medium text-sm leading-tight">{item.v ? `${item.v.brand} ${item.v.model}` : <span className="text-slate-600 italic">No asignado</span>}</h4>
+              <h4 className="text-white font-medium text-sm leading-tight">{item.v ? formatName(item.v) : <span className="text-slate-600 italic">No asignado</span>}</h4>
               <p className="text-slate-400 text-xs mt-1.5 font-mono">{item.sub || '...'}</p>
             </div>
           ))}
@@ -456,10 +464,6 @@ export default function FullPcAnalyzer({ db }) {
         <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">Análisis de Ingeniería y Ensamble</h2>
         
         <div className="bg-[#0a0a0c] border border-white/5 rounded-[24px] p-6 sm:p-8 lg:p-10 shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
-            <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1"><path strokeLinecap="round" strokeLinejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
-          </div>
-
           <div className="space-y-8 relative z-10 text-slate-300 leading-relaxed text-[15px]">
             <div className="border-l-2 pl-4 border-cyan-500/30">
               <h3 className="font-orbitron font-bold text-white mb-2 tracking-wide">Arquitectura y Holguras Físicas</h3>

@@ -1,14 +1,18 @@
 ---
 // src/pages/fuente-psu.astro
-import hardwareData from '../data/hardware.json';
 import PsuSearchInterface from '../components/PsuSearchInterface.jsx';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
-// Extraemos las fuentes, GPUs y CPUs (fallback a array vacío si aún no están populadas)
-const psus = hardwareData.psus || [];
-const gpus = hardwareData.gpus || [];
-const cpus = hardwareData.cpus || [];
+// 1. Importamos directamente los archivos individuales de hardware
+import psusData from '../data/psus.json';
+import gpusData from '../data/gpus.json';
+import cpusData from '../data/cpus.json';
+
+// 2. Asignamos los datos (con fallback a array vacío por seguridad)
+const psus = psusData || [];
+const gpus = gpusData || [];
+const cpus = cpusData || [];
 
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 

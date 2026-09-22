@@ -1,17 +1,15 @@
 ---
-import hardwareData from '../data/hardware.json';
+import casesData from '../data/cases.json';
+import gpusData from '../data/gpus.json';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
-// 1. GENERADOR DE RUTAS (pSEO)
+// 1. GENERADOR DE RUTAS (REQUERIDO POR ASTRO EN MODO ESTÁTICO)
 export async function getStaticPaths() {
-  const cases = (hardwareData.cases && hardwareData.cases.length > 0) ? hardwareData.cases : [
-    { slug: 'corsair-4000d-airflow', brand: 'Corsair', model: '4000D Airflow', maxGpuLengthMM: 360 }
-  ];
-  
-  const gpus = (hardwareData.gpus && hardwareData.gpus.length > 0) ? hardwareData.gpus : [
-    { slug: 'rtx-4090', brand: 'NVIDIA', model: 'GeForce RTX 4090', dimensions: { lengthMM: 358 } }
-  ];
+  // ATENCIÓN: Para que el build no tarde horas, generamos un límite seguro.
+  // Si tienes 6000 cajas y 6000 GPUs, son 36 millones de combinaciones.
+  const cases = casesData.slice(0, 100); 
+  const gpus = gpusData.slice(0, 100);
 
   const paths = [];
   for (const pcCase of cases) {
@@ -25,7 +23,7 @@ export async function getStaticPaths() {
   return paths;
 }
 
-// 2. DATOS ACTUALES Y LÓGICA DE CÁLCULO
+// 2. DATOS ACTUALES Y LÓGICA DE CÁLCULO (Intactos)
 const { pcCase, gpu } = Astro.props;
 
 const caseMaxLength = pcCase.maxGpuLengthMM || pcCase.maxGpuLength || 350;
@@ -53,7 +51,6 @@ if (margin < 0) {
 
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 ---
-
 <html lang="es">
   <head>
     <meta charset="utf-8" />

@@ -1,19 +1,28 @@
 ---
 // src/pages/full-pc.astro
-import hardwareData from '../data/hardware.json';
 import SearchInterfaceFullPc from '../components/SearchInterfaceFullPc.jsx';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
-// Extraemos datos.
-const cpus = hardwareData.cpus || [];
-const coolers = hardwareData.coolers || [];
-const gpus = hardwareData.gpus || [];
-const psus = hardwareData.psus || [];
-const cases = hardwareData.cases || [];
-const motherboards = hardwareData.motherboards || [];
-const rams = hardwareData.rams || [];
-const storages = hardwareData.storages || [];
+// Importamos individualmente los 8 datasets divididos
+import cpusData from '../data/cpus.json';
+import coolersData from '../data/coolers.json';
+import gpusData from '../data/gpus.json';
+import psusData from '../data/psus.json';
+import casesData from '../data/cases.json';
+import motherboardsData from '../data/motherboards.json';
+import ramsData from '../data/rams.json';
+import storageData from '../data/storage.json';
+
+// Asignación directa con fallbacks a arrays vacíos por seguridad
+const cpus = cpusData || [];
+const coolers = coolersData || [];
+const gpus = gpusData || [];
+const psus = psusData || [];
+const cases = casesData || [];
+const motherboards = motherboardsData || [];
+const rams = ramsData || [];
+const storages = storageData || [];
 
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
@@ -241,7 +250,6 @@ const statementWords = statement.split(' ');
       .nav__links a:hover { color: #fff; }
       .rise { opacity: 0; animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s) forwards; }
       @keyframes rise { from { opacity: 0; transform: translateY(16px); filter: blur(8px); } to { opacity: 1; transform: none; filter: none; } }
-      .animate-spin-slow { animation: spin 4s linear infinite; }
 
       /* ESTILOS BENTO GRID Y SEO TEXT */
       .section { margin-top: clamp(96px, 13vw, 168px); }

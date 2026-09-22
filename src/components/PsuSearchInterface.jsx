@@ -169,10 +169,17 @@ function HudCombobox({ label, placeholder, items, selected, onSelect, onChosen, 
                 >
                   {isSelected && <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#00ffff] shadow-[0_0_10px_#00ffff]"></div>}
                   
-                  <span className="truncate pr-4 flex-1">
-                    <span className={`font-orbitron font-bold tracking-wide mr-1 ${isSelected ? 'text-[#00ffff]' : 'text-slate-300 group-hover/item:text-white'}`}>{it.brand}</span>
-                    <span className={`font-sans font-light ${isSelected ? 'text-white' : 'text-slate-400 group-hover/item:text-slate-200'}`}>{it.model}</span>
-                  </span>
+                  {/* Renderizado de la lista con filtrado de 'Genérica' */}
+<span className="truncate pr-4 flex-1">
+  {it.brand && !it.brand.toLowerCase().includes('genér') && !it.brand.toLowerCase().includes('gener') && (
+    <span className={`font-orbitron font-bold tracking-wide mr-1 ${isSelected ? 'text-[#00ffff]' : 'text-slate-300 group-hover/item:text-white'}`}>
+      {it.brand}
+    </span>
+  )}
+  <span className={`font-sans font-light ${isSelected ? 'text-white' : 'text-slate-400 group-hover/item:text-slate-200'}`}>
+    {it.model}
+  </span>
+</span>
                 </div>
               );
             })}

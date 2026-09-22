@@ -1,12 +1,14 @@
 ---
 // src/pages/gpu-caja.astro
 // Comprobador GPU + Caja — rediseño "telemetría" (Apple × SpaceX) SIN esquema SVG
-import hardwareData from '../data/hardware.json';
 import SearchInterface from '../components/SearchInterface.jsx';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
-const { cases, gpus } = hardwareData;
+// 1. Importamos las bases de datos desde sus archivos individuales
+import cases from '../data/cases.json';
+import gpus from '../data/gpus.json';
+
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
 // Texto SEO principal. Se parte en palabras para el efecto de iluminación al hacer scroll.

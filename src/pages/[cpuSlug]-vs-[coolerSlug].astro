@@ -1,26 +1,20 @@
 ---
-import hardwareData from '../data/hardware.json';
+import cpusData from '../data/cpus.json';
+import coolersData from '../data/coolers.json';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
-// 1. GENERADOR DE RUTAS DINÁMICAS (pSEO)
+// 1. GENERADOR DE RUTAS (REQUERIDO POR ASTRO EN MODO ESTÁTICO)
 export async function getStaticPaths() {
-  const cpus = (hardwareData.cpus && hardwareData.cpus.length > 0) 
-    ? hardwareData.cpus 
-    : [{ slug: 'core-i9-14900k', brand: 'Intel', model: 'Core i9-14900K', tdp: 253, socket: 'LGA1700' }];
-
-  const coolers = (hardwareData.coolers && hardwareData.coolers.length > 0) 
-    ? hardwareData.coolers 
-    : [{ slug: 'noctua-nh-d15', brand: 'Noctua', model: 'NH-D15', type: 'AIR', heightMM: 165.0 }];
+  // Limitamos a 100x100 para que el build no se quede colgado horas procesando millones de combinaciones
+  const cpus = cpusData.slice(0, 100);
+  const coolers = coolersData.slice(0, 100);
 
   const paths = [];
   for (const cpu of cpus) {
     for (const cooler of coolers) {
       paths.push({
-        params: { 
-          cpuSlug: cpu.slug, 
-          coolerSlug: cooler.slug 
-        },
+        params: { cpuSlug: cpu.slug, coolerSlug: cooler.slug },
         props: { cpu, cooler }
       });
     }
@@ -28,22 +22,19 @@ export async function getStaticPaths() {
   return paths;
 }
 
-// 2. RECUPERAR DATOS DE LA COMBINACIÓN ACTUAL (Blindado)
-const { cpuSlug, coolerSlug } = Astro.params;
-
-const cpu = Astro.props.cpu || hardwareData.cpus.find(c => c.slug === cpuSlug);
-const cooler = Astro.props.cooler || hardwareData.coolers.find(c => c.slug === coolerSlug);
+// 2. RECUPERAR DATOS DE LA COMBINACIÓN ACTUAL
+const { cpu, cooler } = Astro.props;
 
 if (!cpu || !cooler) {
-  return Astro.redirect('/cpu-refrig');
+  return Astro.redirect('/404');
 }
 
-// 3. MOTOR DE CÁLCULO TÉRMICO
+// 3. MOTOR DE CÁLCULO TÉRMICO (Intacto)
 const cpuTdp = cpu.tdp || cpu.watts || 120;
 
 // Estimación matemática de disipación
 const getCoolerCapacity = (cooler) => {
-  if (cooler.type === 'AIO') {
+  if (cooler.type === 'AIO' || cooler.isLiquid) {
     if (cooler.radiatorSizeMM >= 360) return 320;
     if (cooler.radiatorSizeMM >= 280) return 280;
     if (cooler.radiatorSizeMM >= 240) return 250;
@@ -75,7 +66,7 @@ if (margin < -15) {
   statusMessage = 'ADVERTENCIA BAJO CARGA MÁXIMA';
 }
 
-const isAIO = cooler.type === 'AIO';
+const isAIO = cooler.type === 'AIO' || cooler.isLiquid;
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 ---
 

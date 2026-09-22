@@ -1,9 +1,30 @@
 ---
 // src/pages/build.astro
-import hardwareData from '../data/hardware.json';
 import FullPcAnalyzer from '../components/FullPcAnalyzer.jsx';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+
+// 1. Importamos los 8 archivos de hardware divididos
+import cases from '../data/cases.json';
+import cpus from '../data/cpus.json';
+import gpus from '../data/gpus.json';
+import psus from '../data/psus.json';
+import coolers from '../data/coolers.json';
+import motherboards from '../data/motherboards.json';
+import rams from '../data/rams.json';
+import storage from '../data/storage.json';
+
+// 2. Empaquetamos en el objeto db que espera FullPcAnalyzer
+const db = {
+  cases,
+  cpus,
+  gpus,
+  psus,
+  coolers,
+  motherboards,
+  rams,
+  storage // singular para mantener sincronía con el analizador
+};
 
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 ---
@@ -24,7 +45,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
   <body class="bg-[#050507] text-white min-h-screen font-sans selection:bg-[#00ffff] selection:text-black relative overflow-x-hidden">
     
-    <!-- Fondo animado de partículas (Opcional, pero da el toque premium) -->
+    <!-- Fondo animado de partículas -->
     <canvas id="dotsCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0" aria-hidden="true"></canvas>
     <div class="spotlight-campana absolute top-0 left-1/2 -translate-x-1/2 w-[100vw] h-[620px] pointer-events-none z-0" aria-hidden="true"></div>
 
@@ -82,8 +103,8 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
       </header>
 
       <main class="flex-1 w-full max-w-[1200px] mx-auto px-4 sm:px-6 py-12">
-        <!-- Carga segura en cliente con lectura completa de la URL -->
-        <FullPcAnalyzer client:only="react" db={hardwareData} />
+        <!-- 3. Le pasamos el nuevo objeto db completo -->
+        <FullPcAnalyzer client:only="react" db={db} />
       </main>
 
       <Footer />
