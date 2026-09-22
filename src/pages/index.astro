@@ -68,11 +68,9 @@ const secciones = [
           <div class="sel" data-selector role="group" aria-label="Elige qué quieres analizar">
             {secciones.map((s, i) => (
               <a
-                href={s.disabled ? undefined : s.href}
-                role={s.disabled ? 'button' : undefined}
-                aria-disabled={s.disabled ? 'true' : undefined}
-                class:list={['sel__panel', i === 0 && 'is-active', s.disabled && 'is-disabled']}
-                aria-label={s.disabled ? `${s.title}: Próximamente` : `${s.title}: ${s.sub}`}
+                href={s.href}
+                class:list={['sel__panel', i === 0 && 'is-active']}
+                aria-label={`${s.title}: ${s.sub}`}
               >
                 <!-- Capa base: hardware apagado -->
                 <div class="sel__layer sel__layer--base" aria-hidden="true">
@@ -98,22 +96,15 @@ const secciones = [
 
                 <!-- Estado desplegado -->
                 <div class="sel__body">
-                  <span class="sel__tag orb">{s.disabled ? `${s.tag} // EN DESARROLLO` : s.tag}</span>
+                  <span class="sel__tag orb">{s.tag}</span>
                   <h2 class="sel__title orb">{s.title}</h2>
                   <p class="sel__sub">{s.sub}</p>
                   <span class="sel__cta">
-                    <span class="sel__cta-label orb">{s.disabled ? 'PRÓXIMAMENTE' : 'INICIAR ANÁLISIS'}</span>
+                    <span class="sel__cta-label orb">INICIAR ANÁLISIS</span>
                     <span class="sel__cta-icon">
-                      {s.disabled ? (
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                      ) : (
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                          <path d="M5 12h14M13 6l6 6-6 6" />
-                        </svg>
-                      )}
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M5 12h14M13 6l6 6-6 6" />
+                      </svg>
                     </span>
                   </span>
                 </div>
