@@ -8,9 +8,9 @@ import '../styles/global.css';
 // 1. GENERADOR DE RUTAS (REQUERIDO POR ASTRO EN MODO ESTÁTICO)
 export async function getStaticPaths() {
   // ATENCIÓN: Limitamos a 30 elementos por componente para evitar tiempos de compilación extremos (30 * 30 * 30 = 27,000 páginas)
-  const psus = psusData.slice(0, 30);
-  const gpus = gpusData.slice(0, 30);
-  const cpus = cpusData.slice(0, 30);
+ const psus = psusData.slice(0, 10);
+const gpus = gpusData.slice(0, 10);
+const cpus = cpusData.slice(0, 10);
 
   const paths = [];
   for (const psu of psus) {

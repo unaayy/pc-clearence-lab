@@ -6,8 +6,8 @@ import '../styles/global.css';
 
 // 1. GENERADOR DE RUTAS (pSEO)
 export async function getStaticPaths() {
-  const cases = casesData && casesData.length > 0 ? casesData.slice(0, 50) : [];
-  const gpus = gpusData && gpusData.length > 0 ? gpusData.slice(0, 50) : [];
+  const cases = casesData.slice(0, 40);
+const gpus = gpusData.slice(0, 40);
 
   const paths = [];
   for (const pcCase of cases) {
