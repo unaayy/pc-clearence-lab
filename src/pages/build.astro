@@ -1,0 +1,160 @@
+---
+// src/pages/build.astro
+import hardwareData from '../data/hardware.json';
+import FullPcAnalyzer from '../components/FullPcAnalyzer.jsx';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auditoría Final PC Completo - LIDUNAX</title>
+    <link rel="icon" type="image/png" href="/logo2.png?v=5" />
+    <meta name="description" content="Reporte de compatibilidad cruzada al milímetro: Socket, Termodinámica, Holguras y PSU." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="canonical" href={canonicalURL} />
+  </head>
+
+  <body class="bg-[#050507] text-white min-h-screen font-sans selection:bg-[#00ffff] selection:text-black relative overflow-x-hidden">
+    
+    <!-- Fondo animado de partículas (Opcional, pero da el toque premium) -->
+    <canvas id="dotsCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0" aria-hidden="true"></canvas>
+    <div class="spotlight-campana absolute top-0 left-1/2 -translate-x-1/2 w-[100vw] h-[620px] pointer-events-none z-0" aria-hidden="true"></div>
+
+    <!-- Animaciones Globales Premium -->
+    <style is:global>
+      :root {
+        --ease-elegant: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-breathe: cubic-bezier(0.45, 0, 0.55, 1);
+        --ease-fluid: cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      @keyframes dashFlow { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -36; } }
+      .animate-cable { animation: dashFlow 1.7s linear infinite; }
+      
+      @keyframes pulseGlow { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.45; } }
+      .animate-glow { animation: pulseGlow 3.4s var(--ease-breathe) infinite; }
+      
+      @keyframes ambientPulse { 0%, 100% { opacity: 0.95; } 50% { opacity: 0.6; } }
+      .animate-ambient { animation: ambientPulse 5.2s var(--ease-breathe) infinite; }
+      
+      @keyframes fanSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+      .fan-spin { animation: fanSpin 4s linear infinite; }
+      
+      @keyframes breeze { 0% { transform: translateX(0) scaleX(0.85); opacity: 0; } 18% { opacity: 0.55; } 55% { opacity: 0.3; } 100% { transform: translateX(-260px) scaleX(1.05); opacity: 0; } }
+      .animate-breeze { animation: breeze 5.5s var(--ease-fluid) infinite; }
+      
+      @keyframes statusBreathe { 0% { transform: scale(1); opacity: 0.55; } 100% { transform: scale(1.9); opacity: 0; } }
+      .animate-status-pulse { animation: statusBreathe 2.6s var(--ease-breathe) infinite; }
+      
+      @keyframes materialize { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+      .animate-materialize { animation: materialize 1.1s var(--ease-elegant) both; animation-delay: 0.1s; transform-origin: center; }
+      
+      @keyframes revealFade { from { opacity: 0; transform: translateY(14px); filter: blur(6px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+      .animate-reveal { animation: revealFade 0.9s var(--ease-elegant) both; }
+
+      .spotlight-campana {
+        background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 255, 255, 0.08) 0%, rgba(0, 255, 255, 0.02) 40%, transparent 70%);
+        filter: blur(60px);
+      }
+    </style>
+
+    <div class="page relative z-10 flex flex-col min-h-screen justify-between">
+      
+      <!-- Navbar -->
+      <header class="border-b border-white/10 bg-black/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
+          <a href="/" class="flex items-center gap-3">
+            <img src="/logoancho.png" alt="LDX" class="h-8 w-auto object-contain" />
+            <span class="font-orbitron font-bold tracking-widest hidden sm:block">LIDUNAX</span>
+          </a>
+          <nav class="flex gap-6 text-sm font-orbitron tracking-wider text-slate-400">
+            <a href="/full-pc" class="hover:text-[#00ffff] transition-colors">← EDITAR COMPONENTES</a>
+          </nav>
+        </div>
+      </header>
+
+      <main class="flex-1 w-full max-w-[1200px] mx-auto px-4 sm:px-6 py-12">
+        <!-- Carga segura en cliente con lectura completa de la URL -->
+        <FullPcAnalyzer client:only="react" db={hardwareData} />
+      </main>
+
+      <Footer />
+    </div>
+
+    <!-- Script del fondo estrellado -->
+    <script>
+      interface Dot { x: number; y: number; baseRadius: number; vx: number; vy: number; baseAlpha: number; }
+      function initDots() {
+        const canvas = document.getElementById('dotsCanvas') as HTMLCanvasElement | null;
+        if (!canvas || canvas.dataset.ready) return;
+        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D | null;
+        if (!ctx) return;
+        canvas.dataset.ready = '1';
+
+        const speed = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1;
+        let width = 0; let height = 0;
+        const resize = () => {
+          if (!canvas.isConnected) return;
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          width = window.innerWidth; height = window.innerHeight;
+          canvas.width = Math.floor(width * dpr); canvas.height = Math.floor(height * dpr);
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        };
+        resize(); window.addEventListener('resize', resize);
+
+        const dots: Dot[] = [];
+        const numDots = Math.min(240, Math.floor((width * height) / 9000));
+        for (let i = 0; i < numDots; i++) {
+          dots.push({
+            x: Math.random() * width, y: Math.random() * height,
+            baseRadius: Math.random() * 1.3 + 0.4,
+            vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.2,
+            baseAlpha: Math.random() * 0.35 + 0.15,
+          });
+        }
+        const animate = () => {
+          if (!canvas.isConnected) return;
+          ctx.clearRect(0, 0, width, height);
+          const lightX = width / 2; const lightY = -window.scrollY;
+          const maxLight = Math.min(width, height) * 0.65;
+          for (const dot of dots) {
+            dot.x += dot.vx * speed; dot.y += dot.vy * speed;
+            if (dot.x < 0) dot.x = width; if (dot.x > width) dot.x = 0;
+            if (dot.y < 0) dot.y = height; if (dot.y > height) dot.y = 0;
+            const distance = Math.hypot(dot.x - lightX, dot.y - lightY);
+            ctx.beginPath();
+            if (distance < maxLight) {
+              const lightFactor = Math.pow(1 - distance / maxLight, 1.8);
+              const radius = dot.baseRadius + lightFactor * 1.2;
+              const alpha = Math.min(1, dot.baseAlpha + lightFactor * 0.65);
+              ctx.arc(dot.x, dot.y, radius, 0, Math.PI * 2);
+              const r = Math.round(180 * (1 - lightFactor));
+              const g = Math.round(180 * (1 - lightFactor) + 255 * lightFactor);
+              const b = Math.round(190 * (1 - lightFactor) + 255 * lightFactor);
+              ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+              if (lightFactor > 0.4) { ctx.shadowColor = 'rgba(0, 255, 255, 0.6)'; ctx.shadowBlur = 6; }
+              else { ctx.shadowBlur = 0; }
+            } else {
+              ctx.arc(dot.x, dot.y, dot.baseRadius, 0, Math.PI * 2);
+              ctx.fillStyle = `rgba(180, 180, 190, ${dot.baseAlpha})`; ctx.shadowBlur = 0;
+            }
+            ctx.fill();
+          }
+          requestAnimationFrame(animate);
+        };
+        animate();
+      }
+
+      document.addEventListener('astro:page-load', initDots);
+      initDots();
+    </script>
+  </body>
+</html>

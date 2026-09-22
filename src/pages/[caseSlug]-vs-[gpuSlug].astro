@@ -72,50 +72,107 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
     
     <!-- Animaciones Globales Refinadas -->
     <style is:global>
+      :root {
+        /* Curvas de easing propias — mismo lenguaje de movimiento que Apple/SpaceX:
+           aceleraciones suaves, sin rebotes, sin linealidad mecánica. */
+        --ease-elegant: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-breathe: cubic-bezier(0.45, 0, 0.55, 1);
+        --ease-fluid: cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      /* Cableado — flujo constante de energía, sedoso en vez de nervioso */
       @keyframes dashFlow {
         from { stroke-dashoffset: 0; }
         to { stroke-dashoffset: -36; }
       }
       .animate-cable {
-        animation: dashFlow 1.2s linear infinite;
+        animation: dashFlow 1.7s linear infinite;
       }
-      
+
+      /* Respiración del margen — pulso suave, no parpadeo */
       @keyframes pulseGlow {
-        0%, 100% { opacity: 0.8; }
-        50% { opacity: 0.3; }
+        0%, 100% { opacity: 0.9; }
+        50% { opacity: 0.45; }
       }
       .animate-glow {
-        animation: pulseGlow 2.5s ease-in-out infinite;
+        animation: pulseGlow 3.4s var(--ease-breathe) infinite;
       }
-      
+
+      /* Halo ambiental del chasis — vida sutil en el contorno */
+      @keyframes ambientPulse {
+        0%, 100% { opacity: 0.95; }
+        50% { opacity: 0.6; }
+      }
+      .animate-ambient {
+        animation: ambientPulse 5.2s var(--ease-breathe) infinite;
+      }
+
+      /* Ventiladores — rotación constante y realista */
       @keyframes fanSpin {
         from { transform: rotate(0deg); }
         to { transform: rotate(360deg); }
       }
-      .fan-spin { 
-        animation: fanSpin 4s linear infinite; 
+      .fan-spin {
+        animation: fanSpin 4s linear infinite;
       }
-      
-      /* Flujo de aire horizontal hacia atrás (Túnel de viento) */
+
+      /* Flujo de aire — estelas continuas tipo fibra óptica, sin cortes bruscos */
       @keyframes breeze {
-        0% { transform: translateX(0); opacity: 0; }
-        20% { opacity: 0.3; } /* Pico de visibilidad aumentado un poco */
-        70% { opacity: 0.15; }
-        100% { transform: translateX(-240px); opacity: 0; }
+        0% { transform: translateX(0) scaleX(0.85); opacity: 0; }
+        18% { opacity: 0.55; }
+        55% { opacity: 0.3; }
+        100% { transform: translateX(-260px) scaleX(1.05); opacity: 0; }
       }
       .animate-breeze {
-        animation: breeze 4s linear infinite;
+        animation: breeze 5.5s var(--ease-fluid) infinite;
       }
-      
-      /* Mini torbellinos hacia abajo (GPU) */
+
+      /* Micro-convección térmica bajo la GPU — curva orgánica, sin tirones */
       @keyframes whirlwind {
-        0% { transform: translateY(0) scaleY(0.9); opacity: 0; }
-        25% { opacity: 0.25; }
-        75% { opacity: 0.1; }
-        100% { transform: translateY(30px) scaleY(1.2); opacity: 0; }
+        0% { transform: translateY(0) scale(0.92); opacity: 0; }
+        30% { opacity: 0.32; }
+        70% { opacity: 0.12; }
+        100% { transform: translateY(32px) scale(1.15); opacity: 0; }
       }
       .animate-whirlwind {
-        animation: whirlwind 3s ease-out infinite;
+        animation: whirlwind 3.6s var(--ease-fluid) infinite;
+      }
+
+      /* Indicador de estado — pulso lento tipo "system light", no ping abrupto */
+      @keyframes statusBreathe {
+        0% { transform: scale(1); opacity: 0.55; }
+        100% { transform: scale(1.9); opacity: 0; }
+      }
+      .animate-status-pulse {
+        animation: statusBreathe 2.6s var(--ease-breathe) infinite;
+      }
+
+      /* Aparición del render — materialización elegante al cargar */
+      @keyframes materialize {
+        from { opacity: 0; transform: scale(0.97); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      .animate-materialize {
+        animation: materialize 1.1s var(--ease-elegant) both;
+        animation-delay: 0.1s;
+        transform-origin: center;
+      }
+
+      /* Entrada de paneles — fade + rise + blur-out, estilo keynote */
+      @keyframes revealFade {
+        from { opacity: 0; transform: translateY(14px); filter: blur(6px); }
+        to { opacity: 1; transform: translateY(0); filter: blur(0); }
+      }
+      .animate-reveal {
+        animation: revealFade 0.9s var(--ease-elegant) both;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .animate-cable, .animate-glow, .animate-ambient, .fan-spin,
+        .animate-breeze, .animate-whirlwind, .animate-status-pulse,
+        .animate-reveal, .animate-materialize {
+          animation: none !important;
+        }
       }
     </style>
 
@@ -148,10 +205,10 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
       <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 mb-12">
         
         <!-- DIAGRAMA VISUAL -->
-        <div class="relative bg-[#0a0a0c] border border-white/5 rounded-[24px] overflow-hidden min-h-[460px] flex items-center justify-center p-4 sm:p-8 shadow-[inset_0_0_80px_rgba(0,0,0,0.8)]">
+        <div class="relative bg-[#0a0a0c] border border-white/5 rounded-[24px] overflow-hidden min-h-[460px] flex items-center justify-center p-4 sm:p-8 shadow-[inset_0_0_80px_rgba(0,0,0,0.8)] animate-reveal">
           <div class="absolute inset-0 opacity-[0.15]" style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"></div>
           
-          <svg viewBox="0 0 500 400" class="w-full max-w-[500px] relative z-10 drop-shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+          <svg viewBox="0 0 500 400" class="w-full max-w-[500px] relative z-10 drop-shadow-[0_0_15px_rgba(0,0,0,0.5)] animate-materialize">
             <defs>
               <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
                 <feGaussianBlur stdDeviation="4" result="blur" />
@@ -160,6 +217,22 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
+              <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+                <feGaussianBlur stdDeviation="1.4" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <linearGradient id="windGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#00ffff" stop-opacity="0" />
+                <stop offset="50%" stop-color="#00ffff" stop-opacity="0.9" />
+                <stop offset="100%" stop-color="#00ffff" stop-opacity="0" />
+              </linearGradient>
+              <linearGradient id="heatGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color={colorHex} stop-opacity="0.85" />
+                <stop offset="100%" stop-color={colorHex} stop-opacity="0" />
+              </linearGradient>
               <pattern id="dotPattern" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
                 <rect x="0" y="0" width="3" height="3" fill="white" opacity="0.3"/>
               </pattern>
@@ -167,7 +240,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
             <g transform="translate(50, 40)">
               <!-- CHASIS Y ESTRUCTURA -->
-              <path d="M 20 0 L 380 0 L 400 20 L 400 280 L 380 300 L 20 300 L 0 280 L 0 20 Z" fill="none" stroke={colorHex} stroke-width="3" filter="url(#glow)"/>
+              <path class="animate-ambient" d="M 20 0 L 380 0 L 400 20 L 400 280 L 380 300 L 20 300 L 0 280 L 0 20 Z" fill="none" stroke={colorHex} stroke-width="3" filter="url(#glow)"/>
               <path d="M 25 10 L 375 10 L 390 25 L 390 275 L 375 290 L 25 290 L 10 275 L 10 25 Z" fill="none" stroke={colorHex} stroke-width="1" opacity="0.4"/>
               
               <path d="M 40 300 L 60 320 L 100 320 L 100 300 Z" fill="#111" stroke={colorHex} stroke-width="1.5" />
@@ -179,22 +252,22 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
               <!-- VENTILADORES FRONTALES -->
               <g opacity="0.5">
-                <g class="fan-spin" style="transform-origin: 366px 80px;">
+                <g class="fan-spin" style="transform-origin: 366px 80px; animation-duration: 4s;">
                   <circle cx="366" cy="80" r="16" fill="none" stroke={colorHex} stroke-width="1" opacity="0.3"/>
                   <path d="M 366 64 L 366 96 M 350 80 L 382 80 M 355 69 L 377 91 M 355 91 L 377 69" stroke={colorHex} stroke-width="1.5" opacity="0.5"/>
                 </g>
-                <g class="fan-spin" style="transform-origin: 366px 145px;">
+                <g class="fan-spin" style="transform-origin: 366px 145px; animation-duration: 4.6s;">
                   <circle cx="366" cy="145" r="16" fill="none" stroke={colorHex} stroke-width="1" opacity="0.3"/>
                   <path d="M 366 129 L 366 161 M 350 145 L 382 145 M 355 134 L 377 156 M 355 156 L 377 134" stroke={colorHex} stroke-width="1.5" opacity="0.5"/>
                 </g>
-                <g class="fan-spin" style="transform-origin: 366px 210px;">
+                <g class="fan-spin" style="transform-origin: 366px 210px; animation-duration: 4.3s;">
                   <circle cx="366" cy="210" r="16" fill="none" stroke={colorHex} stroke-width="1" opacity="0.3"/>
                   <path d="M 366 194 L 366 226 M 350 210 L 382 210 M 355 199 L 377 221 M 355 221 L 377 199" stroke={colorHex} stroke-width="1.5" opacity="0.5"/>
                 </g>
               </g>
 
               <!-- ESTELAS DE VIENTO HORIZONTALES (Hacia atrás) -->
-              <g stroke="#00ffff" stroke-width="1.2" fill="none" stroke-linecap="round">
+              <g stroke="url(#windGradient)" stroke-width="1.3" fill="none" stroke-linecap="round" filter="url(#softGlow)">
                 <!-- Viento superior -->
                 <path d="M 340 80 Q 250 82 150 75" class="animate-breeze" style="animation-delay: 0s;" opacity="0"/>
                 <!-- Viento medio -->
@@ -230,7 +303,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
                     <text x={gpuWidthSvg / 2} y="24" fill="white" font-family="Orbitron" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="0.5">{gpu.brand} {gpu.model}</text>
 
                     <!-- MINI TORBELLINOS DE CALOR HACIA ABAJO -->
-                    <g stroke={colorHex} stroke-width="1.2" fill="none" stroke-linecap="round">
+                    <g stroke="url(#heatGradient)" stroke-width="1.3" fill="none" stroke-linecap="round">
                       {whirlwinds.map((_, i) => {
                         const startX = 25 + i * 50;
                         const delay = i * 0.6; // Desfase para que no bajen todos a la vez
@@ -262,12 +335,12 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
         <!-- PANEL LATERAL: DIAGNÓSTICO Y ESCÁNER DE TIENDAS -->
         <div class="flex flex-col gap-4">
           
-          <div class="bg-[#0a0a0c] border border-white/5 rounded-[24px] p-6 shadow-xl relative overflow-hidden">
+          <div class="bg-[#0a0a0c] border border-white/5 rounded-[24px] p-6 shadow-xl relative overflow-hidden animate-reveal" style="animation-delay: 0.12s;">
             <div class="absolute top-0 left-0 w-full h-1" style={`background-color: ${colorHex}`}></div>
             
             <div class="flex items-center gap-3 mb-6">
               <span class="relative flex h-3 w-3">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={`background-color: ${colorHex}`}></span>
+                <span class="animate-status-pulse absolute inline-flex h-full w-full rounded-full" style={`background-color: ${colorHex}`}></span>
                 <span class="relative inline-flex rounded-full h-3 w-3" style={`background-color: ${colorHex}`}></span>
               </span>
               <h2 class="font-orbitron font-bold tracking-widest text-sm uppercase" style={`color: ${colorHex}`}>
@@ -287,7 +360,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
             </div>
           </div>
 
-          <div class="bg-[#0a0a0c] border border-white/5 rounded-[24px] p-6 shadow-2xl flex flex-col justify-between flex-1">
+          <div class="bg-[#0a0a0c] border border-white/5 rounded-[24px] p-6 shadow-2xl flex flex-col justify-between flex-1 animate-reveal" style="animation-delay: 0.22s;">
             <h3 class="font-orbitron text-xs tracking-[0.2em] text-slate-400 mb-4 uppercase">
               ESCÁNER DE DISPONIBILIDAD:
             </h3>

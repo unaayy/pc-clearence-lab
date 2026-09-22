@@ -603,5 +603,119 @@
       "has12VHPWR": true,
       "formFactor": "ATX"
     }
+  ],
+  "motherboards": [
+    {
+      "id": "msi-mag-b650-tomahawk",
+      "brand": "MSI",
+      "model": "MAG B650 TOMAHAWK WIFI",
+      "slug": "msi-mag-b650-tomahawk-wifi",
+      "socket": "AM5",
+      "formFactor": "ATX"
+    },
+    {
+      "id": "asus-rog-strix-z790-e",
+      "brand": "ASUS",
+      "model": "ROG STRIX Z790-E GAMING WIFI",
+      "slug": "asus-rog-strix-z790-e-gaming",
+      "socket": "LGA1700",
+      "formFactor": "ATX"
+    },
+    {
+      "id": "gigabyte-b650-aorus-elite",
+      "brand": "Gigabyte",
+      "model": "B650 AORUS ELITE AX",
+      "slug": "gigabyte-b650-aorus-elite-ax",
+      "socket": "AM5",
+      "formFactor": "ATX"
+    },
+    {
+      "id": "msi-pro-z790-p",
+      "brand": "MSI",
+      "model": "PRO Z790-P WIFI",
+      "slug": "msi-pro-z790-p-wifi",
+      "socket": "LGA1700",
+      "formFactor": "ATX"
+    },
+    {
+      "id": "asus-rog-strix-b650e-i",
+      "brand": "ASUS",
+      "model": "ROG STRIX B650E-I GAMING WIFI",
+      "slug": "asus-rog-strix-b650e-i",
+      "socket": "AM5",
+      "formFactor": "Mini-ITX"
+    }
+  ],
+  "rams": [
+    {
+      "id": "corsair-vengeance-rgb-ddr5-6000",
+      "brand": "Corsair",
+      "model": "Vengeance RGB DDR5 6000MHz 32GB",
+      "slug": "corsair-vengeance-rgb-ddr5-6000-32gb",
+      "type": "DDR5",
+      "modules": "2x16GB",
+      "speed": 6000
+    },
+    {
+      "id": "gskill-trident-z5-neo-rgb-6000",
+      "brand": "G.Skill",
+      "model": "Trident Z5 Neo RGB 6000MHz 32GB",
+      "slug": "gskill-trident-z5-neo-rgb-6000-32gb",
+      "type": "DDR5",
+      "modules": "2x16GB",
+      "speed": 6000
+    },
+    {
+      "id": "kingston-fury-beast-ddr5-5600",
+      "brand": "Kingston",
+      "model": "FURY Beast DDR5 5600MHz 32GB",
+      "slug": "kingston-fury-beast-ddr5-5600-32gb",
+      "type": "DDR5",
+      "modules": "2x16GB",
+      "speed": 5600
+    },
+    {
+      "id": "teamgroup-delta-rgb-ddr5-6400",
+      "brand": "TeamGroup",
+      "model": "T-Force Delta RGB 6400MHz 32GB",
+      "slug": "teamgroup-delta-rgb-ddr5-6400-32gb",
+      "type": "DDR5",
+      "modules": "2x16GB",
+      "speed": 6400
+    }
+  ],
+  "storages": [
+    {
+      "id": "samsung-990-pro-2tb",
+      "brand": "Samsung",
+      "model": "990 PRO 2TB",
+      "slug": "samsung-990-pro-2tb",
+      "type": "NVMe M.2 Gen4",
+      "capacityGB": 2000
+    },
+    {
+      "id": "wd-black-sn850x-2tb",
+      "brand": "Western Digital",
+      "model": "WD Black SN850X 2TB",
+      "slug": "wd-black-sn850x-2tb",
+      "type": "NVMe M.2 Gen4",
+      "capacityGB": 2000
+    },
+    {
+      "id": "crucial-t700-2tb",
+      "brand": "Crucial",
+      "model": "T700 2TB",
+      "slug": "crucial-t700-2tb",
+      "type": "NVMe M.2 Gen5",
+      "capacityGB": 2000
+    },
+    {
+      "id": "lexar-nm790-2tb",
+      "brand": "Lexar",
+      "model": "NM790 2TB",
+      "slug": "lexar-nm790-2tb",
+      "type": "NVMe M.2 Gen4",
+      "capacityGB": 2000
+    }
   ]
 }
