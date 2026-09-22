@@ -5,19 +5,27 @@ import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
 // 1. GENERADOR DE RUTAS (REQUERIDO POR ASTRO EN MODO ESTÁTICO)
+// En src/pages/[psuSlug]-vs-[gpuSlug]-vs-[cpuSlug].astro
+
 export async function getStaticPaths() {
-  // ATENCIÓN: Para que el build no tarde horas, generamos un límite seguro.
-  // Si tienes 6000 cajas y 6000 GPUs, son 36 millones de combinaciones.
-  const cases = casesData.slice(0, 100); 
-  const gpus = gpusData.slice(0, 100);
+  // Reducimos a 10 elementos por tipo para mantener el build por debajo de 1.000 páginas estáticas
+  const psus = psusData.slice(0, 10);
+  const gpus = gpusData.slice(0, 10);
+  const cpus = cpusData.slice(0, 10);
 
   const paths = [];
-  for (const pcCase of cases) {
+  for (const psu of psus) {
     for (const gpu of gpus) {
-      paths.push({
-        params: { caseSlug: pcCase.slug, gpuSlug: gpu.slug },
-        props: { pcCase, gpu }
-      });
+      for (const cpu of cpus) {
+        paths.push({
+          params: { 
+            psuSlug: psu.slug, 
+            gpuSlug: gpu.slug, 
+            cpuSlug: cpu.slug 
+          },
+          props: { psu, gpu, cpu }
+        });
+      }
     }
   }
   return paths;
