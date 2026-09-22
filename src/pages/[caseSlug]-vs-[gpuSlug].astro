@@ -4,60 +4,55 @@ import gpusData from '../data/gpus.json';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
-// 1. GENERADOR DE RUTAS (REQUERIDO POR ASTRO EN MODO ESTÁTICO)
-// En src/pages/[psuSlug]-vs-[gpuSlug]-vs-[cpuSlug].astro
-
+// 1. GENERADOR DE RUTAS (pSEO)
 export async function getStaticPaths() {
-  // Reducimos a 10 elementos por tipo para mantener el build por debajo de 1.000 páginas estáticas
-  const psus = psusData.slice(0, 10);
-  const gpus = gpusData.slice(0, 10);
-  const cpus = cpusData.slice(0, 10);
+  const cases = casesData && casesData.length > 0 ? casesData.slice(0, 50) : [];
+  const gpus = gpusData && gpusData.length > 0 ? gpusData.slice(0, 50) : [];
 
   const paths = [];
-  for (const psu of psus) {
+  for (const pcCase of cases) {
     for (const gpu of gpus) {
-      for (const cpu of cpus) {
-        paths.push({
-          params: { 
-            psuSlug: psu.slug, 
-            gpuSlug: gpu.slug, 
-            cpuSlug: cpu.slug 
-          },
-          props: { psu, gpu, cpu }
-        });
-      }
+      paths.push({
+        params: { caseSlug: pcCase.slug, gpuSlug: gpu.slug },
+        props: { pcCase, gpu }
+      });
     }
   }
   return paths;
 }
 
-// 2. DATOS ACTUALES Y LÓGICA DE CÁLCULO (Intactos)
+// 2. RECUPERAR DATOS DE LA COMBINACIÓN ACTUAL
 const { pcCase, gpu } = Astro.props;
 
+if (!pcCase || !gpu) {
+  return Astro.redirect('/404');
+}
+
+// 3. CÁLCULOS Y ESTADOS (Intactos)
 const caseMaxLength = pcCase.maxGpuLengthMM || pcCase.maxGpuLength || 350;
 const gpuLength = gpu.dimensions?.lengthMM || gpu.length || gpu.lengthMM || 300;
 
 const margin = caseMaxLength - gpuLength;
 
-// Determinación de estado (Verde, Amarillo, Rojo)
 let status = 'verde';
-let colorHex = '#10b981'; // Emerald
+let colorHex = '#10b981';
 let statusText = 'COMPATIBILIDAD ÓPTIMA';
 let statusMessage = 'HOLGURA CONFIRMADA';
 
 if (margin < 0) {
   status = 'rojo';
-  colorHex = '#f43f5e'; // Rose
+  colorHex = '#f43f5e';
   statusText = 'INCOMPATIBILIDAD FÍSICA';
   statusMessage = 'COLISIÓN FRONTAL INMINENTE';
 } else if (margin <= 15) {
   status = 'amarillo';
-  colorHex = '#fbbf24'; // Amber
+  colorHex = '#fbbf24';
   statusText = 'COMPATIBILIDAD AJUSTADA';
   statusMessage = 'ESPACIO EXTREMADAMENTE REDUCIDO';
 }
 
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
+
 ---
 <html lang="es">
   <head>
