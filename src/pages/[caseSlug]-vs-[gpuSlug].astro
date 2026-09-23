@@ -53,6 +53,61 @@ if (margin < 0) {
 
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
+// 4. SEO: nombres normalizados y respuestas dinámicas (FAQ / meta / schema.org)
+// Se derivan de los mismos cálculos de arriba, así que no hay lógica duplicada.
+const gpuFullName = `${gpu.brand} ${gpu.model}`;
+const caseFullName = `${pcCase.brand} ${pcCase.model}`;
+const marginLabel = margin > 0 ? `+${margin}mm` : `${margin}mm`;
+
+const faqAnswerFit =
+  status === 'verde'
+    ? `Sí. La ${gpuFullName} (${gpuLength}mm) entra sin problema en la ${caseFullName}, que admite hasta ${caseMaxLength}mm. Quedan ${margin}mm libres, holgura suficiente para un montaje cómodo y un buen flujo de aire frontal.`
+    : status === 'amarillo'
+    ? `Entra, pero muy justa. La ${gpuFullName} mide ${gpuLength}mm y la ${caseFullName} admite hasta ${caseMaxLength}mm, dejando solo ${margin}mm de margen. Recomendamos medir dos veces antes de comprar y revisar la gestión de cables.`
+    : `No. La ${gpuFullName} (${gpuLength}mm) supera en ${Math.abs(margin)}mm la longitud máxima admitida por la ${caseFullName} (${caseMaxLength}mm). Necesitarás una caja de mayor formato o una gráfica más corta.`;
+
+const radiatorMargin = margin - 25;
+const faqAnswerRadiator =
+  radiatorMargin > 0
+    ? `Sí, quedarían aproximadamente ${radiatorMargin}mm libres tras descontar el hueco que ocupan los ventiladores frontales (25mm), suficiente para un radiador AIO en la mayoría de los casos.`
+    : `No es recomendable. Una vez descontado el espacio de los ventiladores frontales (25mm), el margen real es insuficiente (${radiatorMargin}mm), por lo que un radiador AIO frontal probablemente no encaje junto a esta gráfica.`;
+
+const metaDescription = `${gpuFullName} (${gpuLength}mm) vs ${caseFullName} (máx. ${caseMaxLength}mm): margen de ${marginLabel}. ${statusText.toLowerCase()}, análisis y tiendas donde comprar.`;
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: `¿Cabe la ${gpuFullName} en la ${caseFullName}?`,
+      acceptedAnswer: { '@type': 'Answer', text: faqAnswerFit },
+    },
+    {
+      '@type': 'Question',
+      name: `¿Cuánto margen queda entre la ${gpuFullName} y el frontal del chasis?`,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: `El margen total es de ${marginLabel}, resultado de restar la longitud de la tarjeta (${gpuLength}mm) a la longitud máxima admitida por el chasis (${caseMaxLength}mm).`,
+      },
+    },
+    {
+      '@type': 'Question',
+      name: `¿Puedo instalar un radiador AIO en el frontal con esta gráfica montada?`,
+      acceptedAnswer: { '@type': 'Answer', text: faqAnswerRadiator },
+    },
+  ],
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://www.lidunax.com/' },
+    { '@type': 'ListItem', position: 2, name: `${caseFullName} vs ${gpuFullName}`, item: canonicalURL.toString() },
+  ],
+};
+
 ---
 <html lang="es">
   <head>
@@ -60,12 +115,33 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>¿Entra la {gpu.brand} {gpu.model} en la caja {pcCase.brand} {pcCase.model}? - LIDUNAX</title>
     <link rel="icon" type="image/png" href="/logo2.png?v=5" />
-    <meta name="description" content={`Comprueba la compatibilidad física: La gráfica ${gpu.model} mide ${gpuLength}mm. Descubre si cabe en el chasis ${pcCase.model} (máximo ${caseMaxLength}mm).`} />
+    <meta name="description" content={metaDescription} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="author" content="LIDUNAX" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="LIDUNAX" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content={`¿Entra la ${gpuFullName} en la ${caseFullName}? - LIDUNAX`} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content="https://www.lidunax.com/logo2.png" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`¿Entra la ${gpuFullName} en la ${caseFullName}?`} />
+    <meta name="twitter:description" content={metaDescription} />
+    <meta name="twitter:image" content="https://www.lidunax.com/logo2.png" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="canonical" href={canonicalURL} />
+
+    <!-- Datos estructurados: mejoran la aparición en resultados enriquecidos de Google -->
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
   </head>
 
   <body class="bg-[#050507] text-white min-h-screen font-sans selection:bg-[#00ffff] selection:text-black">
@@ -248,7 +324,32 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
               <rect x="382" y="40" width="10" height="220" fill="none" stroke={colorHex} stroke-width="1" stroke-dasharray="4 4" opacity="0.3"/>
               
               <rect x="25" y="30" width="220" height="190" rx="4" fill="none" stroke="white" stroke-width="1" stroke-opacity="0.15"/>
-              <text x="35" y="50" fill="#555" font-family="Orbitron" font-size="10" letter-spacing="1">MOTHERBOARD ATX</text>
+              <text x="35" y="48" fill="#444" font-family="Orbitron" font-size="9" letter-spacing="1.5">CHASIS</text>
+              {(() => {
+                // Mismo criterio de ajuste que en el nombre de la GPU: la fuente
+                // se reduce si el nombre del chasis es demasiado largo para su hueco.
+                const caseLabelAvailableWidth = 195;
+                const caseLabelBaseFontSize = 11;
+                const caseLabelAvgCharWidth = 0.58;
+                const caseLabelEstWidth = caseFullName.length * caseLabelBaseFontSize * caseLabelAvgCharWidth;
+                const caseLabelFontSize =
+                  caseLabelEstWidth > caseLabelAvailableWidth
+                    ? Math.max(6.5, (caseLabelAvailableWidth / caseFullName.length) / caseLabelAvgCharWidth)
+                    : caseLabelBaseFontSize;
+                return (
+                  <text
+                    x="35"
+                    y="68"
+                    fill="#9ca3af"
+                    font-family="Orbitron"
+                    font-size={caseLabelFontSize}
+                    font-weight="600"
+                    letter-spacing="0.5"
+                    textLength={caseLabelEstWidth > caseLabelAvailableWidth ? caseLabelAvailableWidth : undefined}
+                    lengthAdjust="spacingAndGlyphs"
+                  >{caseFullName}</text>
+                );
+              })()}
 
               <!-- VENTILADORES FRONTALES -->
               <g opacity="0.5">
@@ -287,6 +388,23 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
                 // Calculamos cuántos mini-torbellinos caben bajo la GPU
                 const whirlwinds = Array.from({ length: Math.floor(gpuWidthSvg / 50) });
 
+                // Ajuste tipográfico del nombre de la GPU: la caja y el tamaño de
+                // fuente se recalculan según la longitud del texto para que nunca
+                // sobresalga del recuadro, sea cual sea la combinación de marca/modelo.
+                const gpuLabelPadding = 20;
+                const gpuLabelAvailableWidth = Math.max(gpuWidthSvg - 30, 60);
+                const gpuLabelBaseFontSize = 11;
+                const gpuLabelAvgCharWidth = 0.62; // ancho medio aproximado por carácter en Orbitron bold
+                const gpuLabelEstWidth = gpuFullName.length * gpuLabelBaseFontSize * gpuLabelAvgCharWidth;
+                const gpuLabelFontSize =
+                  gpuLabelEstWidth > gpuLabelAvailableWidth
+                    ? Math.max(6.5, (gpuLabelAvailableWidth / gpuFullName.length) / gpuLabelAvgCharWidth)
+                    : gpuLabelBaseFontSize;
+                const gpuLabelBoxWidth = Math.min(
+                  gpuLabelAvailableWidth + gpuLabelPadding,
+                  Math.max(140, gpuLabelEstWidth + gpuLabelPadding)
+                );
+
                 return (
                   <g transform="translate(15, 170)">
                     
@@ -299,8 +417,19 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
                     <rect x="0" y="0" width={gpuWidthSvg} height="40" rx="4" fill="#0d1117" stroke={colorHex} stroke-width="2" filter="url(#glow)"/>
                     <rect x="15" y="10" width={gpuWidthSvg - 30} height="20" fill="url(#dotPattern)" />
                     
-                    <rect x={(gpuWidthSvg / 2) - 110} y="10" width="220" height="20" fill="#0d1117" rx="2" />
-                    <text x={gpuWidthSvg / 2} y="24" fill="white" font-family="Orbitron" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="0.5">{gpu.brand} {gpu.model}</text>
+                    <rect x={(gpuWidthSvg / 2) - (gpuLabelBoxWidth / 2)} y="10" width={gpuLabelBoxWidth} height="20" fill="#0d1117" rx="2" />
+                    <text
+                      x={gpuWidthSvg / 2}
+                      y="24"
+                      fill="white"
+                      font-family="Orbitron"
+                      font-size={gpuLabelFontSize}
+                      font-weight="bold"
+                      text-anchor="middle"
+                      letter-spacing="0.5"
+                      textLength={gpuLabelEstWidth > gpuLabelAvailableWidth ? gpuLabelAvailableWidth : undefined}
+                      lengthAdjust="spacingAndGlyphs"
+                    >{gpuFullName}</text>
 
                     <!-- MINI TORBELLINOS DE CALOR HACIA ABAJO -->
                     <g stroke="url(#heatGradient)" stroke-width="1.3" fill="none" stroke-linecap="round">
@@ -427,6 +556,18 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
           Al instalar la <strong class="text-white">{gpu.brand} {gpu.model}</strong> (longitud de <strong class="text-[#00ffff]">{gpuLength} mm</strong>) dentro del chasis <strong class="text-white">{pcCase.brand} {pcCase.model}</strong>, el espacio frontal restante es de <strong>{margin > 0 ? `+${margin}` : margin} mm</strong>.
         </p>
 
+        <p class="mb-6">
+          Este cálculo compara la longitud física máxima que admite el chasis <strong class="text-white">{pcCase.brand} {pcCase.model}</strong> con la longitud total de la <strong class="text-white">{gpu.brand} {gpu.model}</strong>, incluyendo el espacio que ocupa el propio blindaje (shroud) de la tarjeta. No es solo una cuestión de si "cabe" o no: un margen ajustado también condiciona la refrigeración, ya que reduce el volumen de aire que pueden mover los ventiladores frontales antes de toparse con el final de la gráfica.
+        </p>
+
+        <p class="mb-6">
+          Con un margen de <strong style={`color: ${colorHex}`}>{marginLabel}</strong>, {status === 'verde'
+            ? 'la instalación no debería presentar complicaciones y hay recorrido de sobra para futuras actualizaciones de gráfica dentro de la misma caja.'
+            : status === 'amarillo'
+            ? 'el montaje requiere cierta paciencia: conviene retirar los paneles frontales, comprobar la posición exacta de los ventiladores y, si es posible, medir el hueco real con la caja delante antes de la compra.'
+            : 'no recomendamos forzar la instalación. Ampliar el chasis o reducir la longitud de la gráfica son las únicas soluciones fiables; forzar el montaje puede dañar el conector de alimentación o el propio PCB.'}
+        </p>
+
         <div class="bg-[#111] border border-white/10 rounded-xl p-5 mb-6">
           <strong class="font-orbitron text-[11px] text-white tracking-widest uppercase mb-2 block">GESTIÓN DE CABLEADO (12VHPWR):</strong>
           <p class="text-sm">
@@ -451,6 +592,34 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
             </li>
           )}
         </ul>
+      </div>
+
+      <!-- PREGUNTAS FRECUENTES (coincide con el FAQPage schema del <head>) -->
+      <h2 class="text-2xl font-bold font-orbitron mb-6">Preguntas Frecuentes</h2>
+      <div class="bg-[#0a0a0c] border border-white/5 rounded-[20px] mb-16 divide-y divide-white/5">
+        <details class="group p-6 sm:p-8">
+          <summary class="cursor-pointer font-orbitron text-sm sm:text-base text-white list-none flex justify-between items-center gap-4">
+            ¿Cabe la {gpu.brand} {gpu.model} en la {pcCase.brand} {pcCase.model}?
+            <span class="text-slate-500 group-open:rotate-45 transition-transform text-xl leading-none shrink-0">+</span>
+          </summary>
+          <p class="text-slate-300 text-sm leading-relaxed mt-4">{faqAnswerFit}</p>
+        </details>
+        <details class="group p-6 sm:p-8">
+          <summary class="cursor-pointer font-orbitron text-sm sm:text-base text-white list-none flex justify-between items-center gap-4">
+            ¿Cuánto margen queda entre la gráfica y el frontal del chasis?
+            <span class="text-slate-500 group-open:rotate-45 transition-transform text-xl leading-none shrink-0">+</span>
+          </summary>
+          <p class="text-slate-300 text-sm leading-relaxed mt-4">
+            El margen total es de <strong style={`color: ${colorHex}`}>{marginLabel}</strong>, resultado de restar la longitud de la tarjeta ({gpuLength}mm) a la longitud máxima admitida por el chasis ({caseMaxLength}mm).
+          </p>
+        </details>
+        <details class="group p-6 sm:p-8">
+          <summary class="cursor-pointer font-orbitron text-sm sm:text-base text-white list-none flex justify-between items-center gap-4">
+            ¿Puedo instalar un radiador AIO en el frontal con esta gráfica montada?
+            <span class="text-slate-500 group-open:rotate-45 transition-transform text-xl leading-none shrink-0">+</span>
+          </summary>
+          <p class="text-slate-300 text-sm leading-relaxed mt-4">{faqAnswerRadiator}</p>
+        </details>
       </div>
 
     </main>

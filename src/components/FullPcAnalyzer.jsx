@@ -1,36 +1,112 @@
 import React, { useEffect, useState } from 'react';
 
-export default function FullPcAnalyzer({ db }) {
-  const [build, setBuild] = useState(null);
-  const [loading, setLoading] = useState(true);
+/**
+ * Resuelve la build seleccionada a partir de los datasets particionados y
+ * de un origen de parámetros compatible con la interfaz de URLSearchParams
+ * (tanto `window.location.search` en cliente como `Astro.url.searchParams`
+ * en el servidor exponen `.get(key)`, así que esta función sirve para ambos).
+ */
+export function resolveBuild(db, sp) {
+  if (!db || !sp) return null;
+  const getComp = (type, slug) => {
+    if (!db[type] || !slug) return undefined;
+    return db[type].find((c) => c.slug === slug);
+  };
+  return {
+    case: getComp('cases', sp.get('case')),
+    cpu: getComp('cpus', sp.get('cpu')),
+    gpu: getComp('gpus', sp.get('gpu')),
+    psu: getComp('psus', sp.get('psu')),
+    cooler: getComp('coolers', sp.get('cooler')),
+    mb: getComp('motherboards', sp.get('mb')),
+    ram: getComp('rams', sp.get('ram')),
+    storage: getComp('storage', sp.get('storage')),
+  };
+}
+
+/** Nombre limpio "Marca Modelo", omitiendo marcas genéricas. */
+export function formatName(comp) {
+  if (!comp) return null;
+  const brandName = comp.brand && !comp.brand.toLowerCase().includes('genér') ? comp.brand : '';
+  return `${brandName} ${comp.model}`.trim();
+}
+
+/**
+ * Título y descripción dinámicos para la pestaña/compartidos.
+ * Si la página que envuelve este componente es una ruta Astro, lo ideal es
+ * llamar a esta misma función en el frontmatter (con el build ya resuelto
+ * en el servidor vía `resolveBuild(db, Astro.url.searchParams)`) para
+ * escribir el <title> y el <meta name="description"> en el HTML servido,
+ * en vez de depender solo del useEffect de aquí abajo.
+ */
+export function getBuildSeoMeta(build) {
+  if (!build || (!build.cpu && !build.gpu && !build.case)) {
+    return {
+      title: 'Analizador de Compatibilidad de PC | LIDUNAX',
+      description:
+        'Comprueba si tu CPU, GPU, placa base, RAM, PSU, refrigeración y chasis son compatibles entre sí, y compra cada pieza en Amazon, PcComponentes o Coolmod.',
+    };
+  }
+  const parts = [build.cpu, build.gpu, build.case].filter(Boolean).map(formatName);
+  const label = parts.length ? parts.join(' + ') : 'tu configuración';
+  return {
+    title: `¿Es compatible ${label}? Analizador de PC | LIDUNAX`,
+    description: `Verificamos holguras físicas, socket, potencia y refrigeración de ${label}. Consulta el diagnóstico completo y compra cada pieza al mejor precio.`,
+  };
+}
+
+const ICONS = {
+  'PROCESADOR (CPU)': 'CPU',
+  'TARJETA GRÁFICA': 'GPU',
+  'PLACA BASE': 'MB',
+  REFRIGERACIÓN: 'RF',
+  'MEMORIA RAM': 'RAM',
+  ALMACENAMIENTO: 'SSD',
+  'FUENTE (PSU)': 'PSU',
+  'CHASIS / CAJA': 'PC',
+};
+
+const STORES = [
+  { key: 'amazon', name: 'Amazon ES', color: '#ff9900' },
+  { key: 'pcc', name: 'PcComponentes', color: '#ff6600' },
+  { key: 'coolmod', name: 'Coolmod', color: '#00bfff' },
+];
+
+export default function FullPcAnalyzer({ db, searchParams }) {
+  // Si el padre (Astro) ya nos pasa searchParams resueltos en el servidor,
+  // la build se calcula de forma síncrona en el primer render: no hace
+  // falta esperar a un useEffect ni mostrar el spinner, y el HTML que
+  // reciben los buscadores ya contiene el contenido real.
+  const [build, setBuild] = useState(() => (searchParams ? resolveBuild(db, searchParams) : null));
+  const [loading, setLoading] = useState(!searchParams);
 
   useEffect(() => {
+    if (searchParams) return; // ya resuelto arriba de forma síncrona
     try {
       if (typeof window === 'undefined') return;
       const params = new URLSearchParams(window.location.search);
-      
-      // Failsafe seguro para buscar en los datasets particionados
-      const getComp = (type, slug) => {
-        if (!db || !db[type] || !slug) return undefined;
-        return db[type].find(c => c.slug === slug);
-      };
-
-      setBuild({
-        case: getComp('cases', params.get('case')),
-        cpu: getComp('cpus', params.get('cpu')),
-        gpu: getComp('gpus', params.get('gpu')),
-        psu: getComp('psus', params.get('psu')),
-        cooler: getComp('coolers', params.get('cooler')),
-        mb: getComp('motherboards', params.get('mb')),
-        ram: getComp('rams', params.get('ram')),
-        storage: getComp('storage', params.get('storage')), // Corregido: 'storage' en singular
-      });
+      setBuild(resolveBuild(db, params));
       setLoading(false);
     } catch (error) {
-      console.error("Error cargando telemetría:", error);
+      console.error('Error cargando telemetría:', error);
       setLoading(false);
     }
-  }, [db]);
+  }, [db, searchParams]);
+
+  // Mejora progresiva: si nadie ha fijado el <title>/<meta description> en
+  // el servidor, los actualizamos igualmente en cuanto conocemos la build.
+  useEffect(() => {
+    if (typeof document === 'undefined' || !build) return;
+    const { title, description } = getBuildSeoMeta(build);
+    document.title = title;
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc) {
+      metaDesc = document.createElement('meta');
+      metaDesc.setAttribute('name', 'description');
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.setAttribute('content', description);
+  }, [build]);
 
   if (loading || !build) {
     return (
@@ -56,12 +132,12 @@ export default function FullPcAnalyzer({ db }) {
   const caseWidthCap = build.case?.maxCpuCoolerHeightMM || 165;
   const gpuWidth = build.gpu?.widthMM || 135;
   const cableClearance = caseWidthCap - gpuWidth;
-  
+
   // Semáforo del cable GPU vs Cristal
   let cableCritical = false;
-  let cableColorHex = '#10b981'; 
+  let cableColorHex = '#10b981';
   let cableDesc = 'Pendiente de GPU o Chasis';
-  
+
   if (build.gpu && build.case) {
     if (cableClearance < 20) {
       cableCritical = true;
@@ -104,6 +180,38 @@ export default function FullPcAnalyzer({ db }) {
   const gpuX = 60;
   const connectorX = gpuX + gpuWidthSvg - 30;
 
+  // Checklist de compatibilidad — se define una sola vez y se reutiliza en
+  // el panel HUD lateral y en la tabla de resumen del final de la página.
+  const complianceChecks = [
+    {
+      key: 'gpu',
+      t: 'HOLGURA LONGITUD (GPU)',
+      ok: gpuOk,
+      c: gpuOk ? '#10b981' : '#f43f5e',
+      d: build.gpu && build.case
+        ? caseMaxGpu > 0
+          ? `Longitud: ${gpuLen}mm | Máx: ${caseMaxGpu}mm`
+          : `Longitud: ${gpuLen}mm | Máx: sin dato (asumido compatible)`
+        : 'Pendiente',
+    },
+    { key: 'cable', t: 'CABLEADO Y CRISTAL (ANCHO)', ok: !cableCritical, c: cableColorHex, d: cableDesc },
+    {
+      key: 'power',
+      t: 'SUMINISTRO ENERGÉTICO',
+      ok: psuOk,
+      c: psuOk ? '#10b981' : '#f43f5e',
+      d: build.psu ? `Demanda: ${reqPower}W | PSU: ${psuPower}W` : 'Pendiente',
+    },
+    { key: 'cooling', t: 'ESPACIO REFRIGERACIÓN', ok: coolerOk, c: coolerOk ? '#10b981' : '#f43f5e', d: coolerDesc },
+    {
+      key: 'socket',
+      t: 'COMPATIBILIDAD SOCKET',
+      ok: socketOk,
+      c: socketOk ? '#10b981' : '#f43f5e',
+      d: build.cpu && build.mb ? (socketOk ? 'LGA/AM Coincidente' : 'Incompatible') : 'Pendiente',
+    },
+  ];
+
   // --- 2. GENERADOR DE ENLACES PARA TIENDAS ---
   const selectedComponents = [
     { label: 'PROCESADOR (CPU)', data: build.cpu },
@@ -114,7 +222,7 @@ export default function FullPcAnalyzer({ db }) {
     { label: 'ALMACENAMIENTO', data: build.storage },
     { label: 'FUENTE (PSU)', data: build.psu },
     { label: 'CHASIS / CAJA', data: build.case },
-  ].filter(c => c.data);
+  ].filter((c) => c.data);
 
   const getStoreLink = (store, item) => {
     if (!item || !item.model) return '#';
@@ -126,54 +234,112 @@ export default function FullPcAnalyzer({ db }) {
     return '#';
   };
 
-  // Helper para mostrar nombres limpios en el inventario
-  const formatName = (comp) => {
-    if (!comp) return null;
-    const brandName = comp.brand && !comp.brand.toLowerCase().includes('genér') ? comp.brand : '';
-    return `${brandName} ${comp.model}`.trim();
-  };
-
   // --- 3. GENERACIÓN DE TEXTOS SEO NARRATIVOS ---
   const physicalText = gpuOk && !cableCritical
     ? `La arquitectura interna del chasis ${formatName(build.case) || ''} proporciona una holgura verificada para la gráfica ${formatName(build.gpu) || ''}. Con ${caseMaxGpu - gpuLen}mm de margen de tolerancia frontal y ${Math.round(cableClearance)}mm laterales, se asegura el cierre hermético del panel de cristal templado sin flexionar en exceso el conector de alimentación principal 12VHPWR.`
-    : build.gpu && build.case 
-    ? `RIESGO DE COLISIÓN: Las cotas de la tarjeta gráfica (${gpuLen}mm de largo y ${gpuWidth}mm de ancho) entran en conflicto directo con los límites físicos del habitáculo del chasis. Se imposibilitará la instalación correcta o el enrutamiento seguro de los cables de potencia PCIe.` 
+    : build.gpu && build.case
+    ? `RIESGO DE COLISIÓN: Las cotas de la tarjeta gráfica (${gpuLen}mm de largo y ${gpuWidth}mm de ancho) entran en conflicto directo con los límites físicos del habitáculo del chasis. Se imposibilitará la instalación correcta o el enrutamiento seguro de los cables de potencia PCIe.`
     : 'Faltan datos de chasis o tarjeta gráfica para realizar el cálculo de holgura volumétrica.';
 
-  const thermalText = coolerOk 
+  const thermalText = coolerOk
     ? `El perfil térmico del sistema está asegurado. La solución ${formatName(build.cooler) || ''} se integra perfectamente. Esto asegura que la CPU ${formatName(build.cpu) || ''} mantenga frecuencias de reloj óptimas (boost clocks) constantes, evitando el temido 'thermal throttling' y prolongando la vida útil del silicio al disipar los ${cpuTdp}W de TDP.`
-    : build.cooler && build.case 
+    : build.cooler && build.case
     ? `CONFLICTO TÉRMICO: El sistema de refrigeración seleccionado supera las cotas de tolerancia de la caja. El panel lateral no podrá cerrarse o no existen anclajes compatibles para el radiador requerido.`
     : 'Datos térmicos insuficientes para elaborar el pronóstico de disipación de calor.';
 
-  const powerText = psuOk 
+  const powerText = psuOk
     ? `La topología eléctrica está garantizada por la fuente ${formatName(build.psu) || ''}. Tras cruzar las curvas de consumo, calculamos una demanda pico de ${reqPower}W frente a los ${psuPower}W de entrega nominal. Este generoso margen asegura eficiencia óptima y evita apagones por picos transitorios (power spikes).`
-    : build.psu 
+    : build.psu
     ? `DÉFICIT ENERGÉTICO: La capacidad de ${psuPower}W es insuficiente para sostener los picos requeridos (${reqPower}W). Riesgo inminente de activación de los sistemas de protección (OCP/OPP).`
     : 'Análisis de demanda energética suspendido por ausencia de unidad de suministro (PSU).';
 
   const platformText = socketOk && build.mb && build.cpu
     ? `La interconexión central (bus de datos) está correctamente emparejada. La placa base ${formatName(build.mb) || ''} alberga nativamente el procesador bajo el zócalo ${build.cpu?.socket || ''}, habilitando la transferencia ultrarrápida de datos PCI-Express hacia la memoria y la unidad de almacenamiento sólido NVMe M.2.`
-    : !socketOk 
+    : !socketOk
     ? `INCOMPATIBILIDAD ESTRUCTURAL: Intento de emparejar el procesador (${build.cpu?.socket}) con un zócalo incompatible en la placa base (${build.mb?.socket}). Imposible proceder con el ensamble.`
     : 'Faltan componentes de placa base o CPU para validar el ecosistema de procesamiento.';
 
+  // --- 4. PREGUNTAS FRECUENTES DINÁMICAS (contenido visible + FAQPage schema) ---
+  const faqPower = build.psu
+    ? psuOk
+      ? `Sí. Tu fuente de ${psuPower}W cubre con margen los ${reqPower}W de demanda pico estimada (TDP de CPU + GPU, más un 25% de margen de seguridad para picos transitorios).`
+      : `No es suficiente. Se estima una demanda pico de ${reqPower}W y tu fuente entrega ${psuPower}W. Te arriesgas a apagones por activación de las protecciones OCP/OPP; sube de gama de PSU.`
+    : 'Como regla general: suma el TDP de tu CPU y tu GPU, añade unos 80W para el resto de componentes, y multiplica el resultado por 1,25 para dejar margen a los picos de consumo transitorios.';
+
+  const faqSocket = build.cpu && build.mb
+    ? socketOk
+      ? `Sí. El procesador (${build.cpu.socket}) y la placa base (${build.mb.socket}) comparten el mismo zócalo, por lo que el montaje físico y eléctrico es correcto.`
+      : `No. El procesador usa socket ${build.cpu.socket} y la placa base es ${build.mb.socket}. Son físicamente incompatibles: no existe adaptador, tendrás que cambiar el procesador o la placa base.`
+    : 'El socket (zócalo) del procesador y el de la placa base deben coincidir exactamente (por ejemplo, LGA1700 o AM5). Si no coinciden, el procesador no encaja físicamente en la placa.';
+
+  const faqGpuFit = build.gpu && build.case
+    ? gpuOk
+      ? `Sí. Tu ${formatName(build.gpu)} mide ${gpuLen}mm y tu caja admite hasta ${caseMaxGpu}mm, dejando ${caseMaxGpu - gpuLen}mm libres.`
+      : `No. Tu ${formatName(build.gpu)} mide ${gpuLen}mm, mientras que el chasis solo admite hasta ${caseMaxGpu}mm. Faltan ${gpuLen - caseMaxGpu}mm de espacio.`
+    : 'Compara la longitud en milímetros de la gráfica (publicada por el fabricante) con la longitud máxima admitida por tu caja, un dato que suele aparecer en la ficha técnica del chasis como "Max GPU Length".';
+
+  const faqCable = build.gpu && build.case
+    ? cableDesc
+    : 'El grosor de la tarjeta gráfica y el hueco libre hasta el panel de cristal templado determinan si el conector de alimentación y sus cables caben sin forzarse. Con menos de 20mm de margen suele ser obligatorio usar un cable acodado a 90º.';
+
+  const faqCooler = build.cooler && build.case
+    ? coolerDesc
+    : 'Los disipadores de aire tipo torre deben respetar la altura máxima del chasis (normalmente entre 150 y 170mm), y los radiadores líquidos (AIO) deben caber en los anclajes frontales o superiores, habitualmente hasta 360mm.';
+
+  const faqItems = [
+    { q: `¿Cabe la ${build.gpu ? formatName(build.gpu) : 'tarjeta gráfica'} en la caja seleccionada?`, a: faqGpuFit },
+    { q: '¿Es suficiente mi fuente de alimentación (PSU)?', a: faqPower },
+    { q: '¿Coinciden el socket de la CPU y el de la placa base?', a: faqSocket },
+    { q: '¿Necesito un cable de alimentación acodado a 90º?', a: faqCable },
+    { q: '¿Qué refrigeración puedo instalar en este chasis?', a: faqCooler },
+  ];
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqItems.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  };
+
+  const itemListSchema = selectedComponents.length > 0
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        itemListElement: selectedComponents.map((c, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: `${c.label}: ${formatName(c.data)}`,
+        })),
+      }
+    : null;
+
+  const diagramTitle = `Diagrama del ensamblaje: ${build.case ? formatName(build.case) : 'chasis'} con ${build.cpu ? formatName(build.cpu) : 'CPU'} y ${build.gpu ? formatName(build.gpu) : 'GPU'}`;
+
   return (
     <div className="w-full font-sans animate-[fadeIn_0.5s_ease-out]">
-      
+
       <style>{`
         @keyframes flowReverse { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 24; } }
         .cable-fluid { stroke-dasharray: 12 12; animation: flowReverse 0.8s linear infinite; }
-        
+
         @keyframes liquidFlow { from { stroke-dashoffset: 8; } to { stroke-dashoffset: 0; } }
         .liquid-fluid { stroke-dasharray: 4 4; animation: liquidFlow 0.5s linear infinite; }
-        
+
         @keyframes liquidFlowReverse { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 8; } }
         .liquid-fluid-reverse { stroke-dasharray: 4 4; animation: liquidFlowReverse 0.5s linear infinite; }
-        
+
         @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .spin-slow { animation: spinSlow 3s linear infinite; }
       `}</style>
+
+      {/* Datos estructurados: mejoran la aparición en resultados enriquecidos de Google */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      {itemListSchema && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
+      )}
 
       {/* ENCABEZADO */}
       <div className="mb-10 text-center sm:text-left">
@@ -188,12 +354,13 @@ export default function FullPcAnalyzer({ db }) {
 
       {/* BLOQUE PRINCIPAL: DIBUJO (IZQ) Y VERIFICACIÓN (DER) */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 lg:gap-8 mb-16">
-        
+
         {/* DIAGRAMA VISUAL DEL PC */}
         <div className="relative bg-[#0a0a0c] border border-white/5 rounded-[24px] overflow-hidden min-h-[460px] flex items-center justify-center p-4 shadow-[inset_0_0_80px_rgba(0,0,0,0.8)]">
           <div className="absolute inset-0 opacity-[0.15]" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
-          
-          <svg viewBox="0 0 400 480" className="w-full max-w-[360px] max-h-[460px] relative z-10 drop-shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+
+          <svg role="img" aria-labelledby="pcDiagramTitle" viewBox="0 0 400 480" className="w-full max-w-[360px] max-h-[460px] relative z-10 drop-shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+            <title id="pcDiagramTitle">{diagramTitle}</title>
             <defs>
               <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
                 <feGaussianBlur stdDeviation="4" result="blur" />
@@ -208,7 +375,7 @@ export default function FullPcAnalyzer({ db }) {
             <g transform="translate(0, 0)">
               {/* CHASIS */}
               <rect x="40" y="30" width="320" height="420" rx="10" fill="#090d13" stroke={mainStatusColor} strokeWidth="2.5" filter="url(#glow)"/>
-              
+
               {/* PLACA BASE */}
               <rect x="60" y="60" width="220" height="240" rx="4" fill="#0d1117" stroke={build.mb ? '#00ffff' : '#333'} strokeWidth="1.5" strokeOpacity="0.5"/>
               <text x="170" y="290" fill="#555" fontFamily="Orbitron" fontSize="8" textAnchor="middle" letterSpacing="1">
@@ -281,12 +448,12 @@ export default function FullPcAnalyzer({ db }) {
               {build.gpu && (
                 <>
                   {build.psu && (
-                    <path 
+                    <path
                       d={`M 150 340 C 290 330, 310 240, ${connectorX} 175`}
-                      fill="none" 
-                      stroke={cableColorHex} 
-                      strokeWidth="3" 
-                      className="cable-fluid" 
+                      fill="none"
+                      stroke={cableColorHex}
+                      strokeWidth="3"
+                      className="cable-fluid"
                       filter="url(#glow)"
                     />
                   )}
@@ -330,47 +497,46 @@ export default function FullPcAnalyzer({ db }) {
 
         {/* PANEL LATERAL DE VERIFICACIÓN (DERECHA) */}
         <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-3 mb-2 px-1">
-            <span className="w-2 h-2 rounded-full bg-[#10b981] shadow-[0_0_8px_#10b981] animate-pulse"></span>
-            <h2 className="font-orbitron font-bold text-white uppercase tracking-widest text-sm">Auditoría HUD</h2>
+          <div className="flex items-center gap-2.5 mb-1 px-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00ffff]"></span>
+            <h2 className="font-orbitron font-bold text-white/80 uppercase tracking-[0.2em] text-xs">Auditoría HUD</h2>
           </div>
 
-          <div className="bg-[#0a0a0c] border border-white/5 rounded-[20px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.5)] relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1" style={{ backgroundColor: mainStatusColor, boxShadow: `0 0 20px ${mainStatusColor}` }}></div>
-            <div className="flex items-center gap-3 mb-2">
-              <h2 className="font-orbitron font-bold tracking-widest text-xs uppercase" style={{ color: mainStatusColor, textShadow: `0 0 15px ${mainStatusColor}` }}>
-                {statusMessage}
-              </h2>
+          {/* Estado general: eyebrow discreto + titular en blanco, sin glow ni barra neón */}
+          <div className="bg-[#0a0a0c] border border-white/5 rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-2.5">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full rounded-full opacity-50 animate-ping" style={{ backgroundColor: mainStatusColor }}></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: mainStatusColor }}></span>
+              </span>
+              <span className="font-orbitron text-[9px] tracking-[0.2em] uppercase" style={{ color: mainStatusColor }}>
+                {allClear ? 'Sistema verificado' : 'Revisión requerida'}
+              </span>
             </div>
-            <p className="text-slate-400 text-[11px] mt-2">Matriz de compatibilidad completada.</p>
+            <h2 className="font-orbitron font-bold tracking-wide text-[15px] text-white leading-snug">
+              {statusMessage}
+            </h2>
+            <p className="text-slate-500 text-[11px] mt-2">Matriz de compatibilidad completada.</p>
           </div>
 
-          <div className="flex flex-col gap-2.5">
-            {[
-              { t: 'HOLGURA LONGITUD (GPU)', ok: gpuOk, c: gpuOk ? '#10b981' : '#f43f5e', d: build.gpu && build.case ? `Longitud: ${gpuLen}mm | Máx: ${caseMaxGpu}mm` : 'Pendiente' },
-              { t: 'CABLEADO Y CRISTAL (ANCHO)', ok: !cableCritical, c: cableColorHex, d: cableDesc },
-              { t: 'SUMINISTRO ENERGÉTICO', ok: psuOk, c: psuOk ? '#10b981' : '#f43f5e', d: build.psu ? `Demanda: ${reqPower}W | PSU: ${psuPower}W` : 'Pendiente' },
-              { t: 'ESPACIO REFRIGERACIÓN', ok: coolerOk, c: coolerOk ? '#10b981' : '#f43f5e', d: coolerDesc },
-              { t: 'COMPATIBILIDAD SOCKET', ok: socketOk, c: socketOk ? '#10b981' : '#f43f5e', d: build.cpu && build.mb ? (socketOk ? `LGA/AM Coincidente` : `Incompatible`) : 'Pendiente' },
-            ].map((c, i) => (
-              <div key={i} className="relative bg-gradient-to-r from-white/[0.03] to-white/[0.01] border border-white/5 hover:border-white/10 rounded-[16px] p-3.5 flex items-center justify-between overflow-hidden group transition-all duration-300">
-                <div className="absolute left-0 top-0 bottom-0 w-1 transition-all duration-300 group-hover:w-1.5 opacity-80 group-hover:opacity-100" style={{ backgroundColor: c.c, boxShadow: `0 0 10px ${c.c}` }}></div>
-                <div className="pl-2.5 relative z-10 flex-1">
-                  <h3 className="font-orbitron text-[9px] tracking-[0.15em] font-bold uppercase mb-1" style={{ color: c.c }}>
+          {/* Checklist: badge tenue con icono, título neutro, sin bordes de color ni animaciones de giro */}
+          <div className="flex flex-col gap-2">
+            {complianceChecks.map((c) => (
+              <div key={c.key} className="bg-white/[0.02] hover:bg-white/[0.04] border border-white/5 hover:border-white/10 rounded-2xl px-4 py-3.5 flex items-center gap-3.5 transition-colors duration-200">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${c.c}1f` }}>
+                  {c.ok ? (
+                    <svg className="w-3.5 h-3.5" style={{ color: c.c }} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" /></svg>
+                  ) : (
+                    <svg className="w-3.5 h-3.5" style={{ color: c.c }} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-orbitron text-[9.5px] tracking-[0.14em] font-bold uppercase text-white/80 mb-0.5">
                     {c.t}
                   </h3>
-                  <p className="text-slate-300 text-[10px] font-mono leading-relaxed pr-2">
+                  <p className="text-slate-400 text-[11px] font-mono leading-relaxed">
                     {c.d}
                   </p>
-                </div>
-                <div className="relative w-8 h-8 rounded-full flex items-center justify-center shrink-0 z-10">
-                  <div className="absolute inset-0 rounded-full border-[1.5px] border-dashed opacity-40 group-hover:animate-[spin_4s_linear_infinite]" style={{ borderColor: c.c }}></div>
-                  <div className="absolute inset-1 rounded-full opacity-20" style={{ backgroundColor: c.c }}></div>
-                  {c.ok ? (
-                    <svg className="w-3.5 h-3.5 relative z-10" style={{ color: c.c }} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" /></svg>
-                  ) : (
-                    <svg className="w-3.5 h-3.5 relative z-10" style={{ color: c.c }} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
-                  )}
                 </div>
               </div>
             ))}
@@ -382,7 +548,7 @@ export default function FullPcAnalyzer({ db }) {
       {/* DISEÑO BENTO GRID: INVENTARIO */}
       <div className="mb-12 max-w-[1200px] mx-auto">
         <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">Inventario Paramétrico</h2>
-        
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { tag: '01 // CPU', v: build.cpu, sub: build.cpu ? `${build.cpu.tdp || 120}W TDP` : '' },
@@ -403,58 +569,50 @@ export default function FullPcAnalyzer({ db }) {
         </div>
       </div>
 
-      {/* CENTRAL DE ADQUISICIÓN / TIENDAS */}
+      {/* CENTRAL DE ADQUISICIÓN / TIENDAS — una fila por componente, tres tiendas siempre visibles */}
       {selectedComponents.length > 0 && (
         <div className="mb-16 max-w-[1200px] mx-auto">
-          <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">Central de Adquisición</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            {/* Tarjeta AMAZON */}
-            <div className="bg-[#0a0a0c] border border-white/5 rounded-[20px] p-6 shadow-lg hover:border-[#ff9900]/40 transition-colors group">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-2 h-2 rounded-full bg-[#ff9900] shadow-[0_0_8px_#ff9900]"></div>
-                <h3 className="font-orbitron font-bold text-[#ff9900] tracking-wider text-sm">AMAZON ES</h3>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {selectedComponents.map((comp, i) => (
-                  <a key={`az-${i}`} href={getStoreLink('amazon', comp.data)} target="_blank" rel="nofollow noopener noreferrer" className="px-3 py-1.5 bg-white/5 hover:bg-[#ff9900]/10 border border-white/10 hover:border-[#ff9900]/50 rounded-full text-[10px] font-orbitron tracking-wider text-slate-300 hover:text-white transition-all flex items-center gap-1.5">
-                    {comp.label} <span className="text-[#ff9900] opacity-70 group-hover:translate-x-0.5 transition-transform">→</span>
-                  </a>
-                ))}
-              </div>
-            </div>
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-6">
+            <h2 className="text-2xl font-bold font-orbitron uppercase tracking-widest text-white/90">Central de Adquisición</h2>
+            <p className="text-slate-500 text-xs sm:text-sm font-mono">
+              {selectedComponents.length} {selectedComponents.length === 1 ? 'componente' : 'componentes'} · 3 tiendas comparadas
+            </p>
+          </div>
+          <p className="text-slate-400 text-sm max-w-2xl mb-6">
+            Cada botón abre la búsqueda de esa tienda ya filtrada por marca y modelo exacto, para que no tengas que volver a escribir nada.
+          </p>
 
-            {/* Tarjeta PCCOMPONENTES */}
-            <div className="bg-[#0a0a0c] border border-white/5 rounded-[20px] p-6 shadow-lg hover:border-[#ff6600]/40 transition-colors group">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-2 h-2 rounded-full bg-[#ff6600] shadow-[0_0_8px_#ff6600]"></div>
-                <h3 className="font-orbitron font-bold text-[#ff6600] tracking-wider text-sm">PCCOMPONENTES</h3>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {selectedComponents.map((comp, i) => (
-                  <a key={`pc-${i}`} href={getStoreLink('pcc', comp.data)} target="_blank" rel="nofollow noopener noreferrer" className="px-3 py-1.5 bg-white/5 hover:bg-[#ff6600]/10 border border-white/10 hover:border-[#ff6600]/50 rounded-full text-[10px] font-orbitron tracking-wider text-slate-300 hover:text-white transition-all flex items-center gap-1.5">
-                    {comp.label} <span className="text-[#ff6600] opacity-70 group-hover:translate-x-0.5 transition-transform">→</span>
-                  </a>
-                ))}
-              </div>
+          <div className="bg-[#0a0a0c] border border-white/5 rounded-[24px] p-2 sm:p-3 shadow-2xl">
+            <div className="divide-y divide-white/5">
+              {selectedComponents.map((comp, i) => (
+                <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-4">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 shrink-0 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center">
+                      <span className="font-orbitron text-[9px] font-bold text-[#00ffff] tracking-wide">{ICONS[comp.label] || '•'}</span>
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[9px] uppercase tracking-[0.15em] text-slate-500 font-orbitron mb-0.5">{comp.label}</p>
+                      <p className="text-white text-sm font-medium truncate">{formatName(comp.data)}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2 shrink-0 pl-[52px] sm:pl-0">
+                    {STORES.map((store) => (
+                      <a
+                        key={store.key}
+                        href={getStoreLink(store.key, comp.data)}
+                        target="_blank"
+                        rel="nofollow sponsored noopener noreferrer"
+                        aria-label={`Buscar ${formatName(comp.data)} en ${store.name}`}
+                        className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 hover:border-white/25 transition-all text-[11px] font-orbitron tracking-wide text-slate-300 hover:text-white"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: store.color, boxShadow: `0 0 6px ${store.color}` }}></span>
+                        {store.name}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
-
-            {/* Tarjeta COOLMOD */}
-            <div className="bg-[#0a0a0c] border border-white/5 rounded-[20px] p-6 shadow-lg hover:border-[#00bfff]/40 transition-colors group">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-2 h-2 rounded-full bg-[#00bfff] shadow-[0_0_8px_#00bfff]"></div>
-                <h3 className="font-orbitron font-bold text-[#00bfff] tracking-wider text-sm">COOLMOD</h3>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {selectedComponents.map((comp, i) => (
-                  <a key={`cm-${i}`} href={getStoreLink('coolmod', comp.data)} target="_blank" rel="nofollow noopener noreferrer" className="px-3 py-1.5 bg-white/5 hover:bg-[#00bfff]/10 border border-white/10 hover:border-[#00bfff]/50 rounded-full text-[10px] font-orbitron tracking-wider text-slate-300 hover:text-white transition-all flex items-center gap-1.5">
-                    {comp.label} <span className="text-[#00bfff] opacity-70 group-hover:translate-x-0.5 transition-transform">→</span>
-                  </a>
-                ))}
-              </div>
-            </div>
-
           </div>
         </div>
       )}
@@ -462,7 +620,7 @@ export default function FullPcAnalyzer({ db }) {
       {/* TEXTO NARRATIVO AVANZADO PARA SEO Y ADSENSE */}
       <div className="mb-16 max-w-5xl mx-auto">
         <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">Análisis de Ingeniería y Ensamble</h2>
-        
+
         <div className="bg-[#0a0a0c] border border-white/5 rounded-[24px] p-6 sm:p-8 lg:p-10 shadow-2xl relative overflow-hidden">
           <div className="space-y-8 relative z-10 text-slate-300 leading-relaxed text-[15px]">
             <div className="border-l-2 pl-4 border-cyan-500/30">
@@ -482,6 +640,80 @@ export default function FullPcAnalyzer({ db }) {
               <p>{thermalText}</p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* METODOLOGÍA — contenido evergreen, educativo y único para SEO/AdSense */}
+      <div className="mb-16 max-w-5xl mx-auto">
+        <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">Cómo Calculamos Cada Compatibilidad</h2>
+        <div className="bg-[#0a0a0c] border border-white/5 rounded-[24px] p-6 sm:p-8 lg:p-10 shadow-2xl">
+          <div className="grid sm:grid-cols-2 gap-6 text-slate-300 text-sm leading-relaxed">
+            <div>
+              <h3 className="font-orbitron font-bold text-white mb-2 tracking-wide text-[13px]">Holgura de la GPU</h3>
+              <p>Comparamos la longitud en milímetros de la tarjeta gráfica con la longitud máxima que admite el chasis. Si la gráfica mide más que ese límite, marcamos incompatibilidad física directa.</p>
+            </div>
+            <div>
+              <h3 className="font-orbitron font-bold text-white mb-2 tracking-wide text-[13px]">Cableado y cristal lateral</h3>
+              <p>Restamos el ancho de la GPU al hueco disponible junto al panel de cristal templado. Por debajo de 20mm consideramos riesgo de choque; entre 20 y 35mm, recomendamos cable acodado a 90º.</p>
+            </div>
+            <div>
+              <h3 className="font-orbitron font-bold text-white mb-2 tracking-wide text-[13px]">Suministro energético</h3>
+              <p>Sumamos el TDP de CPU y GPU más 80W de consumo base del resto de componentes, y aplicamos un 25% de margen de seguridad para picos transitorios. La PSU debe igualar o superar ese total.</p>
+            </div>
+            <div>
+              <h3 className="font-orbitron font-bold text-white mb-2 tracking-wide text-[13px]">Refrigeración</h3>
+              <p>Para torres de aire, comparamos la altura del disipador con la altura máxima del chasis. Para líquida AIO, comprobamos que el tamaño del radiador (hasta 360mm) encaje en los anclajes disponibles.</p>
+            </div>
+            <div>
+              <h3 className="font-orbitron font-bold text-white mb-2 tracking-wide text-[13px]">Socket de CPU y placa base</h3>
+              <p>El zócalo del procesador (por ejemplo LGA1700 o AM5) debe coincidir exactamente con el de la placa base. No existen adaptadores físicos entre sockets distintos.</p>
+            </div>
+            <div>
+              <h3 className="font-orbitron font-bold text-white mb-2 tracking-wide text-[13px]">RAM y almacenamiento</h3>
+              <p>Verificamos que haya un módulo de memoria y una unidad de almacenamiento seleccionados; recomendamos siempre confirmar el tipo (DDR4/DDR5, NVMe/SATA) contra los slots reales de tu placa base.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* TABLA RESUMEN — versión accesible/indexable del checklist del HUD */}
+      <div className="mb-16 max-w-5xl mx-auto">
+        <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">Resumen de Compatibilidad</h2>
+        <div className="bg-[#0a0a0c] border border-white/5 rounded-[20px] overflow-hidden overflow-x-auto">
+          <table className="w-full text-sm text-left border-collapse min-w-[520px]">
+            <thead>
+              <tr className="border-b border-white/5 text-[10px] sm:text-xs font-orbitron text-[#00ffff] tracking-widest uppercase">
+                <th className="px-6 py-4 font-semibold">Verificación</th>
+                <th className="px-6 py-4 font-semibold">Estado</th>
+                <th className="px-6 py-4 font-semibold">Detalle</th>
+              </tr>
+            </thead>
+            <tbody>
+              {complianceChecks.map((c, i) => (
+                <tr key={c.key} className={i % 2 === 1 ? 'bg-white/[0.02]' : ''}>
+                  <td className="px-6 py-4 font-bold text-white">{c.t}</td>
+                  <td className="px-6 py-4 font-orbitron font-bold" style={{ color: c.c }}>{c.ok ? 'OK' : 'REVISAR'}</td>
+                  <td className="px-6 py-4 text-slate-300 font-mono text-xs">{c.d}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* PREGUNTAS FRECUENTES — visible, coincide con el FAQPage schema de arriba */}
+      <div className="mb-16 max-w-5xl mx-auto">
+        <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">Preguntas Frecuentes</h2>
+        <div className="bg-[#0a0a0c] border border-white/5 rounded-[24px] divide-y divide-white/5">
+          {faqItems.map((item, i) => (
+            <details key={i} className="group p-6 sm:p-8">
+              <summary className="cursor-pointer font-orbitron text-sm sm:text-base text-white list-none flex justify-between items-center gap-4">
+                {item.q}
+                <span className="text-slate-500 group-open:rotate-45 transition-transform text-xl leading-none shrink-0">+</span>
+              </summary>
+              <p className="text-slate-300 text-sm leading-relaxed mt-4">{item.a}</p>
+            </details>
+          ))}
         </div>
       </div>
 
