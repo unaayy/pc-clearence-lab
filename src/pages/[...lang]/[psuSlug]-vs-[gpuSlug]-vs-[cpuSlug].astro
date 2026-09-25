@@ -214,7 +214,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
               <circle cx="118" cy="58" r="3" fill="white" fill-opacity="0.5"/>
 
               <text x="70" y="112" fill="white" font-family="Orbitron" font-size="16" font-weight="bold" text-anchor="middle" filter="url(#softGlow)">{psuPower}W</text>
-              <text x="70" y="128" fill={colorHex} font-family="monospace" font-size="10" text-anchor="middle" letter-spacing="1">FUENTE PSU</text>
+              <text x="70" y="128" fill={colorHex} font-family="monospace" font-size="10" text-anchor="middle" letter-spacing="1">{lang === 'en' ? 'POWER SUPPLY' : 'FUENTE PSU'}</text>
             </g>
 
             <!-- BADGE CENTRAL -->
@@ -318,13 +318,13 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
       <!-- Tabla de Métricas -->
       <h2 class="text-2xl font-bold font-orbitron mb-6 mt-12">
-        {lang === 'en' ? 'Compared Energy Metrics' : 'Métricas de Dimensiones Comparadas'}
+        {lang === 'en' ? 'Compared Energy Metrics' : 'Métricas de Energía Comparadas'}
       </h2>
       <div class="bg-[#0a0a0c] border border-white/5 rounded-[20px] overflow-hidden mb-12 text-sm sm:text-base">
         <div class="grid grid-cols-4 px-6 py-4 border-b border-white/5 text-[10px] sm:text-xs font-orbitron text-[#00ffff] tracking-widest uppercase">
           <div>{lang === 'en' ? 'Parameter' : 'Parámetro'}</div>
           <div>{lang === 'en' ? 'Power Supply' : 'Fuente PSU'}</div>
-          <div>Hardware (CPU+GPU)</div>
+          <div>{lang === 'en' ? 'Hardware (CPU+GPU)' : 'Hardware (CPU+GPU)'}</div>
           <div>{lang === 'en' ? 'Diagnosis' : 'Diagnóstico'}</div>
         </div>
 
@@ -332,20 +332,20 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
           <div class="font-bold">{lang === 'en' ? 'Rated Power' : 'Potencia Nominal'}</div>
           <div class="text-slate-300">{psuPower} W</div>
           <div class="text-slate-300">{rawDemand} W ({lang === 'en' ? 'Gross' : 'Bruto'})</div>
-          <div class="font-orbitron font-bold" style={`color: ${colorHex}`}>{status === 'rojo' ? (lang === 'en' ? 'INSUFFICIENT' : 'INSUFFICIENT') : 'OK'}</div>
+          <div class="font-orbitron font-bold" style={`color: ${colorHex}`}>{status === 'rojo' ? (lang === 'en' ? 'INSUFFICIENT' : 'INSUFICIENTE') : 'OK'}</div>
         </div>
 
         <div class="grid grid-cols-4 px-6 py-5 border-b border-white/5 items-center bg-white/[0.02]">
           <div class="font-bold">{lang === 'en' ? 'Transient Spikes' : 'Picos Transitorios'}</div>
-          <div class="text-slate-300">ATX Support</div>
+          <div class="text-slate-300">{lang === 'en' ? 'ATX Support' : 'Soporte ATX'}</div>
           <div class="text-slate-300">{recommendedDemand} W (+25%)</div>
-          <div class="font-orbitron font-bold" style={`color: ${colorHex}`}>{margin > 0 ? `+${margin} W ${lang === 'en' ? 'FREE' : 'LIBRES'}` : `${margin} W DÉFICIT`}</div>
+          <div class="font-orbitron font-bold" style={`color: ${colorHex}`}>{margin > 0 ? `+${margin} W ${lang === 'en' ? 'FREE' : 'LIBRES'}` : `${margin} W ${lang === 'en' ? 'DEFICIT' : 'DÉFICIT'}`}</div>
         </div>
 
         <div class="grid grid-cols-4 px-6 py-5 items-center">
           <div class="font-bold">{lang === 'en' ? 'PCIe Connector' : 'Conector PCIe'}</div>
-          <div class="text-slate-300">{psu.has12VHPWR ? (lang === 'en' ? 'Native 12VHPWR' : '12VHPWR Nativo') : 'Classic 8-pin'}</div>
-          <div class="text-slate-300">{gpuTdp > 280 ? '12VHPWR Required' : 'Standard'}</div>
+          <div class="text-slate-300">{psu.has12VHPWR ? (lang === 'en' ? 'Native 12VHPWR' : '12VHPWR Nativo') : (lang === 'en' ? 'Classic 8-pin' : '8 pines clásico')}</div>
+          <div class="text-slate-300">{gpuTdp > 280 ? (lang === 'en' ? '12VHPWR Required' : '12VHPWR Requerido') : (lang === 'en' ? 'Standard' : 'Estándar')}</div>
           <div class="font-orbitron font-bold">
             {!psu.has12VHPWR && gpuTdp > 280 ? <span class="text-amber-400">{lang === 'en' ? 'Adapter Required' : 'Adaptador Necesario'}</span> : <span class="text-emerald-400">Compatible</span>}
           </div>

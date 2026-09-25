@@ -1,5 +1,5 @@
 // src/components/FullPcAnalyzer.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { getStoresForLocale } from '../config/stores.js';
 
 /**
@@ -61,8 +61,34 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
 
   const currentLang = isEn ? 'en' : 'es';
   const stores = getStoresForLocale(currentLang);
-  
-  // ... resto del componente
+
+  // 1. RESOLVER BUILD PRIMERO (A prueba de SSR)
+  const build = useMemo(() => {
+    if (db && searchParams) {
+      return resolveBuild(db, searchParams);
+    }
+    return null;
+  }, [db, searchParams]);
+
+  // 2. EFECTO SEO (Ejecutado solo cuando 'build' está definido)
+  useEffect(() => {
+    if (typeof document === 'undefined' || !build) return;
+    try {
+      const { title, description } = getBuildSeoMeta(build, isEn);
+      document.title = title || 'LIDUNAX';
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (!metaDesc) {
+        metaDesc = document.createElement('meta');
+        metaDesc.setAttribute('name', 'description');
+        document.head.appendChild(metaDesc);
+      }
+      if (description) {
+        metaDesc.setAttribute('content', description);
+      }
+    } catch (err) {
+      console.error('Error aplicando metadatos SEO:', err);
+    }
+  }, [build, isEn]);
 
   const ICONS = {
     [isEn ? 'PROCESSOR (CPU)' : 'PROCESADOR (CPU)']: 'CPU',
@@ -75,33 +101,7 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
     [isEn ? 'CHASSIS / CASE' : 'CHASIS / CAJA']: 'PC',
   };
 
-  useEffect(() => {
-    if (searchParams) return;
-    try {
-      if (typeof window === 'undefined') return;
-      const params = new URLSearchParams(window.location.search);
-      setBuild(resolveBuild(db, params));
-      setLoading(false);
-    } catch (error) {
-      console.error('Error cargando telemetría:', error);
-      setLoading(false);
-    }
-  }, [db, searchParams]);
-
-  useEffect(() => {
-    if (typeof document === 'undefined' || !build) return;
-    const { title, description } = getBuildSeoMeta(build, isEn);
-    document.title = title;
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement('meta');
-      metaDesc.setAttribute('name', 'description');
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.setAttribute('content', description);
-  }, [build, isEn]);
-
-  if (loading || !build) {
+  if (!build) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
         <div className="w-10 h-10 rounded-full border-2 border-[#00ffff] border-t-transparent animate-spin"></div>
@@ -354,7 +354,7 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
       {/* ENCABEZADO */}
       <div className="mb-10 text-center sm:text-left">
         <h1 className="text-3xl sm:text-4xl font-bold font-orbitron mb-3 uppercase tracking-wide">
-          <span className="text-slate-400 block text-lg mb-1">
+          <span class="text-slate-400 block text-lg mb-1">
             {isEn ? 'Audit and Acquisition Center' : 'Centro de Auditoría y Adquisición'}
           </span>
           {build.case ? formatName(build.case) : (isEn ? 'CUSTOM BUILD' : 'CONFIGURACIÓN PERSONALIZADA')}

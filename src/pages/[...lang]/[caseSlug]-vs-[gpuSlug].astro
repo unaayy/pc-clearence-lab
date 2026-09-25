@@ -112,7 +112,7 @@ const faqSchema = {
       name: lang === 'en' ? `How much clearance remains between the ${gpuFullName} and front panel?` : `¿Cuánto margen queda entre la ${gpuFullName} y el frontal del chasis?`,
       acceptedAnswer: {
         '@type': 'Answer',
-        text: `El margen total es de ${marginLabel}.`,
+        text: lang === 'en' ? `Total clearance is ${marginLabel}.` : `El margen total es de ${marginLabel}.`,
       },
     },
     {
@@ -127,7 +127,7 @@ const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://www.lidunax.com/' },
+    { '@type': 'ListItem', position: 1, name: lang === 'en' ? 'Home' : 'Inicio', item: `https://www.lidunax.com${langPrefix}/` },
     { '@type': 'ListItem', position: 2, name: `${caseFullName} vs ${gpuFullName}`, item: canonicalURL.toString() },
   ],
 };

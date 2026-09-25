@@ -277,7 +277,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
                   <rect x="97" y="5" width="85" height="15" rx="2" fill="#1a202c" stroke="white" stroke-opacity="0.3" stroke-width="1.5" />
                   {(cooler.radiatorSizeMM || 360) >= 360 && <rect x="189" y="5" width="85" height="15" rx="2" fill="#1a202c" stroke="white" stroke-opacity="0.3" stroke-width="1.5" />}
                 </g>
-                <text x="250" y="20" fill="white" font-family="Orbitron" font-size="14" text-anchor="middle" filter="url(#softGlow)">RADIADOR AIO {cooler.radiatorSizeMM || 360}mm</text>
+                <text x="250" y="20" fill="white" font-family="Orbitron" font-size="14" text-anchor="middle" filter="url(#softGlow)">{lang === 'en' ? `AIO RADIATOR ${cooler.radiatorSizeMM || 360}mm` : `RADIADOR AIO ${cooler.radiatorSizeMM || 360}mm`}</text>
               </g>
             ) : (
               <g transform="translate(0, 0)">
@@ -300,7 +300,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
                   <path d="M 480 320 Q 250 325 80 320" fill="none" stroke="#00ffff" stroke-width="1.5" stroke-linecap="round" class="wind-line w3"/>
                 </g>
 
-                <text x="250" y="125" fill="white" font-family="Orbitron" font-size="14" text-anchor="middle" filter="url(#softGlow)">AIR TOWER {cooler.heightMM || 155}mm</text>
+                <text x="250" y="125" fill="white" font-family="Orbitron" font-size="14" text-anchor="middle" filter="url(#softGlow)">{lang === 'en' ? `AIR TOWER ${cooler.heightMM || 155}mm` : `TORRE AIRE ${cooler.heightMM || 155}mm`}</text>
               </g>
             )}
 
@@ -435,9 +435,9 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
         <div class="grid grid-cols-4 px-6 py-5 items-center">
           <div class="font-bold">{lang === 'en' ? 'Clearance & Form Factor' : 'Holgura y Factor de Forma'}</div>
-          <div class="text-slate-300">IHS Estándar</div>
+          <div class="text-slate-300">{lang === 'en' ? 'Standard IHS' : 'IHS Estándar'}</div>
           <div class="text-slate-300">
-            {isAIO ? `Radiador ${cooler.radiatorSizeMM || 360}mm` : `Torre de ${cooler.heightMM || 155}mm`}
+            {isAIO ? `${lang === 'en' ? 'Radiator' : 'Radiador'} ${cooler.radiatorSizeMM || 360}mm` : `${lang === 'en' ? 'Tower' : 'Torre'} ${cooler.heightMM || 155}mm`}
           </div>
           <div class="font-orbitron font-bold text-slate-300">{lang === 'en' ? 'Check with Chassis' : 'Validar con Chasis'}</div>
         </div>

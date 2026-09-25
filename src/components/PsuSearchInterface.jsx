@@ -29,7 +29,7 @@ const IconClear = () => (
   </svg>
 );
 
-function HudCombobox({ label, placeholder, items, selected, onSelect, onChosen, inputRef, step, lang = 'es' }) {
+function HudCombobox({ label, placeholder, items = [], selected, onSelect, onChosen, inputRef, step, lang = 'es' }) {
   const uid = useId();
   const inputId = `${uid}-input`;
   const isEn = lang === 'en';
@@ -39,9 +39,10 @@ function HudCombobox({ label, placeholder, items, selected, onSelect, onChosen, 
   const [active, setActive] = useState(0);
 
   const results = useMemo(() => {
+    const safeItems = Array.isArray(items) ? items : [];
     const tokens = normalize(query).split(/\s+/).filter(Boolean);
-    if (!tokens.length) return items.slice(0, MAX_SUGGESTIONS);
-    return items
+    if (!tokens.length) return safeItems.slice(0, MAX_SUGGESTIONS);
+    return safeItems
       .filter((it) => {
         const hay = normalize(`${it.brand || ''} ${it.model || ''}`);
         return tokens.every((t) => hay.includes(t));
@@ -148,7 +149,7 @@ function HudCombobox({ label, placeholder, items, selected, onSelect, onChosen, 
               const isSelected = i === current;
               return (
                 <div
-                  key={it.slug}
+                  key={it.slug || i}
                   className={`relative flex items-center justify-between px-4 py-3 rounded-lg text-sm cursor-pointer transition-all duration-200 overflow-hidden group/item animate-item-enter ${
                     isSelected ? 'bg-[#00ffff]/10 border border-[#00ffff]/30' : 'bg-transparent border border-transparent hover:bg-white/5'
                   }`}
@@ -177,8 +178,11 @@ function HudCombobox({ label, placeholder, items, selected, onSelect, onChosen, 
   );
 }
 
-export default function CpuSearchInterface({ cpus = [], coolers = [] }) {
-  const lang = typeof window !== 'undefined' && window.location.pathname.startsWith('/en') ? 'en' : 'es';
+export default function PsuSearchInterface({ psus = [], gpus = [], cpus = [], lang }) {
+  const isEn = typeof window !== 'undefined' 
+    ? (window.location.pathname.startsWith('/en') || lang === 'en')
+    : lang === 'en';
+
   const [selectedPsu, setSelectedPsu] = useState(null);
   const [selectedGpu, setSelectedGpu] = useState(null);
   const [selectedCpu, setSelectedCpu] = useState(null);
@@ -188,7 +192,6 @@ export default function CpuSearchInterface({ cpus = [], coolers = [] }) {
   const gpuInput = useRef(null);
   const cpuInput = useRef(null);
 
-  const isEn = lang === 'en';
   const langPrefix = isEn ? '/en' : '';
   const ready = Boolean(selectedPsu && selectedGpu && selectedCpu);
 
@@ -219,7 +222,7 @@ export default function CpuSearchInterface({ cpus = [], coolers = [] }) {
               onSelect={setSelectedPsu}
               onChosen={afterPsu}
               inputRef={psuInput}
-              lang={lang}
+              lang={isEn ? 'en' : 'es'}
             />
           </div>
 
@@ -240,7 +243,7 @@ export default function CpuSearchInterface({ cpus = [], coolers = [] }) {
               onSelect={setSelectedGpu}
               onChosen={afterGpu}
               inputRef={gpuInput}
-              lang={lang}
+              lang={isEn ? 'en' : 'es'}
             />
 
             <HudCombobox
@@ -252,7 +255,7 @@ export default function CpuSearchInterface({ cpus = [], coolers = [] }) {
               onSelect={setSelectedCpu}
               onChosen={afterCpu}
               inputRef={cpuInput}
-              lang={lang}
+              lang={isEn ? 'en' : 'es'}
             />
           </div>
 

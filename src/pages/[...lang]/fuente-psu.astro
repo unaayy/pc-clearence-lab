@@ -23,9 +23,10 @@ const lang = langParam === 'en' ? 'en' : 'es';
 const t = useTranslations(lang);
 const langPrefix = lang === 'en' ? '/en' : '';
 
-const psus = psusData || [];
-const gpus = gpusData || [];
-const cpus = cpusData || [];
+// Aseguramos arrays limpios siempre para evitar ReferenceError/TypeError en React
+const psus = Array.isArray(psusData) ? psusData.slice(0, 40) : [];
+const gpus = Array.isArray(gpusData) ? gpusData.slice(0, 40) : [];
+const cpus = Array.isArray(cpusData) ? cpusData.slice(0, 40) : [];
 
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
@@ -33,7 +34,6 @@ const statement = lang === 'en'
   ? 'Lidunax power algorithm evaluates combined peak energy demands (TDP) of processor and graphics card, adding a safety margin for transient spikes.'
   : 'El algoritmo de potencia de Lidunax evalúa las demandas de energía pico (TDP) combinadas del procesador (CPU) y la tarjeta gráfica (GPU), añadiendo un margen de seguridad.';
 
-// AÑADIR ESTA LÍNEA QUE FALTABA:
 const statementWords = statement.split(' ');
 ---
 
@@ -43,7 +43,7 @@ const statementWords = statement.split(' ');
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{lang === 'en' ? 'PSU Power Calculator & Wattage | LIDUNAX' : 'Calculadora de Fuente de Alimentación (PSU) y Vatios | LIDUNAX'}</title>
     <link rel="icon" type="image/png" href="/logo2.webp?v=5" />
-    <meta name="description" content="Calcula los vatios reales que necesita tu PC según tu CPU y GPU. Verifica compatibilidad ATX 3.0." />
+    <meta name="description" content={lang === 'en' ? 'Calculate real PSU wattage needed for your CPU and GPU. ATX 3.0 compatibility.' : 'Calcula los vatios reales que necesita tu PC según tu CPU y GPU. Verifica compatibilidad ATX 3.0.'} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -86,7 +86,7 @@ const statementWords = statement.split(' ');
               : 'Selecciona la fuente de alimentación, gráfica y procesador para generar el informe de telemetría energética.'}
           </p>
 
-          <PsuSearchInterface client:idle psus={psus} gpus={gpus} cpus={cpus} />
+          <PsuSearchInterface client:load psus={psus} gpus={gpus} cpus={cpus} lang={lang} />
         </section>
 
         <section class="section" aria-labelledby="como-evaluamos">
