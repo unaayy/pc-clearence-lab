@@ -5,10 +5,10 @@ import '../styles/global.css';
 
 // Datos del selector (una sola fuente de verdad para las 4 opciones)
 const secciones = [
-{ href: '/gpu-caja',        img: '/gpu.png',    index: '01', tag: '01 // TELEMETRÍA', title: 'GPU + CAJA',          sub: 'Validar dimensiones y holguras exactas', disabled: false },
-  { href: '/cpu-refrig',      img: '/cpu.png',    index: '02', tag: '02 // TÉRMICA',    title: 'CPU + REFRIGERACIÓN', sub: 'Sockets, alturas y despeje de memorias RAM', disabled: false },
-  { href: '/fuente-psu',      img: '/fuente.png', index: '03', tag: '03 // ENERGÍA',    title: 'FUENTE / PSU',        sub: 'Vatios, conectores 12VHPWR y gestión de cables', disabled: false },
-  { href: '/full-pc', img: '/pc.png', index: '04', tag: '04 // INTEGRAL', title: 'PC COMPLETO', sub: 'Escáner total de compatibilidad y ensamble' }
+{ href: '/gpu-caja',        img: '/gpu.webp',    index: '01', tag: '01 // TELEMETRÍA', title: 'GPU + CAJA',          sub: 'Validar dimensiones y holguras exactas', disabled: false },
+  { href: '/cpu-refrig',      img: '/cpu.webp',    index: '02', tag: '02 // TÉRMICA',    title: 'CPU + REFRIGERACIÓN', sub: 'Sockets, alturas y despeje de memorias RAM', disabled: false },
+  { href: '/fuente-psu',      img: '/fuente.webp', index: '03', tag: '03 // ENERGÍA',    title: 'FUENTE / PSU',        sub: 'Vatios, conectores 12VHPWR y gestión de cables', disabled: false },
+  { href: '/full-pc', img: '/pc.webp', index: '04', tag: '04 // INTEGRAL', title: 'PC COMPLETO', sub: 'Escáner total de compatibilidad y ensamble' }
 ]
 ---
 
@@ -17,7 +17,7 @@ const secciones = [
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LIDUNAX - Comprobador de Hardware y Compatibilidad Física</title>
-    <link rel="icon" type="image/png" href="/logo2.png?v=5" />
+    <link rel="icon" type="image/png" href="/logo2.webp?v=5" />
     <meta name="description" content="Analizador dinámico de compatibilidad física para configuraciones de PC. Valida dimensiones de GPU, CPU, fuentes y chasis." />
 
     <!-- Carga directa e ininterrumpida de Orbitron de Google Fonts -->
@@ -41,7 +41,7 @@ const secciones = [
       <header class="nav sf">
         <div class="nav__in">
           <a href="/" class="brand flex items-center gap-3">
-            <img src="/logoancho.png" alt="LDX" width="160" height="32" class="h-8 sm:h-10 w-auto object-contain" />
+            <img src="/logoancho.webp" alt="LDX" width="160" height="32" loading="eager" fetchpriority="high" class="h-8 sm:h-10 w-auto object-contain" />
             <span class="brand__name orb">LIDUNAX</span>
           </a>
           <nav class="nav__links" aria-label="Principal">
