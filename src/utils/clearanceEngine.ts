@@ -1,4 +1,4 @@
-import type { Case, GPU, AIO, ClearanceResult } from '../types/hardware';
+import type { Case, GPU, AIO, ClearanceResult } from '../../types/hardware';
 
 // Extendemos la interfaz ClearanceResult si es necesario en tu types file, 
 // o el motor la devolverá directamente:

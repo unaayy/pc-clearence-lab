@@ -3,6 +3,11 @@
 import SearchInterfaceFullPc from '../components/SearchInterfaceFullPc.jsx';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const langPrefix = lang === 'en' ? '/en' : '';
 
 // Importamos individualmente los 8 datasets divididos
 import cpusData from '../data/cpus.json';
@@ -14,7 +19,6 @@ import motherboardsData from '../data/motherboards.json';
 import ramsData from '../data/rams.json';
 import storageData from '../data/storage.json';
 
-// Asignación directa con fallbacks a arrays vacíos por seguridad
 const cpus = cpusData || [];
 const coolers = coolersData || [];
 const gpus = gpusData || [];
@@ -27,24 +31,25 @@ const storages = storageData || [];
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
 // Texto SEO para la animación de scroll
-const statement =
-  'El escáner integral de Lidunax cruza miles de variables paramétricas en milisegundos. Validamos holguras físicas en el chasis, cuellos de botella térmicos y demandas de potencia pico para garantizar un ensamblaje de PC impecable y sin sorpresas.';
+const statement = lang === 'en'
+  ? 'Lidunax full scanner crosses thousands of parametric variables in milliseconds, validating chassis clearance, thermal bottlenecks, and peak power demands.'
+  : 'El escáner integral de Lidunax cruza miles de variables paramétricas en milisegundos. Validamos holguras físicas en el chasis, cuellos de botella térmicos y demandas de potencia pico para garantizar un ensamblaje de PC impecable y sin sorpresas.';
 const statementWords = statement.split(' ');
 ---
 
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Configurador PC Completo y Compatibilidad | LIDUNAX</title>
+    <title>{lang === 'en' ? 'Full PC Builder & Compatibility | LIDUNAX' : 'Configurador PC Completo y Compatibilidad | LIDUNAX'}</title>
     <link rel="icon" type="image/png" href="/logo2.webp?v=5" />
     <meta name="description" content="Configurador de PC Completo. Verifica la compatibilidad física, térmica y energética de todos tus componentes antes de ensamblar tu setup." />
+    <link rel="canonical" href={canonicalURL} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="canonical" href={canonicalURL} />
   </head>
 
   <body class="bg-[#050507] text-white min-h-screen relative overflow-x-hidden flex flex-col justify-between selection:bg-[#00ffff] selection:text-black">
@@ -56,14 +61,14 @@ const statementWords = statement.split(' ');
 
       <header class="nav sf">
         <div class="nav__in">
-          <a href="/" class="brand flex items-center gap-3">
+          <a href={langPrefix || '/'} class="brand flex items-center gap-3">
             <img src="/logoancho.webp" alt="LDX" width="160" height="32" class="h-8 sm:h-10 w-auto object-contain" />
             <span class="brand__name orb">LIDUNAX</span>
           </a>
           <nav class="nav__links" aria-label="Principal">
-            <a href="/">Inicio</a>
-            <a href="/faq">FAQ</a>
-            <a href="/about">Sobre nosotros</a>
+            <a href={langPrefix || '/'}>{t('nav.home')}</a>
+            <a href={`${langPrefix}/faq`}>{t('nav.faq')}</a>
+            <a href={`${langPrefix}/about`}>{t('nav.about')}</a>
           </nav>
         </div>
       </header>
@@ -73,10 +78,12 @@ const statementWords = statement.split(' ');
         <!-- HERO -->
         <section class="flex flex-col items-center text-center mb-8">
           <h1 class="font-orbitron font-extrabold text-4xl md:text-6xl tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-500 uppercase mb-4 rise">
-            PC COMPLETO
+            {lang === 'en' ? 'FULL PC BUILD' : 'PC COMPLETO'}
           </h1>
           <p class="text-slate-400 max-w-2xl text-sm md:text-base rise" style="--d:.1s">
-            Diseña tu configuración paso a paso. El algoritmo maestro cruzará las telemetrías térmicas, físicas y energéticas para garantizar un ensamblaje sin cuellos de botella ni incompatibilidades.
+            {lang === 'en'
+              ? 'Design your build step by step. The master algorithm crosses thermal, physical, and energy telemetry.'
+              : 'Diseña tu configuración paso a paso. El algoritmo maestro cruzará las telemetrías térmicas, físicas y energéticas para garantizar un ensamblaje sin cuellos de botella ni incompatibilidades.'}
           </p>
         </section>
 
@@ -87,40 +94,60 @@ const statementWords = statement.split(' ');
           motherboards={motherboards} rams={rams} storages={storages} 
         />
 
-        <!-- SECCIÓN SEO: CÓMO EVALUAMOS (Bento Grid) -->
+        <!-- SECCIÓN DE TEXTO EXPLICATIVO DEBAJO DEL BUSCADOR (Bento Grid) -->
         <section class="section" aria-labelledby="como-evaluamos">
-          <h2 id="como-evaluamos" class="h2 orb text-center md:text-left text-2xl md:text-3xl font-bold mb-4">La Auditoría Definitiva</h2>
-          <p class="lit text-center md:text-left mx-auto md:mx-0" data-lit>
+          <h2 id="como-evaluamos" class="h2 orb text-center md:text-left text-2xl md:text-3xl font-bold mb-4">
+            {lang === 'en' ? 'The Ultimate Audit' : 'La Auditoría Definitiva'}
+          </h2>
+          <p class="lit text-center md:text-left mx-auto md:mx-0 mb-8" data-lit>
             {statementWords.map((word) => (<><span class="w">{word}</span>{' '}</>))}
           </p>
           
           <div class="bento">
             <article class="card card--wide">
               <div>
-                <h3 class="orb text-[#00ffff]">Escáner Tridimensional de Holguras</h3>
-                <p>Nadie quiere descubrir que su nueva RTX 4090 choca con los ventiladores frontales. Validamos que el largo de la gráfica, la altura de la torre de aire y el grosor de los radiadores AIO entren matemáticamente en el chasis elegido.</p>
+                <h3 class="orb text-[#00ffff]">
+                  {lang === 'en' ? '3D Clearance Scanner' : 'Escáner Tridimensional de Holguras'}
+                </h3>
+                <p>
+                  {lang === 'en'
+                    ? 'Validate GPU length, CPU cooler height, and AIO radiator thickness mathematically against your chosen chassis.'
+                    : 'Nadie quiere descubrir que su nueva RTX 4090 choca con los ventiladores frontales. Validamos que el largo de la gráfica, la altura de la torre de aire y el grosor de los radiadores AIO entren matemáticamente en el chasis elegido.'}
+                </p>
               </div>
               <div class="stat">
                 <span class="stat__n orb">100<small>%</small></span>
-                <span class="stat__cap">precisión en cálculo de clearance físico</span>
+                <span class="stat__cap">{lang === 'en' ? 'physical clearance precision' : 'precisión en cálculo de clearance físico'}</span>
               </div>
             </article>
             
             <article class="card card--narrow">
               <div>
-                <h3 class="orb text-[#00ffff]">Termodinámica</h3>
-                <p>Comprobamos que el TDP nominal de la CPU bajo estrés no exceda el límite de disipación de la refrigeración elegida, evitando el throttling térmico.</p>
+                <h3 class="orb text-[#00ffff]">
+                  {lang === 'en' ? 'Thermodynamics' : 'Termodinámica'}
+                </h3>
+                <p>
+                  {lang === 'en'
+                    ? 'We verify that nominal CPU TDP under load does not exceed cooler dissipation capacity to avoid throttling.'
+                    : 'Comprobamos que el TDP nominal de la CPU bajo estrés no exceda el límite de disipación de la refrigeración elegida, evitando el throttling térmico.'}
+                </p>
               </div>
               <div class="stat">
                 <span class="stat__n orb">TDP<small>MAX</small></span>
-                <span class="stat__cap">validación de picos de temperatura</span>
+                <span class="stat__cap">{lang === 'en' ? 'temp peak validation' : 'validación de picos de temperatura'}</span>
               </div>
             </article>
             
             <article class="card card--full">
               <div>
-                <h3 class="orb text-[#00ffff]">Telemetría de Potencia y ATX 3.0</h3>
-                <p>Sumamos la curva de demanda energética de la placa base, procesador, gráfica y periféricos. Aplicamos un margen de seguridad estricto para sobrellevar picos transitorios y comprobamos si necesitas cables nativos 12VHPWR para tarjetas de última generación.</p>
+                <h3 class="orb text-[#00ffff]">
+                  {lang === 'en' ? 'Power Telemetry & ATX 3.0' : 'Telemetría de Potencia y ATX 3.0'}
+                </h3>
+                <p>
+                  {lang === 'en'
+                    ? 'We calculate combined energy draw and apply a strict safety margin for transient spikes and 12VHPWR connectors.'
+                    : 'Sumamos la curva de demanda energética de la placa base, procesador, gráfica y periféricos. Aplicamos un margen de seguridad estricto para sobrellevar picos transitorios y comprobamos si necesitas cables nativos 12VHPWR para tarjetas de última generación.'}
+                </p>
               </div>
               <svg class="slots mx-auto md:mx-0" viewBox="0 0 220 150" role="img" aria-label="Esquema de conexiones de energía">
                 <g fill="none" stroke-width="1.5" stroke-linejoin="round">
@@ -129,7 +156,7 @@ const statementWords = statement.split(' ');
                   <rect class="off" x="20" y="110" width="80" height="30" rx="3" />
                 </g>
                 <text x="160" y="28" text-anchor="middle">GPU</text>
-                <text x="60" y="128" text-anchor="middle">FUENTE</text>
+                <text x="60" y="128" text-anchor="middle">{lang === 'en' ? 'POWER' : 'FUENTE'}</text>
               </svg>
             </article>
           </div>
@@ -269,8 +296,8 @@ const statementWords = statement.split(' ');
       @keyframes rise { from { opacity: 0; transform: translateY(16px); filter: blur(8px); } to { opacity: 1; transform: none; filter: none; } }
 
       /* ESTILOS BENTO GRID Y SEO TEXT */
-      .section { margin-top: clamp(96px, 13vw, 168px); }
-      .bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; margin-top: clamp(40px, 6vw, 72px); }
+      .section { margin-top: clamp(64px, 10vw, 120px); }
+      .bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; margin-top: clamp(32px, 5vw, 48px); }
       .card { position: relative; overflow: hidden; padding: clamp(24px, 3vw, 36px); border-radius: 28px; border: 1px solid rgba(255, 255, 255, 0.09); background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.015) 45%, rgba(0, 0, 0, 0.55)); backdrop-filter: blur(24px); }
       .card--wide { grid-column: span 4; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end; }
       .card--narrow { grid-column: span 2; display: flex; flex-direction: column; justify-content: space-between; gap: 32px; }
@@ -278,7 +305,7 @@ const statementWords = statement.split(' ');
       .card h3 { font-size: 1.125rem; font-weight: 700; color: #fff; }
       .card p { margin-top: 12px; max-width: 44ch; font-size: 0.9375rem; line-height: 1.65; color: #86868b; }
       .stat__n { font-size: clamp(2.75rem, 5vw, 4rem); font-weight: 800; color: #fff; }
-      .stat__n small { margin-left: 0.5em; font-size: 0.3em; color: var(--cyan); }
+      .stat__n small { margin-left: 0.5em; font-size: 0.3em; color: #00ffff; }
       .stat__cap { font-size: 0.8125rem; color: #86868b; }
 
       .slots { width: 100%; height: auto; }

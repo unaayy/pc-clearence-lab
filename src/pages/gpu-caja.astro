@@ -1,9 +1,13 @@
 ---
 // src/pages/gpu-caja.astro
-// Comprobador GPU + Caja — rediseño "telemetría" (Apple × SpaceX) SIN esquema SVG
 import SearchInterface from '../components/SearchInterface.jsx';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const langPrefix = lang === 'en' ? '/en' : '';
 
 // 1. Importamos las bases de datos desde sus archivos individuales
 import cases from '../data/cases.json';
@@ -11,88 +15,75 @@ import gpus from '../data/gpus.json';
 
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
-// Texto SEO principal. Se parte en palabras para el efecto de iluminación al hacer scroll.
-const statement =
-  'El análisis de compatibilidad de Lidunax contrasta las dimensiones reales de profundidad, anchura y altura de la tarjeta gráfica frente al espacio libre del chasis, teniendo en cuenta la instalación de radiadores frontales y el margen lateral para el conector de alimentación.';
+const statement = lang === 'en'
+  ? 'Lidunax compatibility analysis checks real GPU dimensions against chassis free space, accounting for AIO radiators and side cable clearance.'
+  : 'El análisis de compatibilidad de Lidunax contrasta las dimensiones reales de profundidad, anchura y altura de la tarjeta gráfica frente al espacio libre del chasis, teniendo en cuenta la instalación de radiadores frontales y el margen lateral para el conector de alimentación.';
 const statementWords = statement.split(' ');
 
-// Combinaciones frecuentes: cada una de las 3 primeras cajas contra las 2 primeras GPUs
 const pairs = cases.slice(0, 3).flatMap((caseItem) =>
   gpus.slice(0, 2).map((gpuItem) => ({ caseItem, gpuItem }))
 );
 ---
 
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LIDUNAX - Comprobador físico de hardware y compatibilidad</title>
+    <title>{lang === 'en' ? 'GPU & Case Compatibility Checker | LIDUNAX' : 'LIDUNAX - Comprobador físico de hardware y compatibilidad'}</title>
     <link rel="icon" type="image/png" href="/logo2.webp?v=5" />
     <meta name="description" content="Verifica el espacio libre, holguras y compatibilidad física entre tu chasis y tarjeta gráfica en LIDUNAX." />
+    <link rel="canonical" href={canonicalURL} />
 
-    <!-- Carga directa e ininterrumpida de Orbitron de Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
-
-    <!-- URL Canónica -->
-    <link rel="canonical" href={canonicalURL} />
-
-    <!-- Verificación de Google Search Console -->
-    <meta name="google-site-verification" content="oW0LQ9UeXUlzYGx2i7G0AKePLsI9r4p7-o7MxJE0oAI" />
-
-    <!-- Script de Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7430010369815892" crossorigin="anonymous"></script>
   </head>
 
   <body class="bg-[#050507] text-white min-h-screen relative overflow-x-hidden flex flex-col justify-between selection:bg-[#00ffff] selection:text-black">
 
-    <!-- Partículas: la luz cenital vive en la parte alta de la PÁGINA, así que se apaga al hacer scroll -->
     <canvas id="dotsCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0" aria-hidden="true"></canvas>
-
-    <!-- Campana cenital -->
     <div class="spotlight-campana absolute top-0 left-1/2 -translate-x-1/2 w-[100vw] h-[620px] pointer-events-none z-0" aria-hidden="true"></div>
 
     <div class="page relative z-10 flex flex-col min-h-screen justify-between">
 
-      <!-- Navbar de cristal -->
       <header class="nav sf">
         <div class="nav__in">
-          <a href="/" class="brand flex items-center gap-3">
-      <img src="/logoancho.webp" alt="LDX" width="160" height="32" class="h-8 sm:h-10 w-auto object-contain" />
-      <span class="brand__name orb">LIDUNAX</span>
-    </a>
+          <a href={langPrefix || '/'} class="brand flex items-center gap-3">
+            <img src="/logoancho.webp" alt="LDX" width="160" height="32" class="h-8 sm:h-10 w-auto object-contain" />
+            <span class="brand__name orb">LIDUNAX</span>
+          </a>
 
           <nav class="nav__links" aria-label="Principal">
-            <a href="/" class="is-current" aria-current="page">Inicio</a>
-            <a href="/faq">FAQ</a>
-            <a href="/about">Sobre nosotros</a>
+            <a href={langPrefix || '/'}>{t('nav.home')}</a>
+            <a href={`${langPrefix}/faq`}>{t('nav.faq')}</a>
+            <a href={`${langPrefix}/about`}>{t('nav.about')}</a>
           </nav>
         </div>
       </header>
 
       <main class="main sf">
 
-        <!-- HERO (Sin el esquema SVG intermedio) -->
         <section class="hero mb-8 sm:mb-16">
           <h1 class="h1 orb rise" style="--d:.05s">
-            <span>Comprobar</span>
-            <span>compatibilidad</span>
+            <span>{lang === 'en' ? 'Check' : 'Comprobar'}</span>
+            <span>{lang === 'en' ? 'compatibility' : 'compatibilidad'}</span>
           </h1>
           <p class="hero__sub rise" style="--d:.25s">
-            Verifica el espacio libre y las holguras exactas antes de ensamblar tu PC.
+            {lang === 'en'
+              ? 'Check clearance and exact margins before assembling your PC.'
+              : 'Verifica el espacio libre y las holguras exactas antes de ensamblar tu PC.'}
           </p>
 
-          <!-- Buscador interactivo de React con Liquid Glass -->
           <div class="tool rise-soft mt-8" style="--d:.8s">
             <SearchInterface client:idle cases={cases} gpus={gpus} />
           </div>
         </section>
 
-        <!-- CÓMO EVALUAMOS -->
         <section class="section" aria-labelledby="como-evaluamos">
-          <h2 id="como-evaluamos" class="h2 orb text-center md:text-left">¿Cómo evaluamos la compatibilidad física en LIDUNAX?</h2>
+          <h2 id="como-evaluamos" class="h2 orb text-center md:text-left">
+            {lang === 'en' ? 'How we evaluate physical clearance in LIDUNAX' : '¿Cómo evaluamos la compatibilidad física en LIDUNAX?'}
+          </h2>
 
           <p class="lit text-center md:text-left mx-auto md:mx-0" data-lit>
             {statementWords.map((word) => (<><span class="w">{word}</span>{' '}</>))}
@@ -101,110 +92,44 @@ const pairs = cases.slice(0, 3).flatMap((caseItem) =>
           <div class="bento">
             <article class="card card--wide">
               <div>
-                <h3 class="orb">Holgura longitudinal</h3>
-                <p>Medimos la longitud total de la GPU frente al espacio máximo del chasis, restando 30 mm si se monta un radiador AIO en el frontal.</p>
+                <h3 class="orb">{lang === 'en' ? 'Length Clearance' : 'Holgura longitudinal'}</h3>
+                <p>
+                  {lang === 'en'
+                    ? 'We measure total GPU length against chassis maximum clearance, deducting 30 mm for front AIO radiators.'
+                    : 'Medimos la longitud total de la GPU frente al espacio máximo del chasis, restando 30 mm si se monta un radiador AIO en el frontal.'}
+                </p>
               </div>
               <div class="stat">
                 <span class="stat__n orb">-30<small>mm</small></span>
-                <span class="stat__cap">con radiador AIO frontal</span>
+                <span class="stat__cap">{lang === 'en' ? 'with front AIO radiator' : 'con radiador AIO frontal'}</span>
               </div>
             </article>
 
             <article class="card card--narrow">
               <div>
-                <h3 class="orb">Espacio lateral 12VHPWR</h3>
-                <p>Las gráficas modernas requieren espacio para no doblar el cable contra el cristal. Garantizamos un margen mínimo de 35 mm para evitar tensiones.</p>
+                <h3 class="orb">{lang === 'en' ? '12VHPWR Side Clearance' : 'Espacio lateral 12VHPWR'}</h3>
+                <p>
+                  {lang === 'en'
+                    ? 'Modern GPUs require clearance to avoid bending cables against glass. We ensure at least 35 mm.'
+                    : 'Las gráficas modernas requieren espacio para no doblar el cable contra el cristal. Garantizamos un margen mínimo de 35 mm para evitar tensiones.'}
+                </p>
               </div>
               <div class="stat">
                 <span class="stat__n orb">35<small>mm</small></span>
-                <span class="stat__cap">margen mínimo lateral</span>
+                <span class="stat__cap">{lang === 'en' ? 'minimum side margin' : 'margen mínimo lateral'}</span>
               </div>
             </article>
-
-            <article class="card card--full">
-              <div>
-                <h3 class="orb">Grosor de ranuras PCIe</h3>
-                <p>Verificamos las ranuras de expansión necesarias para asegurar que el disipador no colisione con el cobertor inferior de la fuente.</p>
-              </div>
-              <svg class="slots mx-auto md:mx-0" viewBox="0 0 220 150" role="img" aria-label="Ranuras de expansión ocupadas por la tarjeta, con el cobertor de la fuente debajo">
-                <g fill="none" stroke-width="1.5" stroke-linejoin="round">
-                  <path class="dim-line" d="M16 22H128M16 16V28M128 16V28" />
-                  <rect class="on" x="16" y="36" width="32" height="76" rx="5" />
-                  <rect class="on" x="56" y="36" width="32" height="76" rx="5" />
-                  <rect class="on" x="96" y="36" width="32" height="76" rx="5" />
-                  <rect class="off" x="136" y="36" width="32" height="76" rx="5" />
-                  <rect class="off" x="176" y="36" width="32" height="76" rx="5" />
-                  <rect class="off shroud" x="8" y="122" width="204" height="22" rx="5" />
-                </g>
-                <text x="72" y="12" text-anchor="middle">Grosor de la tarjeta</text>
-                <text x="110" y="137" text-anchor="middle">Cobertor de la fuente</text>
-              </svg>
-            </article>
           </div>
-        </section>
-
-        <!-- FAQ -->
-        <section class="section faq" aria-labelledby="faq-title">
-          <div class="faq__head">
-            <h2 id="faq-title" class="h2 h2--lg orb">Preguntas frecuentes sobre montaje de PC</h2>
-          </div>
-
-          <div class="faq__list">
-            <details open>
-              <summary>
-                <h3>¿Qué ocurre si la holgura entre la GPU y el chasis es inferior a 10 mm?</h3>
-                <span class="plus" aria-hidden="true"></span>
-              </summary>
-              <p class="answer">Aunque la tarjeta quepa físicamente, un espacio inferior a 10 mm restringe el flujo de aire entrante desde los ventiladores frontales, aumentando las temperaturas de funcionamiento e impactando el rendimiento térmico.</p>
-            </details>
-
-            <details>
-              <summary>
-                <h3>¿Por qué es importante usar un adaptador acodado a 90°?</h3>
-                <span class="plus" aria-hidden="true"></span>
-              </summary>
-              <p class="answer">En conectores 12VHPWR/12V-2x6, doblar excesivamente el cable de alimentación principal al cerrar el panel de cristal templado puede causar una mala inserción de los pines y generar un fallo eléctrico.</p>
-            </details>
-          </div>
-        </section>
-
-        <!-- COMBINACIONES FRECUENTES -->
-        <section class="section combos" aria-labelledby="combos-title">
-          <h2 id="combos-title" class="h2 orb">Combinaciones frecuentes</h2>
-
-          <ul class="combos__list">
-            {pairs.map(({ caseItem, gpuItem }) => (
-              <li>
-                <a href={`/${caseItem.slug}-vs-${gpuItem.slug}`} class="combo">
-                  <span class="combo__text">
-                    <span class="combo__case">{caseItem.brand} {caseItem.model}</span>
-                    <span class="combo__gpu">vs {gpuItem.brand} {gpuItem.model}</span>
-                  </span>
-                  <span class="combo__arrow" aria-hidden="true">→</span>
-                </a>
-              </li>
-            ))}
-          </ul>
         </section>
 
       </main>
 
-      <!-- Footer global -->
       <Footer />
 
     </div>
 
     <script>
-      interface Dot {
-        x: number;
-        y: number;
-        baseRadius: number;
-        vx: number;
-        vy: number;
-        baseAlpha: number;
-      }
-
-      // Partículas reactivas a la luz cenital.
+      interface Dot { x: number; y: number; baseRadius: number; vx: number; vy: number; baseAlpha: number; }
       function initDots() {
         const canvas = document.getElementById('dotsCanvas') as HTMLCanvasElement | null;
         if (!canvas || canvas.dataset.ready) return;
@@ -213,121 +138,79 @@ const pairs = cases.slice(0, 3).flatMap((caseItem) =>
         canvas.dataset.ready = '1';
 
         const speed = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1;
-        let width = 0;
-        let height = 0;
-
+        let width = 0; let height = 0;
         const resize = () => {
-          if (!canvas.isConnected) {
-            window.removeEventListener('resize', resize);
-            return;
-          }
+          if (!canvas.isConnected) return;
           const dpr = Math.min(window.devicePixelRatio || 1, 2);
-          width = window.innerWidth;
-          height = window.innerHeight;
-          canvas.width = Math.floor(width * dpr);
-          canvas.height = Math.floor(height * dpr);
+          width = window.innerWidth; height = window.innerHeight;
+          canvas.width = Math.floor(width * dpr); canvas.height = Math.floor(height * dpr);
           ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         };
-        resize();
-        window.addEventListener('resize', resize);
+        resize(); window.addEventListener('resize', resize);
 
         const dots: Dot[] = [];
         const numDots = Math.min(240, Math.floor((width * height) / 9000));
         for (let i = 0; i < numDots; i++) {
           dots.push({
-            x: Math.random() * width,
-            y: Math.random() * height,
+            x: Math.random() * width, y: Math.random() * height,
             baseRadius: Math.random() * 1.3 + 0.4,
-            vx: (Math.random() - 0.5) * 0.2,
-            vy: (Math.random() - 0.5) * 0.2,
+            vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.2,
             baseAlpha: Math.random() * 0.35 + 0.15,
           });
         }
-
         const animate = () => {
           if (!canvas.isConnected) return;
           ctx.clearRect(0, 0, width, height);
-
-          const lightX = width / 2;
-          const lightY = -window.scrollY;
+          const lightX = width / 2; const lightY = -window.scrollY;
           const maxLight = Math.min(width, height) * 0.65;
-
           for (const dot of dots) {
-            dot.x += dot.vx * speed;
-            dot.y += dot.vy * speed;
-
-            if (dot.x < 0) dot.x = width;
-            if (dot.x > width) dot.x = 0;
-            if (dot.y < 0) dot.y = height;
-            if (dot.y > height) dot.y = 0;
-
+            dot.x += dot.vx * speed; dot.y += dot.vy * speed;
+            if (dot.x < 0) dot.x = width; if (dot.x > width) dot.x = 0;
+            if (dot.y < 0) dot.y = height; if (dot.y > height) dot.y = 0;
             const distance = Math.hypot(dot.x - lightX, dot.y - lightY);
             ctx.beginPath();
-
             if (distance < maxLight) {
               const lightFactor = Math.pow(1 - distance / maxLight, 1.8);
               const radius = dot.baseRadius + lightFactor * 1.2;
               const alpha = Math.min(1, dot.baseAlpha + lightFactor * 0.65);
-
               ctx.arc(dot.x, dot.y, radius, 0, Math.PI * 2);
-
               const r = Math.round(180 * (1 - lightFactor));
               const g = Math.round(180 * (1 - lightFactor) + 255 * lightFactor);
               const b = Math.round(190 * (1 - lightFactor) + 255 * lightFactor);
               ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-
-              if (lightFactor > 0.4) {
-                ctx.shadowColor = 'rgba(0, 255, 255, 0.6)';
-                ctx.shadowBlur = 6;
-              } else {
-                ctx.shadowBlur = 0;
-              }
+              if (lightFactor > 0.4) { ctx.shadowColor = 'rgba(0, 255, 255, 0.6)'; ctx.shadowBlur = 6; }
+              else { ctx.shadowBlur = 0; }
             } else {
               ctx.arc(dot.x, dot.y, dot.baseRadius, 0, Math.PI * 2);
-              ctx.fillStyle = `rgba(180, 180, 190, ${dot.baseAlpha})`;
-              ctx.shadowBlur = 0;
+              ctx.fillStyle = `rgba(180, 180, 190, ${dot.baseAlpha})`; ctx.shadowBlur = 0;
             }
-
             ctx.fill();
           }
-
           requestAnimationFrame(animate);
         };
-
         animate();
       }
 
-      // Texto que se ilumina palabra a palabra. IntersectionObserver: 0% CPU fuera de pantalla.
       function initLit() {
         const el = document.querySelector('[data-lit]') as HTMLElement | null;
         if (!el || el.dataset.ready) return;
         el.dataset.ready = '1';
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
         const words = Array.from(el.querySelectorAll('.w')) as HTMLElement[];
         el.classList.add('armed');
-
         let ticking = false;
         let listening = false;
-
         const update = () => {
           ticking = false;
           if (!el.isConnected) return;
           const vh = window.innerHeight;
           const rect = el.getBoundingClientRect();
-          const start = vh * 0.9;
-          const end = vh * 0.35;
+          const start = vh * 0.9; const end = vh * 0.35;
           const progress = Math.min(1, Math.max(0, (start - rect.top) / (start - end + rect.height)));
           const lit = Math.round(progress * words.length);
           words.forEach((w, i) => w.classList.toggle('on', i < lit));
         };
-
-        const onScroll = () => {
-          if (ticking) return;
-          ticking = true;
-          requestAnimationFrame(update);
-        };
-
+        const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
         const startListening = () => {
           if (listening) return;
           listening = true;
@@ -335,14 +218,12 @@ const pairs = cases.slice(0, 3).flatMap((caseItem) =>
           window.addEventListener('resize', onScroll);
           onScroll();
         };
-
         const stopListening = () => {
           if (!listening) return;
           listening = false;
           window.removeEventListener('scroll', onScroll);
           window.removeEventListener('resize', onScroll);
         };
-
         const io = new IntersectionObserver((entries) => {
           if (entries.some((entry) => entry.isIntersecting)) startListening();
           else stopListening();
@@ -360,535 +241,35 @@ const pairs = cases.slice(0, 3).flatMap((caseItem) =>
     </script>
 
     <style>
-      /* ───────── Tokens ───────── */
-      .page {
-        --cyan: #00ffff;
-        --ink: #f5f5f7;
-        --steel: #86868b;
-        --line: rgba(255, 255, 255, 0.08);
-      }
-
-      /* Tipografías. Con !important porque global.css ya fuerza Orbitron en toda la página */
-      .sf,
-      .sf * {
-        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif !important;
-      }
-      .orb,
-      .sf .orb,
-      .sf .orb * {
-        font-family: 'Orbitron', sans-serif !important;
-      }
-
-      .spotlight-campana {
-        background: radial-gradient(
-          ellipse 80% 50% at 50% 0%,
-          rgba(0, 255, 255, 0.12) 0%,
-          rgba(0, 255, 255, 0.03) 40%,
-          rgba(0, 255, 255, 0.008) 70%,
-          transparent 100%
-        );
-        filter: blur(60px);
-      }
-
-      a:focus-visible,
-      summary:focus-visible {
-        outline: 2px solid var(--cyan);
-        outline-offset: 4px;
-        border-radius: 8px;
-      }
-
-      /* ───────── Navbar ───────── */
-      .nav {
-        position: sticky;
-        top: 0;
-        z-index: 50;
-        background: rgba(5, 5, 7, 0.55);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        -webkit-backdrop-filter: saturate(180%) blur(20px);
-        backdrop-filter: saturate(180%) blur(20px);
-      }
-      .nav__in {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 24px;
-        height: 64px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      .brand__mark {
-        width: 34px;
-        height: 34px;
-        border-radius: 10px;
-        background: #121215;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        display: grid;
-        place-items: center;
-        transition: border-color 0.3s, box-shadow 0.3s;
-      }
-      .brand__mark span {
-        color: var(--cyan);
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-      }
-      .brand:hover .brand__mark {
-        border-color: rgba(0, 255, 255, 0.5);
-        box-shadow: 0 0 20px rgba(0, 255, 255, 0.15);
-      }
-      .brand__name {
-        font-size: 1.05rem;
-        font-weight: 700;
-        letter-spacing: 0.18em;
-        color: #fff;
-      }
-      .nav__links {
-        display: flex;
-        gap: 32px;
-        font-size: 14px;
-        color: var(--steel);
-      }
-      .nav__links a {
-        transition: color 0.25s;
-      }
-      .nav__links a:hover,
-      .nav__links a.is-current {
-        color: #fff;
-      }
-      @media (max-width: 560px) {
-        .brand__name {
-          display: none;
-        }
-        .nav__links {
-          gap: 20px;
-          font-size: 13px;
-        }
-      }
-
-      /* ───────── Layout ───────── */
-      .main {
-        flex: 1;
-        width: 100%;
-        max-width: 1120px;
-        margin: 0 auto;
-        padding: 0 24px clamp(72px, 10vw, 128px);
-      }
-      .section {
-        margin-top: clamp(96px, 13vw, 168px);
-      }
-
-      /* ───────── Entrada del hero ───────── */
-      .rise {
-        opacity: 0;
-        animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s) forwards;
-      }
-      .rise-soft {
-        opacity: 0;
-        animation: rise-soft 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s) forwards;
-      }
-      @keyframes rise {
-        from {
-          opacity: 0;
-          transform: translateY(16px);
-          filter: blur(8px);
-        }
-        to {
-          opacity: 1;
-          transform: none;
-          filter: none;
-        }
-      }
-      @keyframes rise-soft {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: none;
-        }
-      }
-
-      /* ───────── Hero ───────── */
-      .hero {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        padding-top: clamp(40px, 8vh, 88px);
-      }
-      .h1 {
-        font-size: clamp(1.5rem, 6.2vw, 4.5rem);
-        font-weight: 800;
-        line-height: 1.04;
-        letter-spacing: 0.015em;
-        text-transform: uppercase;
-        background: linear-gradient(180deg, #ffffff 25%, #8e8e93 118%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        -webkit-text-fill-color: transparent;
-      }
-      .h1 span {
-        display: block;
-      }
-      .hero__sub {
-        margin-top: 20px;
-        max-width: 34rem;
-        font-size: clamp(1rem, 1.6vw, 1.1875rem);
-        line-height: 1.55;
-        color: var(--steel);
-        text-wrap: balance;
-      }
-
-      /* ───────── Buscador ───────── */
-      .tool {
-        position: relative;
-        isolation: isolate;
-        width: 100%;
-        max-width: 900px;
-        text-align: left;
-      }
-      .tool::before {
-        content: '';
-        position: absolute;
-        inset: -40px -60px;
-        z-index: -1;
-        pointer-events: none;
-        background: radial-gradient(60% 50% at 50% 0%, rgba(0, 255, 255, 0.1), transparent 70%);
-        filter: blur(30px);
-      }
-
-      /* ───────── Títulos de sección ───────── */
-      .h2 {
-        font-size: clamp(1.25rem, 2.2vw, 1.625rem);
-        font-weight: 700;
-        line-height: 1.25;
-        color: #fff;
-        text-wrap: balance;
-      }
-      .h2--lg {
-        font-size: clamp(1.5rem, 3vw, 2.25rem);
-        line-height: 1.2;
-      }
-
-      /* ───────── Texto que se ilumina ───────── */
-      .lit {
-        margin-top: 20px;
-        max-width: 24em;
-        font-size: clamp(1.4rem, 3.1vw, 2.5rem);
-        font-weight: 600;
-        line-height: 1.28;
-        letter-spacing: -0.02em;
-        color: var(--ink);
-      }
-      .lit.armed .w {
-        color: rgba(245, 245, 247, 0.22);
-        transition: color 0.35s ease;
-      }
-      .lit.armed .w.on {
-        color: var(--ink);
-      }
-
-      /* ───────── Bento ───────── */
-      .bento {
-        display: grid;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-        gap: 16px;
-        margin-top: clamp(40px, 6vw, 72px);
-      }
-      .card {
-        position: relative;
-        overflow: hidden;
-        padding: clamp(24px, 3vw, 36px);
-        border-radius: 28px;
-        border: 1px solid rgba(255, 255, 255, 0.09);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.015) 45%, rgba(0, 0, 0, 0.55));
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
-        -webkit-backdrop-filter: blur(24px);
-        backdrop-filter: blur(24px);
-      }
-      .card--wide {
-        grid-column: span 4;
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 32px;
-        align-items: end;
-      }
-      .card--narrow {
-        grid-column: span 2;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        gap: 32px;
-      }
-      .card--full {
-        grid-column: span 6;
-        display: grid;
-        grid-template-columns: 1fr minmax(180px, 240px);
-        gap: 32px;
-        align-items: center;
-      }
-      .card h3 {
-        font-size: 1.125rem;
-        font-weight: 700;
-        line-height: 1.3;
-        color: #fff;
-      }
-      .card p {
-        margin-top: 12px;
-        max-width: 44ch;
-        font-size: 0.9375rem;
-        line-height: 1.65;
-        color: var(--steel);
-      }
-      .stat {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-      .stat__n {
-        font-size: clamp(2.75rem, 5vw, 4rem);
-        font-weight: 800;
-        line-height: 1;
-        letter-spacing: 0.01em;
-        white-space: nowrap;
-        color: #fff;
-      }
-      .stat__n small {
-        margin-left: 0.5em;
-        font-size: 0.3em;
-        font-weight: 700;
-        letter-spacing: 0.1em;
-        color: var(--cyan);
-      }
-      .stat__cap {
-        font-size: 0.8125rem;
-        color: var(--steel);
-      }
-      .slots {
-        width: 100%;
-        height: auto;
-      }
-      .slots .on {
-        stroke: var(--cyan);
-        fill: rgba(0, 255, 255, 0.07);
-      }
-      .slots .off {
-        stroke: rgba(255, 255, 255, 0.2);
-      }
-      .slots .shroud {
-        fill: rgba(255, 255, 255, 0.04);
-      }
-      .slots .dim-line {
-        stroke: var(--cyan);
-        stroke-width: 1.25;
-      }
-      .slots text {
-        font-size: 11px;
-        fill: var(--steel);
-      }
-      @media (max-width: 900px) {
-        .card--wide,
-        .card--narrow,
-        .card--full {
-          grid-column: span 6;
-        }
-        .card--wide {
-          grid-template-columns: 1fr;
-          align-items: start;
-        }
-        .card--full {
-          grid-template-columns: 1fr;
-        }
-        .slots {
-          max-width: 240px;
-        }
-      }
-
-      /* ───────── FAQ ───────── */
-      .faq {
-        display: grid;
-        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-        gap: clamp(32px, 6vw, 96px);
-        align-items: start;
-      }
-      .faq__head {
-        position: sticky;
-        top: 104px;
-      }
-      .faq details {
-        border-top: 1px solid var(--line);
-      }
-      .faq details:last-child {
-        border-bottom: 1px solid var(--line);
-      }
-      .faq summary {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 24px;
-        padding: 24px 0;
-        list-style: none;
-        cursor: pointer;
-        color: #fff;
-      }
-      .faq summary::-webkit-details-marker {
-        display: none;
-      }
-      .faq summary h3 {
-        font-size: 1.0625rem;
-        font-weight: 600;
-        line-height: 1.4;
-        text-wrap: balance;
-      }
-      .plus {
-        position: relative;
-        flex: none;
-        width: 14px;
-        height: 14px;
-        margin-top: 0.4em;
-        color: var(--steel);
-        transition: color 0.25s;
-      }
-      .plus::before,
-      .plus::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 50%;
-        height: 1.5px;
-        background: currentColor;
-        transform: translateY(-50%);
-      }
-      .plus::after {
-        transform: translateY(-50%) rotate(90deg);
-        transition: transform 0.3s ease;
-      }
-      .faq details[open] .plus {
-        color: var(--cyan);
-      }
-      .faq details[open] .plus::after {
-        transform: translateY(-50%) rotate(0deg);
-      }
-      .faq .answer {
-        padding: 0 48px 26px 0;
-        font-size: 0.9375rem;
-        line-height: 1.7;
-        color: var(--steel);
-      }
-      .faq details[open] .answer {
-        animation: reveal 0.4s ease both;
-      }
-      @keyframes reveal {
-        from {
-          opacity: 0;
-          transform: translateY(-6px);
-        }
-      }
-      @media (max-width: 860px) {
-        .faq {
-          grid-template-columns: 1fr;
-        }
-        .faq__head {
-          position: static;
-        }
-      }
-
-      /* ───────── Combinaciones frecuentes ───────── */
-      .combos__list {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        column-gap: clamp(24px, 5vw, 72px);
-        margin: 28px 0 0;
-        padding: 0;
-        list-style: none;
-      }
-      .combos__list li {
-        border-top: 1px solid var(--line);
-      }
-      .combos__list li:nth-last-child(-n + 2) {
-        border-bottom: 1px solid var(--line);
-      }
-      .combo {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        padding: 22px 0;
-        color: #fff;
-        text-decoration: none;
-      }
-      .combo__text {
-        flex: 1;
-        min-width: 0;
-      }
-      .combo__case,
-      .combo__gpu {
-        display: block;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      .combo__case {
-        font-size: 1.0625rem;
-        font-weight: 600;
-        transition: color 0.25s;
-      }
-      .combo__gpu {
-        margin-top: 2px;
-        font-size: 0.875rem;
-        color: var(--steel);
-      }
-      .combo__arrow {
-        color: var(--cyan);
-        opacity: 0;
-        transform: translateX(-8px);
-        transition: opacity 0.3s, transform 0.3s;
-      }
-      .combo:hover .combo__case,
-      .combo:focus-visible .combo__case {
-        color: var(--cyan);
-      }
-      .combo:hover .combo__arrow,
-      .combo:focus-visible .combo__arrow {
-        opacity: 1;
-        transform: none;
-      }
-      @media (hover: none) {
-        .combo__arrow {
-          opacity: 0.6;
-          transform: none;
-        }
-      }
-      @media (max-width: 720px) {
-        .combos__list {
-          grid-template-columns: 1fr;
-        }
-        .combos__list li:nth-last-child(2) {
-          border-bottom: 0;
-        }
-      }
-
-      /* ───────── Accesibilidad: sin movimiento ───────── */
-      @media (prefers-reduced-motion: reduce) {
-        .rise,
-        .rise-soft {
-          animation: none;
-          opacity: 1;
-          transform: none;
-          filter: none;
-        }
-        .faq details[open] .answer {
-          animation: none;
-        }
-      }
+      .page { --cyan: #00ffff; --ink: #f5f5f7; --steel: #86868b; --line: rgba(255, 255, 255, 0.08); }
+      .sf, .sf * { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif !important; }
+      .orb, .sf .orb, .sf .orb * { font-family: 'Orbitron', sans-serif !important; }
+      .spotlight-campana { background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 255, 255, 0.12) 0%, rgba(0, 255, 255, 0.03) 40%, rgba(0, 255, 255, 0.008) 70%, transparent 100%); filter: blur(60px); }
+      .nav { position: sticky; top: 0; z-index: 50; background: rgba(5, 5, 7, 0.55); border-bottom: 1px solid rgba(255, 255, 255, 0.06); backdrop-filter: saturate(180%) blur(20px); }
+      .nav__in { max-width: 1200px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+      .brand { display: flex; align-items: center; gap: 12px; }
+      .brand__name { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.18em; color: #fff; }
+      .nav__links { display: flex; gap: 32px; font-size: 14px; color: var(--steel); }
+      .nav__links a:hover { color: #fff; }
+      .main { flex: 1; width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 24px clamp(72px, 10vw, 128px); }
+      .section { margin-top: clamp(96px, 13vw, 168px); }
+      .hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: clamp(40px, 8vh, 88px); }
+      .h1 { font-size: clamp(1.5rem, 6.2vw, 4.5rem); font-weight: 800; line-height: 1.04; letter-spacing: 0.015em; text-transform: uppercase; background: linear-gradient(180deg, #ffffff 25%, #8e8e93 118%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+      .h1 span { display: block; }
+      .hero__sub { margin-top: 20px; max-width: 34rem; font-size: clamp(1rem, 1.6vw, 1.1875rem); line-height: 1.55; color: var(--steel); }
+      .bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; margin-top: clamp(40px, 6vw, 72px); }
+      .card { position: relative; overflow: hidden; padding: clamp(24px, 3vw, 36px); border-radius: 28px; border: 1px solid rgba(255, 255, 255, 0.09); background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.015) 45%, rgba(0, 0, 0, 0.55)); backdrop-filter: blur(24px); }
+      .card--wide { grid-column: span 4; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end; }
+      .card--narrow { grid-column: span 2; display: flex; flex-direction: column; justify-content: space-between; gap: 32px; }
+      .card h3 { font-size: 1.125rem; font-weight: 700; color: #fff; }
+      .card p { margin-top: 12px; max-width: 44ch; font-size: 0.9375rem; line-height: 1.65; color: var(--steel); }
+      .stat__n { font-size: clamp(2.75rem, 5vw, 4rem); font-weight: 800; color: #fff; }
+      .stat__n small { margin-left: 0.5em; font-size: 0.3em; color: var(--cyan); }
+      .stat__cap { font-size: 0.8125rem; color: var(--steel); }
+      .lit { margin-top: 20px; max-width: 24em; font-size: clamp(1.4rem, 3.1vw, 2.5rem); font-weight: 600; line-height: 1.28; color: var(--ink); }
+      .lit.armed .w { color: rgba(245, 245, 247, 0.22); transition: color 0.35s ease; }
+      .lit.armed .w.on { color: var(--ink); }
+      @media (max-width: 900px) { .card--wide, .card--narrow { grid-column: span 6; } }
     </style>
-
   </body>
 </html>

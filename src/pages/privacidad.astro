@@ -2,15 +2,19 @@
 // src/pages/politica-de-privacidad.astro - Página de Política de Privacidad (Liquid Glass HUD)
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
 
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const langPrefix = lang === 'en' ? '/en' : '';
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 ---
 
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Política de Privacidad y Cookies - Protección de Datos | LIDUNAX</title>
+    <title>{lang === 'en' ? 'Privacy Policy & Cookies - Data Protection | LIDUNAX' : 'Política de Privacidad y Cookies - Protección de Datos | LIDUNAX'}</title>
     <link rel="icon" type="image/png" href="/logo2.webp?v=5" />
     <meta name="description" content="Política de privacidad de Lidunax: tratamiento de datos anónimos, política de cookies, publicidad de Google AdSense y programa de afiliados." />
     <link rel="canonical" href={canonicalURL} />
@@ -20,6 +24,20 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <!-- Detección automática de idioma ultrarrápida -->
+    <script is:inline>
+      (function () {
+        const savedLang = localStorage.getItem('lidunax_lang');
+        const browserLang = (navigator.language || navigator.userLanguage || '').slice(0, 2);
+        const targetLang = savedLang || (browserLang === 'en' ? 'en' : 'es');
+        const currentPath = window.location.pathname;
+
+        if (targetLang === 'en' && !currentPath.startsWith('/en')) {
+          window.location.replace('/en' + currentPath);
+        }
+      })();
+    </script>
 
     <!-- Datos Estructurados JSON-LD Schema.org para WebPage -->
     <script type="application/ld+json" set:html={JSON.stringify({
@@ -38,101 +56,95 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
   <body class="bg-[#050507] text-white min-h-screen relative overflow-x-hidden flex flex-col justify-between selection:bg-[#00ffff] selection:text-black">
     
-    <!-- Canvas interactivo de partículas -->
     <canvas id="dotsCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0" aria-hidden="true"></canvas>
-
-    <!-- Campana Cenital (Fuente de luz) -->
     <div class="spotlight-campana absolute top-0 left-1/2 -translate-x-1/2 w-[100vw] h-[620px] pointer-events-none z-0" aria-hidden="true"></div>
 
     <div class="page relative z-10 flex flex-col min-h-screen justify-between">
       
-      <!-- Navbar Estandarizado -->
       <header class="nav sf">
         <div class="nav__in">
-         <a href="/" class="brand flex items-center gap-3">
-      <img src="/logoancho.webp" alt="LDX" width="160" height="32" class="h-8 sm:h-10 w-auto object-contain" />
-      <span class="brand__name orb">LIDUNAX</span>
-    </a>
+          <a href={langPrefix || '/'} class="brand flex items-center gap-3">
+            <img src="/logoancho.webp" alt="LDX" width="160" height="32" class="h-8 sm:h-10 w-auto object-contain" />
+            <span class="brand__name orb">LIDUNAX</span>
+          </a>
 
           <nav class="nav__links" aria-label="Principal" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-            <a href="/" class="hover:text-white transition-colors">Inicio</a>
-            <a href="/faq" class="hover:text-white transition-colors">FAQ</a>
-            <a href="/about" class="hover:text-white transition-colors">Sobre nosotros</a>
+            <a href={langPrefix || '/'} class="hover:text-white transition-colors">{t('nav.home')}</a>
+            <a href={`${langPrefix}/faq`} class="hover:text-white transition-colors">{t('nav.faq')}</a>
+            <a href={`${langPrefix}/about`} class="hover:text-white transition-colors">{t('nav.about')}</a>
           </nav>
         </div>
       </header>
 
-      <!-- Contenido Principal -->
       <main class="main w-full max-w-4xl mx-auto px-4 pt-16 pb-24 space-y-12">
         
-        <!-- Hero Section Política de Privacidad -->
         <section class="text-center space-y-4 rise" style="--d:.05s">
           <h1 class="text-3xl sm:text-5xl font-bold tracking-widest uppercase orb bg-gradient-to-b from-[#ffffff] via-[#ffffff] to-[#8e8e93] bg-clip-text text-transparent">
-            POLÍTICA DE PRIVACIDAD
+            {lang === 'en' ? 'PRIVACY POLICY' : 'POLÍTICA DE PRIVACIDAD'}
           </h1>
           <p class="text-[#86868b] text-sm sm:text-base tracking-wide max-w-xl mx-auto font-light leading-relaxed" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-            Marco de protección de datos, métricas anónimas y gestión de cookies en <code class="text-[#00ffff] bg-black/40 px-1.5 py-0.5 rounded text-xs font-mono">lidunax.com</code>.
+            {lang === 'en'
+              ? 'Data protection framework, anonymous metrics, and cookie management on lidunax.com.'
+              : 'Marco de protección de datos, métricas anónimas y gestión de cookies en lidunax.com.'}
           </p>
         </section>
 
-        <!-- Bloque Principal Liquid Glass -->
         <section class="card relative p-6 sm:p-10 space-y-10 rise-soft" style="--d:.2s">
-          <!-- Brillo superior decorativo de la tarjeta -->
           <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[1px] bg-gradient-to-r from-transparent via-[#00ffff]/30 to-transparent pointer-events-none"></div>
 
-          <!-- Introducción -->
           <div class="space-y-2 border-b border-white/5 pb-6">
-            <span class="text-xs font-orbitron text-[#00ffff] tracking-widest uppercase orb opacity-80">// PROTECCIÓN_DE_DATOS</span>
+            <span class="text-xs font-orbitron text-[#00ffff] tracking-widest uppercase orb opacity-80">// {lang === 'en' ? 'DATA_PROTECTION' : 'PROTECCIÓN_DE_DATOS'}</span>
             <p class="text-slate-300 text-sm sm:text-base leading-relaxed font-light" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-              En <strong class="text-white font-semibold">Lidunax</strong>, accesible desde <span class="text-[#00ffff] font-mono text-xs">lidunax.com</span>, una de nuestras máximas prioridades es la transparencia y la salvaguarda de la privacidad de nuestros visitantes.
+              {lang === 'en'
+                ? 'At Lidunax, accessible from lidunax.com, one of our main priorities is transparency and safeguarding visitor privacy.'
+                : 'En Lidunax, accesible desde lidunax.com, una de nuestras máximas prioridades es la transparencia y la salvaguarda de la privacidad de nuestros visitantes.'}
             </p>
           </div>
 
-          <!-- Secciones de Privacidad -->
           <div class="space-y-8">
-            
-            <!-- 01 Información que Recopilamos -->
             <div class="p-6 rounded-2xl border border-white/5 bg-white/[0.01] space-y-3">
-              <span class="text-[#00ffff] text-xs font-orbitron tracking-widest orb">01 // TELEMETRÍA Y MÉTRICAS</span>
+              <span class="text-[#00ffff] text-xs font-orbitron tracking-widest orb">01 // {lang === 'en' ? 'TELEMETRY & METRICS' : 'TELEMETRÍA Y MÉTRICAS'}</span>
               <h2 class="text-white text-lg font-semibold" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-                Recopilación Mínima y Datos Anónimos
+                {lang === 'en' ? 'Minimal Collection & Anonymous Data' : 'Recopilación Mínima y Datos Anónimos'}
               </h2>
               <p class="text-sm text-[#86868b] font-light leading-relaxed" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-                Lidunax no requiere registro de usuario, formularios de entrada de datos ni almacena información personal sensible. Como plataforma analítica de compatibilidad de hardware, recopilamos únicamente métricas anónimas de navegación a través de cookies técnicas esenciales para garantizar la estabilidad y rendimiento del simulador.
+                {lang === 'en'
+                  ? 'Lidunax requires no user registration or input forms. As a hardware clearance tool, we collect only anonymous usage metrics via essential technical cookies for system stability.'
+                  : 'Lidunax no requiere registro de usuario, formularios de entrada de datos ni almacena información personal sensible. Como plataforma analítica de compatibilidad de hardware, recopilamos únicamente métricas anónimas de navegación a través de cookies técnicas esenciales para garantizar la estabilidad y rendimiento del simulador.'}
               </p>
             </div>
 
-            <!-- 02 Publicidad y Afiliación -->
             <div class="p-6 rounded-2xl border border-white/5 bg-white/[0.01] space-y-3">
-              <span class="text-[#00ffff] text-xs font-orbitron tracking-widest orb">02 // PROVEEDORES DE TERCEROS</span>
+              <span class="text-[#00ffff] text-xs font-orbitron tracking-widest orb">02 // {lang === 'en' ? 'THIRD-PARTY PROVIDERS' : 'PROVEEDORES DE TERCEROS'}</span>
               <h2 class="text-white text-lg font-semibold" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-                Publicidad y Afiliación (Google AdSense y Amazon)
+                {lang === 'en' ? 'Advertising & Affiliates (Google AdSense & Amazon)' : 'Publicidad y Afiliación (Google AdSense y Amazon)'}
               </h2>
               <p class="text-sm text-[#86868b] font-light leading-relaxed" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-                Este sitio web utiliza servicios analíticos y publicitarios gestionados por terceros, tales como <strong class="text-slate-200 font-medium">Google AdSense</strong> y el <strong class="text-slate-200 font-medium">Programa de Afiliados de Amazon EU</strong>. Estos proveedores pueden emplear cookies (como la cookie DART de Google) para servir anuncios contextuales basados en visitas previas del usuario a esta o a otras páginas web.
+                {lang === 'en'
+                  ? 'This site uses third-party advertising and analytics services like Google AdSense and the Amazon EU Associates Program, which may use cookies to serve contextual ads.'
+                  : 'Este sitio web utiliza servicios analíticos y publicitarios gestionados por terceros, tales como Google AdSense y el Programa de Afiliados de Amazon EU. Estos proveedores pueden emplear cookies (como la cookie DART de Google) para servir anuncios contextuales basados en visitas previas del usuario a esta o a otras páginas web.'}
               </p>
             </div>
 
-            <!-- 03 Gestión de Cookies -->
             <div class="p-6 rounded-2xl border border-white/5 bg-white/[0.01] space-y-3">
-              <span class="text-[#00ffff] text-xs font-orbitron tracking-widest orb">03 // CONTROL DEL USUARIO</span>
+              <span class="text-[#00ffff] text-xs font-orbitron tracking-widest orb">03 // {lang === 'en' ? 'USER CONTROL' : 'CONTROL DEL USUARIO'}</span>
               <h2 class="text-white text-lg font-semibold" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-                Gestión y Desactivación de Cookies
+                {lang === 'en' ? 'Cookie Management & Disabling' : 'Gestión y Desactivación de Cookies'}
               </h2>
               <p class="text-sm text-[#86868b] font-light leading-relaxed" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-                Cualquier visitante puede optar por desactivar las cookies a través de las opciones individuales de su navegador web (Chrome, Firefox, Safari, Edge). Para obtener información más detallada sobre la gestión de cookies en navegadores específicos, consulte los sitios web oficiales de sus respectivos desarrolladores.
+                {lang === 'en'
+                  ? 'Visitors can disable cookies through individual browser options (Chrome, Firefox, Safari, Edge). Check official developer documentation for details.'
+                  : 'Cualquier visitante puede optar por desactivar las cookies a través de las opciones individuales de su navegador web (Chrome, Firefox, Safari, Edge). Para obtener información más detallada sobre la gestión de cookies en navegadores específicos, consulte los sitios web oficiales de sus respectivos desarrolladores.'}
               </p>
             </div>
-
           </div>
 
-          <!-- Badge Footer de Transparencia -->
           <div class="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-6 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-4">
             <span class="text-xs text-[#86868b] font-light" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-              ¿Tienes dudas sobre cómo gestionamos la privacidad en el sitio?
+              {lang === 'en' ? 'Have questions regarding site privacy?' : '¿Tienes dudas sobre cómo gestionamos la privacidad en el sitio?'}
             </span>
-            <a href="/contacto" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-[#00ffff]/50 text-xs font-orbitron text-[#00ffff] tracking-wider transition-all duration-300 orb">
-              CONTACTAR SOPORTE →
+            <a href={`${langPrefix}/contacto`} class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-[#00ffff]/50 text-xs font-orbitron text-[#00ffff] tracking-wider transition-all duration-300 orb">
+              {lang === 'en' ? 'CONTACT SUPPORT →' : 'CONTACTAR SOPORTE →'}
             </a>
           </div>
 
@@ -143,7 +155,6 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
       <Footer />
     </div>
 
-    <!-- Script de Partículas Reactivas -->
     <script>
       interface Dot { x: number; y: number; baseRadius: number; vx: number; vy: number; baseAlpha: number; }
 
@@ -221,40 +232,20 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
     </script>
 
     <style>
-      /* ───────── Tipografía y Sistema Global ───────── */
       .orb { font-family: 'Orbitron', sans-serif !important; }
-
-      .spotlight-campana {
-        background: radial-gradient(
-          ellipse 80% 50% at 50% 0%, rgba(0, 255, 255, 0.12) 0%, rgba(0, 255, 255, 0.03) 40%, rgba(0, 255, 255, 0.008) 70%, transparent 100%
-        );
-        filter: blur(60px);
-      }
-
-      /* ───────── Navbar (Reutilizado) ───────── */
+      .spotlight-campana { background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 255, 255, 0.12) 0%, rgba(0, 255, 255, 0.03) 40%, rgba(0, 255, 255, 0.008) 70%, transparent 100%); filter: blur(60px); }
       .nav { position: sticky; top: 0; z-index: 50; background: rgba(5, 5, 7, 0.55); border-bottom: 1px solid rgba(255, 255, 255, 0.06); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); }
       .nav__in { max-width: 1200px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
       .brand { display: flex; align-items: center; gap: 12px; }
-      .brand__mark { width: 34px; height: 34px; border-radius: 10px; background: #121215; border: 1px solid rgba(255, 255, 255, 0.1); display: grid; place-items: center; transition: border-color 0.3s, box-shadow 0.3s; }
-      .brand__mark span { color: #00ffff; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
-      .brand:hover .brand__mark { border-color: rgba(0, 255, 255, 0.5); box-shadow: 0 0 20px rgba(0, 255, 255, 0.15); }
       .brand__name { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.18em; color: #fff; }
       .nav__links { display: flex; gap: 32px; font-size: 14px; color: #86868b; }
       @media (max-width: 560px) { .brand__name { display: none; } .nav__links { gap: 20px; font-size: 13px; } }
-
-      /* ───────── Animaciones de Entrada ───────── */
       .rise { opacity: 0; animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s) forwards; }
       .rise-soft { opacity: 0; animation: rise-soft 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s) forwards; }
       @keyframes rise { from { opacity: 0; transform: translateY(16px); filter: blur(8px); } to { opacity: 1; transform: none; filter: none; } }
       @keyframes rise-soft { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
-
-      /* ───────── Tarjeta Liquid Glass Base ───────── */
       .card { border-radius: 28px; border: 1px solid rgba(255, 255, 255, 0.09); background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01) 45%, rgba(0, 0, 0, 0.6)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 30px 60px rgba(0,0,0,0.5); -webkit-backdrop-filter: blur(32px); backdrop-filter: blur(32px); }
-
-      /* Reduce motion fallback */
-      @media (prefers-reduced-motion: reduce) {
-        .rise, .rise-soft { animation: none; opacity: 1; transform: none; filter: none; }
-      }
+      @media (prefers-reduced-motion: reduce) { .rise, .rise-soft { animation: none; opacity: 1; transform: none; filter: none; } }
     </style>
   </body>
 </html>

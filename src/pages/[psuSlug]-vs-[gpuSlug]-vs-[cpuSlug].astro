@@ -5,6 +5,11 @@ import cpusData from '../data/cpus.json';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 import { getStoresForLocale } from '../config/stores.js';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const langPrefix = lang === 'en' ? '/en' : '';
 
 // 1. GENERADOR DE RUTAS (REQUERIDO POR ASTRO EN MODO ESTÁTICO)
 export async function getStaticPaths() {
@@ -38,7 +43,7 @@ if (!psu || !gpu || !cpu) {
 }
 
 // Configuración dinámica de tiendas por idioma
-const currentLang = Astro.url.searchParams.get('lang') || Astro.currentLocale || 'es';
+const currentLang = lang;
 const stores = getStoresForLocale(currentLang);
 
 const psuQuery = `${psu.brand} ${psu.model}`.trim();
@@ -58,35 +63,37 @@ const margin = psuPower - recommendedDemand;
 // Lógica de colores semáforo
 let status = 'verde';
 let colorHex = '#10b981'; // Emerald
-let statusText = 'POTENCIA ÓPTIMA';
-let statusMessage = 'FLUJO ENERGÉTICO ESTABLE';
+let statusText = lang === 'en' ? 'OPTIMAL POWER' : 'POTENCIA ÓPTIMA';
+let statusMessage = lang === 'en' ? 'STABLE POWER FLOW' : 'FLUJO ENERGÉTICO ESTABLE';
 
 if (margin < 0) {
   status = 'rojo';
   colorHex = '#f43f5e'; // Rose
-  statusText = 'POTENCIA INSUFICIENTE';
-  statusMessage = 'DÉFICIT ENERGÉTICO CRÍTICO';
+  statusText = lang === 'en' ? 'INSUFFICIENT POWER' : 'POTENCIA INSUFICIENTE';
+  statusMessage = lang === 'en' ? 'CRITICAL POWER DEFICIT' : 'DÉFICIT ENERGÉTICO CRÍTICO';
 } else if (margin < 100) {
   status = 'amarillo';
   colorHex = '#fbbf24'; // Amber
-  statusText = 'POTENCIA AL LÍMITE';
-  statusMessage = 'ADVERTENCIA DE SOBRECARGA';
+  statusText = lang === 'en' ? 'POWER AT LIMIT' : 'POTENCIA AL LÍMITE';
+  statusMessage = lang === 'en' ? 'OVERLOAD WARNING' : 'ADVERTENCIA DE SOBRECARGA';
 }
 
 // Texto SEO declarativo para el scroller
-const statement = `El motor de telemetría de Lidunax analiza la curva de consumo en pico de la tarjeta gráfica ${gpu.brand} ${gpu.model} junto al procesador ${cpu.brand} ${cpu.model}, verificando si la fuente ${psu.brand} ${psu.model} de ${psuPower}W ofrece la entrega de corriente estable requerida.`;
+const statement = lang === 'en'
+  ? `Lidunax telemetry engine analyzes peak consumption curves of graphics card ${gpu.brand} ${gpu.model} with processor ${cpu.brand} ${cpu.model}, verifying if power supply ${psu.brand} ${psu.model} (${psuPower}W) provides required current.`
+  : `El motor de telemetría de Lidunax analiza la curva de consumo en pico de la tarjeta gráfica ${gpu.brand} ${gpu.model} junto al procesador ${cpu.brand} ${cpu.model}, verificando si la fuente ${psu.brand} ${psu.model} de ${psuPower}W ofrece la entrega de corriente estable requerida.`;
 const statementWords = statement.split(' ');
 
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 ---
 
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>¿Soporta la {psu.brand} {psu.model} a la {gpu.brand} {gpu.model} y {cpu.model}? - LIDUNAX</title>
+    <title>{psu.brand} {psu.model} + {gpu.brand} {gpu.model} + {cpu.model} - LIDUNAX</title>
     <link rel="icon" type="image/png" href="/logo2.webp?v=5" />
-    <meta name="description" content={`Análisis técnico de consumo: Comprueba si los ${psuPower}W de la fuente ${psu.brand} ${psu.model} son suficientes para alimentar una ${gpu.brand} ${gpu.model} y un procesador ${cpu.model}.`} />
+    <meta name="description" content={`PSU Power Telemetry: ${psuPower}W for ${gpu.brand} ${gpu.model} & ${cpu.model}`} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -100,12 +107,14 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
     <!-- Navbar -->
     <header class="border-b border-white/10 bg-black/50 backdrop-blur-md sticky top-0 z-50">
       <div class="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
-        <a href="/" class="flex items-center gap-3">
+        <a href={langPrefix || '/'} class="flex items-center gap-3">
           <img src="/logoancho.webp" alt="LDX" width="160" height="32" class="h-8 w-auto object-contain" />
           <span class="font-orbitron font-bold tracking-widest hidden sm:block">LIDUNAX</span>
         </a>
         <nav class="flex gap-6 text-sm font-orbitron tracking-wider text-slate-400">
-          <a href="/fuente-psu" class="hover:text-[#00ffff] transition-colors">← VOLVER AL BUSCADOR</a>
+          <a href={`${langPrefix}/fuente-psu`} class="hover:text-[#00ffff] transition-colors">
+            {lang === 'en' ? '← BACK TO SEARCH' : '← VOLVER AL BUSCADOR'}
+          </a>
         </nav>
       </div>
     </header>
@@ -115,11 +124,13 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
       <!-- Encabezado del reporte -->
       <div class="mb-10 text-center sm:text-left">
         <h1 class="text-3xl sm:text-4xl font-bold font-orbitron mb-3 uppercase tracking-wide">
-          <span class="text-slate-400 block text-lg mb-1">Informe de Telemetría Energética</span>
+          <span class="text-slate-400 block text-lg mb-1">
+            {lang === 'en' ? 'Energy Telemetry Report' : 'Informe de Telemetría Energética'}
+          </span>
           {psu.brand} {psu.model}
         </h1>
         <p class="text-slate-400 max-w-2xl text-sm sm:text-base">
-          Consumo combinado con la gráfica <strong class="text-white">{gpu.brand} {gpu.model}</strong> y el procesador <strong class="text-white">{cpu.brand} {cpu.model}</strong>.
+          {lang === 'en' ? 'Combined draw with GPU' : 'Consumo combinado con la gráfica'} <strong class="text-white">{gpu.brand} {gpu.model}</strong> {lang === 'en' ? 'and CPU' : 'y el procesador'} <strong class="text-white">{cpu.brand} {cpu.model}</strong>.
         </p>
       </div>
 
@@ -236,11 +247,15 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <span class="block text-[10px] text-slate-500 uppercase tracking-widest font-mono mb-1">DEMANDA ESTIMADA</span>
+                <span class="block text-[10px] text-slate-500 uppercase tracking-widest font-mono mb-1">
+                  {lang === 'en' ? 'ESTIMATED DRAW' : 'DEMANDA ESTIMADA'}
+                </span>
                 <span class="font-orbitron font-bold text-2xl text-white">{recommendedDemand} <small class="text-[0.5em] text-slate-400">W</small></span>
               </div>
               <div>
-                <span class="block text-[10px] text-slate-500 uppercase tracking-widest font-mono mb-1">MARGEN LIBRE</span>
+                <span class="block text-[10px] text-slate-500 uppercase tracking-widest font-mono mb-1">
+                  {lang === 'en' ? 'FREE MARGIN' : 'MARGEN LIBRE'}
+                </span>
                 <span class="font-orbitron font-bold text-2xl" style={`color: ${colorHex}`}>{margin > 0 ? `+${margin}` : margin} <small class="text-[0.5em]">W</small></span>
               </div>
             </div>
@@ -249,7 +264,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
           <!-- ESCÁNER DE DISPONIBILIDAD MULTI-TIENDA DINÁMICO CORREGIDO -->
           <div class="bg-[#0a0a0c] border border-white/5 rounded-[24px] p-6 shadow-2xl flex flex-col justify-between flex-1 animate-reveal" style="animation-delay: 0.22s;">
             <h3 class="font-orbitron text-xs tracking-[0.2em] text-slate-400 mb-4 uppercase">
-              {currentLang === 'es' ? 'COMPROBAR HARDWARE:' : 'CHECK AVAILABILITY:'}
+              {lang === 'en' ? 'CHECK AVAILABILITY:' : 'COMPROBAR HARDWARE:'}
             </h3>
 
             <div class="space-y-3">
@@ -257,14 +272,12 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
                 <div 
                   class="relative bg-white/[0.02] border border-white/5 rounded-2xl p-4 transition-all hover:border-white/10 overflow-hidden"
                 >
-                  <!-- TÍTULO EN BLANCO LISO -->
                   <div class="flex items-center justify-between mb-3">
                     <span class="font-orbitron text-xs font-bold tracking-wider text-white uppercase">
                       {store.name}
                     </span>
                   </div>
 
-                  <!-- BOTONES DE BÚSQUEDA CORREGIDOS (FUENTE PSU Y GPU) -->
                   <div class="grid grid-cols-2 gap-3">
                     <a
                       href={store.buildUrl(psuQuery)}
@@ -272,7 +285,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
                       rel="nofollow noopener noreferrer"
                       class="font-orbitron text-xs py-2.5 px-3 bg-white/[0.04] hover:bg-white/10 border border-white/5 hover:border-white/20 rounded-xl text-center text-slate-300 hover:text-white transition-all flex items-center justify-center gap-1.5"
                     >
-                      <span>Fuente</span>
+                      <span>{lang === 'en' ? 'PSU' : 'Fuente'}</span>
                       <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                     </a>
                     <a
@@ -286,7 +299,6 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
                     </a>
                   </div>
 
-                  <!-- LÍNEA INFERIOR EN DEGRADADO -->
                   <div 
                     class="absolute bottom-0 left-0 right-0 h-[2px]" 
                     style={`background: linear-gradient(90deg, transparent 0%, ${store.color} 50%, transparent 100%);`}
@@ -301,42 +313,46 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
       </div>
 
       <!-- Tabla de Métricas -->
-      <h2 class="text-2xl font-bold font-orbitron mb-6 mt-12">Métricas de Dimensiones Comparadas</h2>
+      <h2 class="text-2xl font-bold font-orbitron mb-6 mt-12">
+        {lang === 'en' ? 'Compared Energy Metrics' : 'Métricas de Dimensiones Comparadas'}
+      </h2>
       <div class="bg-[#0a0a0c] border border-white/5 rounded-[20px] overflow-hidden mb-12 text-sm sm:text-base">
         <div class="grid grid-cols-4 px-6 py-4 border-b border-white/5 text-[10px] sm:text-xs font-orbitron text-[#00ffff] tracking-widest uppercase">
-          <div>Parámetro</div>
-          <div>Fuente PSU</div>
+          <div>{lang === 'en' ? 'Parameter' : 'Parámetro'}</div>
+          <div>{lang === 'en' ? 'Power Supply' : 'Fuente PSU'}</div>
           <div>Hardware (CPU+GPU)</div>
-          <div>Diagnóstico</div>
+          <div>{lang === 'en' ? 'Diagnosis' : 'Diagnóstico'}</div>
         </div>
 
         <div class="grid grid-cols-4 px-6 py-5 border-b border-white/5 items-center">
-          <div class="font-bold">Potencia Nominal</div>
+          <div class="font-bold">{lang === 'en' ? 'Rated Power' : 'Potencia Nominal'}</div>
           <div class="text-slate-300">{psuPower} W</div>
-          <div class="text-slate-300">{rawDemand} W (Bruto)</div>
-          <div class="font-orbitron font-bold" style={`color: ${colorHex}`}>{status === 'rojo' ? 'INSUFICIENTE' : 'OK'}</div>
+          <div class="text-slate-300">{rawDemand} W ({lang === 'en' ? 'Gross' : 'Bruto'})</div>
+          <div class="font-orbitron font-bold" style={`color: ${colorHex}`}>{status === 'rojo' ? (lang === 'en' ? 'INSUFFICIENT' : 'INSUFFICIENT') : 'OK'}</div>
         </div>
 
         <div class="grid grid-cols-4 px-6 py-5 border-b border-white/5 items-center bg-white/[0.02]">
-          <div class="font-bold">Picos Transitorios</div>
-          <div class="text-slate-300">Soporte ATX</div>
+          <div class="font-bold">{lang === 'en' ? 'Transient Spikes' : 'Picos Transitorios'}</div>
+          <div class="text-slate-300">ATX Support</div>
           <div class="text-slate-300">{recommendedDemand} W (+25%)</div>
-          <div class="font-orbitron font-bold" style={`color: ${colorHex}`}>{margin > 0 ? `+${margin} W LIBRES` : `${margin} W DÉFICIT`}</div>
+          <div class="font-orbitron font-bold" style={`color: ${colorHex}`}>{margin > 0 ? `+${margin} W ${lang === 'en' ? 'FREE' : 'LIBRES'}` : `${margin} W DÉFICIT`}</div>
         </div>
 
         <div class="grid grid-cols-4 px-6 py-5 items-center">
-          <div class="font-bold">Conector PCIe</div>
-          <div class="text-slate-300">{psu.has12VHPWR ? '12VHPWR Nativo' : 'Clásico 8-pin'}</div>
-          <div class="text-slate-300">{gpuTdp > 280 ? 'Requiere 12VHPWR' : 'Estándar'}</div>
+          <div class="font-bold">{lang === 'en' ? 'PCIe Connector' : 'Conector PCIe'}</div>
+          <div class="text-slate-300">{psu.has12VHPWR ? (lang === 'en' ? 'Native 12VHPWR' : '12VHPWR Nativo') : 'Classic 8-pin'}</div>
+          <div class="text-slate-300">{gpuTdp > 280 ? '12VHPWR Required' : 'Standard'}</div>
           <div class="font-orbitron font-bold">
-            {!psu.has12VHPWR && gpuTdp > 280 ? <span class="text-amber-400">Adaptador Necesario</span> : <span class="text-emerald-400">Compatible</span>}
+            {!psu.has12VHPWR && gpuTdp > 280 ? <span class="text-amber-400">{lang === 'en' ? 'Adapter Required' : 'Adaptador Necesario'}</span> : <span class="text-emerald-400">Compatible</span>}
           </div>
         </div>
       </div>
 
       <!-- Análisis narrativo de ensamblaje (SEO) con TEXTO SCROLLER -->
       <section class="mb-16">
-        <h2 class="text-2xl font-bold font-orbitron mb-4">¿Cómo evaluamos el suministro de energía en LIDUNAX?</h2>
+        <h2 class="text-2xl font-bold font-orbitron mb-4">
+          {lang === 'en' ? 'How we evaluate power supply in LIDUNAX' : '¿Cómo evaluamos el suministro de energía en LIDUNAX?'}
+        </h2>
         
         <p class="lit mb-8" data-lit>
           {statementWords.map((word) => (<><span class="w">{word}</span>{' '}</>))}
@@ -344,35 +360,36 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
         <div class="bg-[#0a0a0c] border border-white/5 rounded-[20px] p-6 sm:p-8 text-slate-300 leading-relaxed">
           <p class="mb-6">
-            Al emparejar la fuente de alimentación <strong class="text-white">{psu.brand} {psu.model}</strong> de <strong class="text-[#00ffff]">{psuPower}W</strong> con el procesador <strong class="text-white">{cpu.brand} {cpu.model}</strong> y la tarjeta gráfica <strong class="text-white">{gpu.brand} {gpu.model}</strong>, la demanda eléctrica de pico alcanza los <strong>{recommendedDemand}W</strong>.
+            {lang === 'en'
+              ? `When pairing the ${psu.brand} ${psu.model} power supply (${psuPower}W) with processor ${cpu.brand} ${cpu.model} and graphics card ${gpu.brand} ${gpu.model}, peak power draw reaches ${recommendedDemand}W.`
+              : `Al emparejar la fuente de alimentación ${psu.brand} ${psu.model} de ${psuPower}W con el procesador ${cpu.brand} ${cpu.model} y la tarjeta gráfica ${gpu.brand} ${gpu.model}, la demanda eléctrica de pico alcanza los ${recommendedDemand}W.`}
           </p>
 
           <div class="bg-[#111] border border-white/10 rounded-xl p-5 mb-6">
-            <strong class="font-orbitron text-[11px] text-white tracking-widest uppercase mb-2 block">GESTIÓN DE PICOS DE TENSIÓN:</strong>
+            <strong class="font-orbitron text-[11px] text-white tracking-widest uppercase mb-2 block">
+              {lang === 'en' ? 'TRANSIENT SPIKE MANAGEMENT:' : 'GESTIÓN DE PICOS DE TENSIÓN:'}
+            </strong>
             <p class="text-sm">
-              Para evitar disparos intempestivos del OCP/OPP provocados por los picos transitorios de potencia de las GPUs modernas, Lidunax evalúa un margen de seguridad del 25% por encima del consumo teórico.
+              {lang === 'en'
+                ? 'To prevent sudden OCP/OPP trips caused by transient power spikes on modern GPUs, Lidunax evaluates a strict 25% safety margin above theoretical consumption.'
+                : 'Para evitar disparos intempestivos del OCP/OPP provocados por los picos transitorios de potencia de las GPUs modernas, Lidunax evalúa un margen de seguridad del 25% por encima del consumo teórico.'}
             </p>
           </div>
 
           <ul class="space-y-3 text-sm">
             {status === 'verde' && (
               <li class="flex items-start gap-2 text-emerald-400">
-                <span>↳</span> <span class="text-slate-300"><strong class="text-emerald-400 font-normal">Capacidad holgada:</strong> Cuentas con {margin}W de reserva. La fuente trabajará en su zona de máxima eficiencia energética (50%-70% de carga) reduciendo ruido y temperatura.</span>
+                <span>↳</span> <span class="text-slate-300"><strong class="text-emerald-400 font-normal">{lang === 'en' ? 'Optimal reserve:' : 'Capacidad holgada:'}</strong> {lang === 'en' ? `You have ${margin}W of reserve power. The PSU will operate in its peak efficiency curve.` : `Cuentas con ${margin}W de reserva. La fuente trabajará en su zona de máxima eficiencia energética (50%-70% de carga).`}</span>
               </li>
             )}
             {status === 'amarillo' && (
               <li class="flex items-start gap-2 text-amber-400">
-                <span>↳</span> <span class="text-slate-300"><strong class="text-amber-400 font-normal">Carga elevada:</strong> La fuente podrá alimentar el equipo, pero operará cerca del límite térmico bajo cargas de trabajo pesadas.</span>
+                <span>↳</span> <span class="text-slate-300"><strong class="text-amber-400 font-normal">{lang === 'en' ? 'High load:' : 'Carga elevada:'}</strong> {lang === 'en' ? 'The power supply can run the build but will operate near thermal limits under stress.' : 'La fuente podrá alimentar el equipo, pero operará cerca del límite térmico bajo cargas pesadas.'}</span>
               </li>
             )}
             {status === 'rojo' && (
               <li class="flex items-start gap-2 text-rose-500">
-                <span>↳</span> <span class="text-slate-300"><strong class="text-rose-500 font-normal">Sobrecarga detectada:</strong> Hay un déficit de {Math.abs(margin)}W. Sufrirás apagados de protección cuando la GPU y la CPU alcancen su frecuencia Boost máxima simultáneamente.</span>
-              </li>
-            )}
-            {!psu.has12VHPWR && gpuTdp > 280 && (
-              <li class="flex items-start gap-2 text-amber-400">
-                <span>↳</span> <span class="text-slate-300"><strong class="text-amber-400 font-normal">Advertencia de cables:</strong> La gráfica requiere un conector 12VHPWR que esta fuente no tiene de forma nativa. Necesitarás usar el adaptador "pulpo" incluido en la caja de la GPU.</span>
+                <span>↳</span> <span class="text-slate-300"><strong class="text-rose-500 font-normal">{lang === 'en' ? 'Overload detected:' : 'Sobrecarga detectada:'}</strong> {lang === 'en' ? `Power deficit of ${Math.abs(margin)}W. System shutdowns will occur under combined load.` : `Hay un déficit de ${Math.abs(margin)}W. Sufrirás apagados de protección cuando la GPU y la CPU alcancen su Boost simultáneo.`}</span>
               </li>
             )}
           </ul>

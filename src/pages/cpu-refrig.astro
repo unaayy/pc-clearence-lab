@@ -3,6 +3,11 @@
 import CpuCoolerSearchInterface from '../components/CpuCoolerSearchInterface.jsx';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const langPrefix = lang === 'en' ? '/en' : '';
 
 // Importamos directamente los archivos individuales de hardware
 import cpus from '../data/cpus.json';
@@ -10,24 +15,25 @@ import coolers from '../data/coolers.json';
 
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
-const statement =
-  'El algoritmo térmico de Lidunax evalúa la generación de calor TDP del procesador frente a la capacidad de disipación del cooler, comprobando la compatibilidad de socket y el despeje físico con las memorias RAM.';
+const statement = lang === 'en'
+  ? 'Lidunax thermal algorithm evaluates processor TDP heat generation against cooler dissipation capacity, checking socket compatibility and physical RAM clearance.'
+  : 'El algoritmo térmico de Lidunax evalúa la generación de calor TDP del procesador frente a la capacidad de disipación del cooler, comprobando la compatibilidad de socket y el despeje físico con las memorias RAM.';
 const statementWords = statement.split(' ');
 ---
 
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calculadora de CPU y Refrigeración (Térmica) | LIDUNAX</title>
+    <title>{lang === 'en' ? 'CPU & Cooler Compatibility Calculator | LIDUNAX' : 'Calculadora de CPU y Refrigeración (Térmica) | LIDUNAX'}</title>
     <link rel="icon" type="image/png" href="/logo2.webp?v=5" />
-    <meta name="description" content="Verifica la compatibilidad térmica entre tu procesador Intel/AMD y disipadores de aire o líquidas AIO. Comprueba sockets LGA1700, AM5 y holguras." />
+    <meta name="description" content="Verifica la compatibilidad térmica entre tu procesador Intel/AMD y disipadores de aire o líquidas AIO." />
+    <link rel="canonical" href={canonicalURL} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="canonical" href={canonicalURL} />
   </head>
 
   <body class="bg-[#050507] text-white min-h-screen relative overflow-x-hidden flex flex-col justify-between selection:bg-[#00ffff] selection:text-black">
@@ -39,78 +45,79 @@ const statementWords = statement.split(' ');
 
       <header class="nav sf">
         <div class="nav__in">
-          <a href="/" class="brand flex items-center gap-3">
+          <a href={langPrefix || '/'} class="brand flex items-center gap-3">
             <img src="/logoancho.webp" alt="LDX" width="160" height="32" class="h-8 sm:h-10 w-auto object-contain" />
             <span class="brand__name orb">LIDUNAX</span>
           </a>
           <nav class="nav__links" aria-label="Principal">
-            <a href="/">Inicio</a>
-            <a href="/faq">FAQ</a>
-            <a href="/about">Sobre nosotros</a>
+            <a href={langPrefix || '/'}>{t('nav.home')}</a>
+            <a href={`${langPrefix}/faq`}>{t('nav.faq')}</a>
+            <a href={`${langPrefix}/about`}>{t('nav.about')}</a>
           </nav>
         </div>
       </header>
 
       <main class="main sf">
 
-        <!-- HERO -->
         <section class="hero mb-8 sm:mb-12">
           <h1 class="h1 orb rise" style="--d:.05s">
             <span>CPU &</span>
-            <span>Refrigeración</span>
+            <span>{lang === 'en' ? 'Cooling' : 'Refrigeración'}</span>
           </h1>
           <p class="hero__sub rise" style="--d:.25s">
-            Selecciona el procesador y sistema de disipación para validar temperaturas, sockets y despeje físico.
+            {lang === 'en'
+              ? 'Select processor and cooling system to validate temperatures, sockets, and clearance.'
+              : 'Selecciona el procesador y sistema de disipación para validar temperaturas, sockets y despeje físico.'}
           </p>
 
-          <!-- BUSCADOR HUD DE 2 CAJAS -->
           <CpuCoolerSearchInterface client:idle cpus={cpus} coolers={coolers} />
         </section>
 
-        <!-- SECCIÓN CÓMO EVALUAMOS -->
         <section class="section" aria-labelledby="como-evaluamos">
-          <h2 id="como-evaluamos" class="h2 orb text-center md:text-left">¿Cómo calculamos la disipación ideal en LIDUNAX?</h2>
+          <h2 id="como-evaluamos" class="h2 orb text-center md:text-left">
+            {lang === 'en' ? 'How we calculate ideal dissipation in LIDUNAX' : '¿Cómo calculamos la disipación ideal en LIDUNAX?'}
+          </h2>
           <p class="lit text-center md:text-left mx-auto md:mx-0" data-lit>
             {statementWords.map((word) => (<><span class="w">{word}</span>{' '}</>))}
           </p>
           <div class="bento">
             <article class="card card--wide">
               <div>
-                <h3 class="orb">Capacidad de Disipación TDP</h3>
-                <p>Comparamos los vatios térmicos reales generados bajo carga Turbo/PL2 de la CPU contra la capacidad máxima sostenida del disipador de torre o radiador AIO para evitar estrangulamiento térmico (Thermal Throttling).</p>
+                <h3 class="orb">{lang === 'en' ? 'TDP Dissipation Capacity' : 'Capacidad de Disipación TDP'}</h3>
+                <p>
+                  {lang === 'en'
+                    ? 'We compare real thermal watts generated under Turbo/PL2 load against cooler maximum capacity to prevent Thermal Throttling.'
+                    : 'Comparamos los vatios térmicos reales generados bajo carga Turbo/PL2 de la CPU contra la capacidad máxima sostenida del disipador de torre o radiador AIO para evitar estrangulamiento térmico (Thermal Throttling).'}
+                </p>
               </div>
               <div class="stat">
                 <span class="stat__n orb">+30<small>W</small></span>
-                <span class="stat__cap">margen de seguridad para cargas de render o estrés</span>
+                <span class="stat__cap">{lang === 'en' ? 'safety margin' : 'margen de seguridad para cargas de render o estrés'}</span>
               </div>
             </article>
             <article class="card card--narrow">
               <div>
-                <h3 class="orb">Compatibilidad de Socket</h3>
-                <p>Validación de anclajes mecánicos nativos para Intel LGA1700, LGA1851 y AMD AM5/AM4 sin requerir soportes adicionales.</p>
+                <h3 class="orb">{lang === 'en' ? 'Socket Compatibility' : 'Compatibilidad de Socket'}</h3>
+                <p>
+                  {lang === 'en'
+                    ? 'Validation of mechanical mounts for Intel LGA1700, LGA1851 and AMD AM5/AM4.'
+                    : 'Validación de anclajes mecánicos nativos para Intel LGA1700, LGA1851 y AMD AM5/AM4 sin requerir soportes adicionales.'}
+                </p>
               </div>
               <div class="stat">
                 <span class="stat__n orb">100<small>%</small></span>
-                <span class="stat__cap">verificación de kits de montaje</span>
+                <span class="stat__cap">{lang === 'en' ? 'mount verification' : 'verificación de kits de montaje'}</span>
               </div>
             </article>
             <article class="card card--full">
               <div>
-                <h3 class="orb">Despeje con Módulos de Memoria RAM</h3>
-                <p>Calculamos la altura inferior libre de los disipadores de doble torre por aire para garantizar que no choquen ni presionen los módulos de memoria RAM con iluminación RGB.</p>
+                <h3 class="orb">{lang === 'en' ? 'RAM Clearance' : 'Despeje con Módulos de Memoria RAM'}</h3>
+                <p>
+                  {lang === 'en'
+                    ? 'We calculate free height for air coolers to ensure no collision with RGB RAM modules.'
+                    : 'Calculamos la altura inferior libre de los disipadores de doble torre por aire para garantizar que no choquen ni presionen los módulos de memoria RAM con iluminación RGB.'}
+                </p>
               </div>
-              <svg class="slots mx-auto md:mx-0" viewBox="0 0 220 150" role="img" aria-label="Esquema de despeje entre disipador de CPU y memorias RAM">
-                <g fill="none" stroke-width="1.5" stroke-linejoin="round">
-                  <rect class="off shroud" x="10" y="110" width="200" height="20" rx="3" />
-                  <rect class="on" x="70" y="95" width="80" height="15" rx="2" />
-                  <rect class="off" x="160" y="60" width="18" height="50" rx="2" />
-                  <rect class="off" x="183" y="60" width="18" height="50" rx="2" />
-                  <path class="dim-line" d="M80 20 H140 V90 H80 Z" />
-                </g>
-                <text x="110" y="55" text-anchor="middle">Cooler / AIO</text>
-                <text x="110" y="106" text-anchor="middle">IHS CPU</text>
-                <text x="180" y="50" text-anchor="middle">RAM</text>
-              </svg>
             </article>
           </div>
         </section>
@@ -121,7 +128,6 @@ const statementWords = statement.split(' ');
 
     </div>
 
-    <!-- Script de Partículas y Texto Iluminado -->
     <script>
       interface Dot { x: number; y: number; baseRadius: number; vx: number; vy: number; baseAlpha: number; }
       function initDots() {
@@ -238,27 +244,19 @@ const statementWords = statement.split(' ');
       .page { --cyan: #00ffff; --ink: #f5f5f7; --steel: #86868b; --line: rgba(255, 255, 255, 0.08); }
       .sf, .sf * { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif !important; }
       .orb, .sf .orb, .sf .orb * { font-family: 'Orbitron', sans-serif !important; }
-
-      .spotlight-campana {
-        background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 255, 255, 0.12) 0%, rgba(0, 255, 255, 0.03) 40%, rgba(0, 255, 255, 0.008) 70%, transparent 100%);
-        filter: blur(60px);
-      }
-
+      .spotlight-campana { background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 255, 255, 0.12) 0%, rgba(0, 255, 255, 0.03) 40%, rgba(0, 255, 255, 0.008) 70%, transparent 100%); filter: blur(60px); }
       .nav { position: sticky; top: 0; z-index: 50; background: rgba(5, 5, 7, 0.55); border-bottom: 1px solid rgba(255, 255, 255, 0.06); backdrop-filter: saturate(180%) blur(20px); }
       .nav__in { max-width: 1200px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
       .brand { display: flex; align-items: center; gap: 12px; }
       .brand__name { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.18em; color: #fff; }
       .nav__links { display: flex; gap: 32px; font-size: 14px; color: var(--steel); }
       .nav__links a:hover { color: #fff; }
-
       .main { flex: 1; width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 24px clamp(72px, 10vw, 128px); }
       .section { margin-top: clamp(96px, 13vw, 168px); }
-
       .hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: clamp(40px, 8vh, 88px); }
       .h1 { font-size: clamp(1.5rem, 6.2vw, 4.5rem); font-weight: 800; line-height: 1.04; letter-spacing: 0.015em; text-transform: uppercase; background: linear-gradient(180deg, #ffffff 25%, #8e8e93 118%); -webkit-background-clip: text; background-clip: text; color: transparent; }
       .h1 span { display: block; }
       .hero__sub { margin-top: 20px; max-width: 34rem; font-size: clamp(1rem, 1.6vw, 1.1875rem); line-height: 1.55; color: var(--steel); }
-
       .bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; margin-top: clamp(40px, 6vw, 72px); }
       .card { position: relative; overflow: hidden; padding: clamp(24px, 3vw, 36px); border-radius: 28px; border: 1px solid rgba(255, 255, 255, 0.09); background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.015) 45%, rgba(0, 0, 0, 0.55)); backdrop-filter: blur(24px); }
       .card--wide { grid-column: span 4; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end; }
@@ -269,21 +267,10 @@ const statementWords = statement.split(' ');
       .stat__n { font-size: clamp(2.75rem, 5vw, 4rem); font-weight: 800; color: #fff; }
       .stat__n small { margin-left: 0.5em; font-size: 0.3em; color: var(--cyan); }
       .stat__cap { font-size: 0.8125rem; color: var(--steel); }
-
-      .slots { width: 100%; height: auto; }
-      .slots .on { stroke: var(--cyan); fill: rgba(0, 255, 255, 0.07); }
-      .slots .off { stroke: rgba(255, 255, 255, 0.2); }
-      .slots .shroud { fill: rgba(255, 255, 255, 0.04); }
-      .slots .dim-line { stroke: var(--cyan); stroke-width: 1.25; }
-      .slots text { font-size: 11px; fill: var(--steel); }
-
       .lit { margin-top: 20px; max-width: 24em; font-size: clamp(1.4rem, 3.1vw, 2.5rem); font-weight: 600; line-height: 1.28; color: var(--ink); }
       .lit.armed .w { color: rgba(245, 245, 247, 0.22); transition: color 0.35s ease; }
       .lit.armed .w.on { color: var(--ink); }
-
-      @media (max-width: 900px) {
-        .card--wide, .card--narrow, .card--full { grid-column: span 6; }
-      }
+      @media (max-width: 900px) { .card--wide, .card--narrow, .card--full { grid-column: span 6; } }
     </style>
   </body>
 </html>

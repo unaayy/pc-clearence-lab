@@ -3,31 +3,36 @@
 import PsuSearchInterface from '../components/PsuSearchInterface.jsx';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const langPrefix = lang === 'en' ? '/en' : '';
 
 // 1. Importamos directamente los archivos individuales de hardware
 import psusData from '../data/psus.json';
 import gpusData from '../data/gpus.json';
 import cpusData from '../data/cpus.json';
 
-// 2. Asignamos los datos (con fallback a array vacío por seguridad)
 const psus = psusData || [];
 const gpus = gpusData || [];
 const cpus = cpusData || [];
 
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
-const statement =
-  'El algoritmo de potencia de Lidunax evalúa las demandas de energía pico (TDP) combinadas del procesador (CPU) y la tarjeta gráfica (GPU), añadiendo un margen de seguridad para picos transitorios de tensión, consumo de periféricos y verificación física del formato en caja.';
+const statement = lang === 'en'
+  ? 'Lidunax power algorithm evaluates combined peak energy demands (TDP) of processor and graphics card, adding a safety margin for transient spikes.'
+  : 'El algoritmo de potencia de Lidunax evalúa las demandas de energía pico (TDP) combinadas del procesador (CPU) y la tarjeta gráfica (GPU), añadiendo un margen de seguridad para picos transitorios de tensión, consumo de periféricos y verificación física del formato en caja.';
 const statementWords = statement.split(' ');
 ---
 
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calculadora de Fuente de Alimentación (PSU) y Vatios | LIDUNAX</title>
+    <title>{lang === 'en' ? 'PSU Power Calculator & Wattage | LIDUNAX' : 'Calculadora de Fuente de Alimentación (PSU) y Vatios | LIDUNAX'}</title>
     <link rel="icon" type="image/png" href="/logo2.webp?v=5" />
-    <meta name="description" content="Calcula los vatios reales que necesita tu PC según tu CPU y GPU. Verifica compatibilidad con estándares ATX 3.0, 12VHPWR y tamaño de la fuente." />
+    <meta name="description" content="Calcula los vatios reales que necesita tu PC según tu CPU y GPU. Verifica compatibilidad ATX 3.0." />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -45,77 +50,69 @@ const statementWords = statement.split(' ');
 
       <header class="nav sf">
         <div class="nav__in">
-          <a href="/" class="brand flex items-center gap-3">
+          <a href={langPrefix || '/'} class="brand flex items-center gap-3">
             <img src="/logoancho.webp" alt="LDX" width="160" height="32" class="h-8 sm:h-10 w-auto object-contain" />
             <span class="brand__name orb">LIDUNAX</span>
           </a>
           <nav class="nav__links" aria-label="Principal">
-            <a href="/">Inicio</a>
-            <a href="/faq">FAQ</a>
-            <a href="/about">Sobre nosotros</a>
+            <a href={langPrefix || '/'}>{t('nav.home')}</a>
+            <a href={`${langPrefix}/faq`}>{t('nav.faq')}</a>
+            <a href={`${langPrefix}/about`}>{t('nav.about')}</a>
           </nav>
         </div>
       </header>
 
       <main class="main sf">
 
-        <!-- HERO -->
         <section class="hero mb-8 sm:mb-12">
           <h1 class="h1 orb rise" style="--d:.05s">
-            <span>Fuente &</span>
-            <span>Energía PSU</span>
+            <span>{lang === 'en' ? 'Power &' : 'Fuente &'}</span>
+            <span>{lang === 'en' ? 'PSU Energy' : 'Energía PSU'}</span>
           </h1>
           <p class="hero__sub rise" style="--d:.25s">
-            Selecciona la fuente de alimentación, gráfica y procesador para generar el informe de telemetría energética.
+            {lang === 'en'
+              ? 'Select power supply, GPU, and processor to generate energy telemetry report.'
+              : 'Selecciona la fuente de alimentación, gráfica y procesador para generar el informe de telemetría energética.'}
           </p>
 
-          <!-- BUSCADOR DE 3 CAJAS CON ESTÉTICA HUD IDÉNTICA A GPU-CAJA -->
           <PsuSearchInterface client:idle psus={psus} gpus={gpus} cpus={cpus} />
         </section>
 
-        <!-- SECCIÓN CÓMO EVALUAMOS -->
         <section class="section" aria-labelledby="como-evaluamos">
-          <h2 id="como-evaluamos" class="h2 orb text-center md:text-left">¿Cómo calculamos la fuente ideal en LIDUNAX?</h2>
+          <h2 id="como-evaluamos" class="h2 orb text-center md:text-left">
+            {lang === 'en' ? 'How we calculate ideal power supply in LIDUNAX' : '¿Cómo calculamos la fuente ideal en LIDUNAX?'}
+          </h2>
           <p class="lit text-center md:text-left mx-auto md:mx-0" data-lit>
             {statementWords.map((word) => (<><span class="w">{word}</span>{' '}</>))}
           </p>
           <div class="bento">
             <article class="card card--wide">
               <div>
-                <h3 class="orb">Margen para picos transitorios</h3>
-                <p>Las tarjetas gráficas de gama alta sufren micro-picos de consumo instantáneo de hasta un 150% de su TDP. Añadimos un buffer del 25% para evitar apagaos repentinos por disparo del sistema de protección OCP/OPP.</p>
+                <h3 class="orb">{lang === 'en' ? 'Transient Spike Margin' : 'Margen para picos transitorios'}</h3>
+                <p>
+                  {lang === 'en'
+                    ? 'High-end GPUs suffer instant power micro-spikes up to 150% TDP. We add a 25% buffer to prevent OCP/OPP shutdowns.'
+                    : 'Las tarjetas gráficas de gama alta sufren micro-picos de consumo instantáneo de hasta un 150% de su TDP. Añadimos un buffer del 25% para evitar apagaos repentinos por disparo del sistema de protección OCP/OPP.'}
+                </p>
               </div>
               <div class="stat">
                 <span class="stat__n orb">+25<small>%</small></span>
-                <span class="stat__cap">margen de seguridad y eficiencia</span>
+                <span class="stat__cap">{lang === 'en' ? 'safety and efficiency margin' : 'margen de seguridad y eficiencia'}</span>
               </div>
             </article>
             <article class="card card--narrow">
               <div>
-                <h3 class="orb">Normativa ATX 3.0 / PCIe 5.0</h3>
-                <p>Garantizamos compatibilidad nativa con conectores 12VHPWR o 12V-2x6 para alimentar GPUs modernas hasta 600W sin depender de adaptadores.</p>
+                <h3 class="orb">ATX 3.0 / PCIe 5.0</h3>
+                <p>
+                  {lang === 'en'
+                    ? 'Native compatibility with 12VHPWR connectors to power modern GPUs up to 600W without adapters.'
+                    : 'Garantizamos compatibilidad nativa con conectores 12VHPWR o 12V-2x6 para alimentar GPUs modernas hasta 600W sin depender de adaptadores.'}
+                </p>
               </div>
               <div class="stat">
                 <span class="stat__n orb">600<small>W</small></span>
-                <span class="stat__cap">potencia canal único PCIe Gen 5</span>
+                <span class="stat__cap">{lang === 'en' ? 'single rail PCIe Gen 5 power' : 'potencia canal único PCIe Gen 5'}</span>
               </div>
-            </article>
-            <article class="card card--full">
-              <div>
-                <h3 class="orb">Factor de forma y bahía inferior</h3>
-                <p>Verificamos que el largo total de la fuente (ATX / SFX / SFX-L) deje espacio suficiente frente al cajetín de discos duros para acomodar el mazo de cables modulares.</p>
-              </div>
-              <svg class="slots mx-auto md:mx-0" viewBox="0 0 220 150" role="img" aria-label="Esquema de espacio ocupado por la fuente de alimentación en la bahía del chasis">
-                <g fill="none" stroke-width="1.5" stroke-linejoin="round">
-                  <path class="dim-line" d="M16 22H140M16 16V28M140 16V28" />
-                  <rect class="on" x="16" y="36" width="124" height="76" rx="5" />
-                  <rect class="off" x="148" y="36" width="56" height="76" rx="5" />
-                  <rect class="off shroud" x="8" y="122" width="204" height="22" rx="5" />
-                </g>
-                <text x="78" y="12" text-anchor="middle">Fuente PSU</text>
-                <text x="176" y="78" text-anchor="middle">Cables</text>
-                <text x="110" y="137" text-anchor="middle">Chasis inferior</text>
-              </svg>
             </article>
           </div>
         </section>
@@ -126,7 +123,6 @@ const statementWords = statement.split(' ');
 
     </div>
 
-    <!-- Script de Partículas y Texto que se ilumina -->
     <script>
       interface Dot { x: number; y: number; baseRadius: number; vx: number; vy: number; baseAlpha: number; }
       function initDots() {
@@ -243,64 +239,32 @@ const statementWords = statement.split(' ');
       .page { --cyan: #00ffff; --ink: #f5f5f7; --steel: #86868b; --line: rgba(255, 255, 255, 0.08); }
       .sf, .sf * { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif !important; }
       .orb, .sf .orb, .sf .orb * { font-family: 'Orbitron', sans-serif !important; }
-
-      .spotlight-campana {
-        background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 255, 255, 0.12) 0%, rgba(0, 255, 255, 0.03) 40%, rgba(0, 255, 255, 0.008) 70%, transparent 100%);
-        filter: blur(60px);
-      }
-
+      .spotlight-campana { background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 255, 255, 0.12) 0%, rgba(0, 255, 255, 0.03) 40%, rgba(0, 255, 255, 0.008) 70%, transparent 100%); filter: blur(60px); }
       .nav { position: sticky; top: 0; z-index: 50; background: rgba(5, 5, 7, 0.55); border-bottom: 1px solid rgba(255, 255, 255, 0.06); backdrop-filter: saturate(180%) blur(20px); }
       .nav__in { max-width: 1200px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
       .brand { display: flex; align-items: center; gap: 12px; }
       .brand__name { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.18em; color: #fff; }
       .nav__links { display: flex; gap: 32px; font-size: 14px; color: var(--steel); }
       .nav__links a:hover { color: #fff; }
-
       .main { flex: 1; width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 24px clamp(72px, 10vw, 128px); }
       .section { margin-top: clamp(96px, 13vw, 168px); }
-
       .hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: clamp(40px, 8vh, 88px); }
       .h1 { font-size: clamp(1.5rem, 6.2vw, 4.5rem); font-weight: 800; line-height: 1.04; letter-spacing: 0.015em; text-transform: uppercase; background: linear-gradient(180deg, #ffffff 25%, #8e8e93 118%); -webkit-background-clip: text; background-clip: text; color: transparent; }
       .h1 span { display: block; }
       .hero__sub { margin-top: 20px; max-width: 34rem; font-size: clamp(1rem, 1.6vw, 1.1875rem); line-height: 1.55; color: var(--steel); }
-
       .bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; margin-top: clamp(40px, 6vw, 72px); }
       .card { position: relative; overflow: hidden; padding: clamp(24px, 3vw, 36px); border-radius: 28px; border: 1px solid rgba(255, 255, 255, 0.09); background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.015) 45%, rgba(0, 0, 0, 0.55)); backdrop-filter: blur(24px); }
       .card--wide { grid-column: span 4; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end; }
       .card--narrow { grid-column: span 2; display: flex; flex-direction: column; justify-content: space-between; gap: 32px; }
-      .card--full { grid-column: span 6; display: grid; grid-template-columns: 1fr minmax(180px, 240px); gap: 32px; align-items: center; }
       .card h3 { font-size: 1.125rem; font-weight: 700; color: #fff; }
       .card p { margin-top: 12px; max-width: 44ch; font-size: 0.9375rem; line-height: 1.65; color: var(--steel); }
       .stat__n { font-size: clamp(2.75rem, 5vw, 4rem); font-weight: 800; color: #fff; }
       .stat__n small { margin-left: 0.5em; font-size: 0.3em; color: var(--cyan); }
       .stat__cap { font-size: 0.8125rem; color: var(--steel); }
-
-      .slots { width: 100%; height: auto; }
-      .slots .on { stroke: var(--cyan); fill: rgba(0, 255, 255, 0.07); }
-      .slots .off { stroke: rgba(255, 255, 255, 0.2); }
-      .slots .shroud { fill: rgba(255, 255, 255, 0.04); }
-      .slots .dim-line { stroke: var(--cyan); stroke-width: 1.25; }
-      .slots text { font-size: 11px; fill: var(--steel); }
-
       .lit { margin-top: 20px; max-width: 24em; font-size: clamp(1.4rem, 3.1vw, 2.5rem); font-weight: 600; line-height: 1.28; color: var(--ink); }
       .lit.armed .w { color: rgba(245, 245, 247, 0.22); transition: color 0.35s ease; }
       .lit.armed .w.on { color: var(--ink); }
-
-      .faq { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 6vw, 96px); }
-      .faq__head { position: sticky; top: 104px; }
-      .faq details { border-top: 1px solid var(--line); }
-      .faq summary { display: flex; justify-content: space-between; gap: 24px; padding: 24px 0; cursor: pointer; color: #fff; list-style: none; }
-      .plus { width: 14px; height: 14px; color: var(--steel); position: relative; }
-      .plus::before, .plus::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1.5px; background: currentColor; }
-      .plus::after { transform: translateY(-50%) rotate(90deg); }
-      .faq details[open] .plus { color: var(--cyan); }
-      .faq details[open] .plus::after { transform: translateY(-50%) rotate(0deg); }
-      .faq .answer { padding: 0 48px 26px 0; font-size: 0.9375rem; line-height: 1.7; color: var(--steel); }
-
-      @media (max-width: 900px) {
-        .card--wide, .card--narrow, .card--full { grid-column: span 6; }
-        .faq { grid-template-columns: 1fr; }
-      }
+      @media (max-width: 900px) { .card--wide, .card--narrow { grid-column: span 6; } }
     </style>
   </body>
 </html>

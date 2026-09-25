@@ -1,24 +1,28 @@
 ---
-// src/pages/index.astro - Landing Page estilo SpaceX x Apple
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
 
-// Datos del selector (una sola fuente de verdad para las 4 opciones)
+// Detecta si la ruta es / o /en/
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const langPrefix = lang === 'en' ? '/en' : '';
+
 const secciones = [
-  { href: '/gpu-caja',   img: '/gpu.webp',    index: '01', tag: '01 // TELEMETRÍA', title: 'GPU + CAJA',          sub: 'Validar dimensiones y holguras exactas', disabled: false },
-  { href: '/cpu-refrig', img: '/cpu.webp',    index: '02', tag: '02 // TÉRMICA',    title: 'CPU + REFRIGERACIÓN', sub: 'Sockets, alturas y despeje de memorias RAM', disabled: false },
-  { href: '/fuente-psu', img: '/fuente.webp', index: '03', tag: '03 // ENERGÍA',    title: 'FUENTE / PSU',        sub: 'Vatios, conectores 12VHPWR y gestión de cables', disabled: false },
-  { href: '/full-pc',    img: '/pc.webp',     index: '04', tag: '04 // INTEGRAL',   title: 'PC COMPLETO',         sub: 'Escáner total de compatibilidad y ensamble' }
+  { href: `${langPrefix}/gpu-caja`,   img: '/gpu.webp',    index: '01', tag: '01 // TELEMETRÍA', title: t('sec.gpu.title'), sub: t('sec.gpu.sub'), disabled: false },
+  { href: `${langPrefix}/cpu-refrig`, img: '/cpu.webp',    index: '02', tag: '02 // TÉRMICA',    title: t('sec.cpu.title'), sub: t('sec.cpu.sub'), disabled: false },
+  { href: `${langPrefix}/fuente-psu`, img: '/fuente.webp', index: '03', tag: '03 // ENERGÍA',    title: t('sec.psu.title'), sub: t('sec.psu.sub'), disabled: false },
+  { href: `${langPrefix}/full-pc`,    img: '/pc.webp',     index: '04', tag: '04 // INTEGRAL',   title: t('sec.pc.title'),  sub: t('sec.pc.sub') }
 ]
 ---
 
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LIDUNAX - Comprobador de Hardware y Compatibilidad Física</title>
+    <title>{t('site.title')}</title>
     <link rel="icon" type="image/png" href="/logo2.webp?v=5" />
-    <meta name="description" content="Analizador dinámico de compatibilidad física para configuraciones de PC. Valida dimensiones de GPU, CPU, fuentes y chasis." />
+    <meta name="description" content={t('site.description')} />
 
     <!-- Precarga directa del recurso crítico LCP para móvil -->
     <link rel="preload" as="image" href="/gpu.webp" type="image/webp" fetchpriority="high" />
@@ -33,8 +37,23 @@ const secciones = [
       onload="this.media='all'" 
     />
     <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com" />
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" />
     </noscript>
+
+    <!-- Detección automática de idioma ultrarrápida (0 ms layout shift) -->
+    <script is:inline>
+      (function () {
+        const savedLang = localStorage.getItem('lidunax_lang');
+        const browserLang = (navigator.language || navigator.userLanguage || '').slice(0, 2);
+        const targetLang = savedLang || (browserLang === 'en' ? 'en' : 'es');
+
+        const currentPath = window.location.pathname;
+
+        if (targetLang === 'en' && !currentPath.startsWith('/en')) {
+          window.location.replace('/en' + currentPath);
+        }
+      })();
+    </script>
   </head>
 
   <body class="bg-[#050507] text-white min-h-screen relative overflow-x-hidden flex flex-col justify-between selection:bg-[#00ffff] selection:text-black">
@@ -50,14 +69,14 @@ const secciones = [
       <!-- Navbar de cristal -->
       <header class="nav sf">
         <div class="nav__in">
-          <a href="/" class="brand flex items-center gap-3">
+          <a href={langPrefix || '/'} class="brand flex items-center gap-3">
             <img src="/logoancho.webp" alt="LDX" width="160" height="32" loading="eager" fetchpriority="high" class="h-8 sm:h-10 w-auto object-contain" />
             <span class="brand__name orb">LIDUNAX</span>
           </a>
           <nav class="nav__links" aria-label="Principal">
-            <a href="/" class="is-current" aria-current="page">Inicio</a>
-            <a href="/faq">FAQ</a>
-            <a href="/about">Sobre nosotros</a>
+            <a href={langPrefix || '/'} class="is-current" aria-current="page">{t('nav.home')}</a>
+            <a href={`${langPrefix}/faq`}>{t('nav.faq')}</a>
+            <a href={`${langPrefix}/about`}>{t('nav.about')}</a>
           </nav>
         </div>
       </header>
@@ -67,10 +86,10 @@ const secciones = [
         <!-- HERO -->
         <section class="hero">
           <h1 class="h1 orb rise" style="--d:.05s">
-            LIDUNAX
+            {t('hero.title')}
           </h1>
           <p class="hero__sub rise" style="--d:.2s">
-            Selecciona los componentes que deseas analizar para tu próxima configuración.
+            {t('hero.subtitle')}
           </p>
         </section>
 
@@ -131,7 +150,7 @@ const secciones = [
                   <h2 class="sel__title orb">{s.title}</h2>
                   <p class="sel__sub">{s.sub}</p>
                   <span class="sel__cta">
-                    <span class="sel__cta-label orb">INICIAR ANÁLISIS</span>
+                    <span class="sel__cta-label orb">{t('btn.analyze')}</span>
                     <span class="sel__cta-icon">
                       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M5 12h14M13 6l6 6-6 6" />
@@ -166,7 +185,6 @@ const secciones = [
         const canvas = document.getElementById('dotsCanvas') as HTMLCanvasElement | null;
         if (!canvas || canvas.dataset.ready) return;
 
-        // Desactivar partículas en móviles de pantalla estrecha para reducir consumo de GPU y acelerar LCP
         if (window.innerWidth < 768) return;
 
         const ctx = canvas.getContext('2d') as CanvasRenderingContext2D | null;

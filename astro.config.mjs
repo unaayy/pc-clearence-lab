@@ -9,5 +9,12 @@ export default defineConfig({
     tailwind(),
     react(),
     sitemap()
-  ]
+  ],
+  i18n: {
+    defaultLocale: 'es',
+    locales: ['es', 'en'],
+    routing: {
+      prefixDefaultLocale: false
+    }
+  }
 });

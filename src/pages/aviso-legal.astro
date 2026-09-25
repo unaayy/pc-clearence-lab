@@ -2,15 +2,19 @@
 // src/pages/aviso-legal.astro - Página de Aviso Legal y Afiliación (Liquid Glass HUD)
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
 
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const langPrefix = lang === 'en' ? '/en' : '';
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 ---
 
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aviso Legal y Afiliación - Términos | LIDUNAX</title>
+    <title>{lang === 'en' ? 'Legal Notice & Affiliation - Terms | LIDUNAX' : 'Aviso Legal y Afiliación - Términos | LIDUNAX'}</title>
     <link rel="icon" type="image/png" href="/logo2.webp?v=5" />
     <meta name="description" content="Términos de uso, exención de responsabilidad sobre telemetría de hardware y divulgación del programa de afiliados de Lidunax." />
     <link rel="canonical" href={canonicalURL} />
@@ -20,6 +24,20 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <!-- Detección automática de idioma ultrarrápida -->
+    <script is:inline>
+      (function () {
+        const savedLang = localStorage.getItem('lidunax_lang');
+        const browserLang = (navigator.language || navigator.userLanguage || '').slice(0, 2);
+        const targetLang = savedLang || (browserLang === 'en' ? 'en' : 'es');
+        const currentPath = window.location.pathname;
+
+        if (targetLang === 'en' && !currentPath.startsWith('/en')) {
+          window.location.replace('/en' + currentPath);
+        }
+      })();
+    </script>
 
     <!-- Datos Estructurados JSON-LD Schema.org para WebPage -->
     <script type="application/ld+json" set:html={JSON.stringify({
@@ -38,90 +56,83 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
   <body class="bg-[#050507] text-white min-h-screen relative overflow-x-hidden flex flex-col justify-between selection:bg-[#00ffff] selection:text-black">
     
-    <!-- Canvas interactivo de partículas -->
     <canvas id="dotsCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0" aria-hidden="true"></canvas>
-
-    <!-- Campana Cenital (Fuente de luz) -->
     <div class="spotlight-campana absolute top-0 left-1/2 -translate-x-1/2 w-[100vw] h-[620px] pointer-events-none z-0" aria-hidden="true"></div>
 
     <div class="page relative z-10 flex flex-col min-h-screen justify-between">
       
-      <!-- Navbar Estandarizado -->
       <header class="nav sf">
         <div class="nav__in">
-         <a href="/" class="brand flex items-center gap-3">
-      <img src="/logoancho.webp" alt="LDX" width="160" height="32" class="h-8 sm:h-10 w-auto object-contain" />
-      <span class="brand__name orb">LIDUNAX</span>
-    </a>
+          <a href={langPrefix || '/'} class="brand flex items-center gap-3">
+            <img src="/logoancho.webp" alt="LDX" width="160" height="32" class="h-8 sm:h-10 w-auto object-contain" />
+            <span class="brand__name orb">LIDUNAX</span>
+          </a>
 
           <nav class="nav__links" aria-label="Principal" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-            <a href="/" class="hover:text-white transition-colors">Inicio</a>
-            <a href="/faq" class="hover:text-white transition-colors">FAQ</a>
-            <a href="/about" class="hover:text-white transition-colors">Sobre nosotros</a>
+            <a href={langPrefix || '/'} class="hover:text-white transition-colors">{t('nav.home')}</a>
+            <a href={`${langPrefix}/faq`} class="hover:text-white transition-colors">{t('nav.faq')}</a>
+            <a href={`${langPrefix}/about`} class="hover:text-white transition-colors">{t('nav.about')}</a>
           </nav>
         </div>
       </header>
 
-      <!-- Contenido Principal -->
       <main class="main w-full max-w-4xl mx-auto px-4 pt-16 pb-24 space-y-12">
         
-        <!-- Hero Section Aviso Legal -->
         <section class="text-center space-y-4 rise" style="--d:.05s">
           <h1 class="text-3xl sm:text-5xl font-bold tracking-widest uppercase orb bg-gradient-to-b from-[#ffffff] via-[#ffffff] to-[#8e8e93] bg-clip-text text-transparent">
-            AVISO LEGAL
+            {lang === 'en' ? 'LEGAL NOTICE' : 'AVISO LEGAL'}
           </h1>
           <p class="text-[#86868b] text-sm sm:text-base tracking-wide max-w-xl mx-auto font-light leading-relaxed" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-            Términos de uso, marco regulatorio y políticas de exención aplicables a la plataforma <code class="text-[#00ffff] bg-black/40 px-1.5 py-0.5 rounded text-xs font-mono">lidunax.com</code>.
+            {lang === 'en' 
+              ? 'Terms of use, regulatory framework, and liability policies applicable to lidunax.com.'
+              : 'Términos de uso, marco regulatorio y políticas de exención aplicables a la plataforma lidunax.com.'}
           </p>
         </section>
 
-        <!-- Bloque Principal Liquid Glass -->
         <section class="card relative p-6 sm:p-10 space-y-10 rise-soft" style="--d:.2s">
-          <!-- Brillo superior decorativo de la tarjeta -->
           <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[1px] bg-gradient-to-r from-transparent via-[#00ffff]/30 to-transparent pointer-events-none"></div>
 
-          <!-- Introducción -->
           <div class="space-y-2 border-b border-white/5 pb-6">
-            <span class="text-xs font-orbitron text-[#00ffff] tracking-widest uppercase orb opacity-80">// MARCO_REGULATORIO</span>
+            <span class="text-xs font-orbitron text-[#00ffff] tracking-widest uppercase orb opacity-80">// {lang === 'en' ? 'REGULATORY_FRAMEWORK' : 'MARCO_REGULATORIO'}</span>
             <p class="text-slate-300 text-sm sm:text-base leading-relaxed font-light" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-              El presente aviso legal regula el acceso, navegación y uso del sitio web oficial <strong class="text-white font-semibold">lidunax.com</strong>.
+              {lang === 'en' 
+                ? 'This legal notice governs access, navigation, and use of the official website lidunax.com.'
+                : 'El presente aviso legal regula el acceso, navegación y uso del sitio web oficial lidunax.com.'}
             </p>
           </div>
 
-          <!-- Secciones Legales -->
           <div class="space-y-8">
-            
-            <!-- 01 Exención de Responsabilidad -->
             <div class="p-6 rounded-2xl border border-white/5 bg-white/[0.01] space-y-3">
-              <span class="text-[#00ffff] text-xs font-orbitron tracking-widest orb">01 // EXENCIÓN DE RESPONSABILIDAD</span>
+              <span class="text-[#00ffff] text-xs font-orbitron tracking-widest orb">01 // {lang === 'en' ? 'DISCLAIMER OF LIABILITY' : 'EXENCIÓN DE RESPONSABILIDAD'}</span>
               <h2 class="text-white text-lg font-semibold" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-                Tolerancias y Variaciones de Hardware
+                {lang === 'en' ? 'Tolerances and Hardware Variations' : 'Tolerancias y Variaciones de Hardware'}
               </h2>
               <p class="text-sm text-[#86868b] font-light leading-relaxed" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-                Lidunax proporciona un simulador automatizado de compatibilidad de hardware basado en las especificaciones oficiales publicadas por los fabricantes. Aunque trabajamos de forma continua para mantener la precisión de los datos, Lidunax no se hace responsable de variaciones mínimas en el ensamblaje final, revisiones de chasis no notificadas o modificaciones físicas realizadas por las marcas.
+                {lang === 'en'
+                  ? 'Lidunax provides an automated hardware compatibility simulator based on official specs published by manufacturers. While we work continuously for accuracy, Lidunax is not liable for slight assembly variations or unannounced chassis revisions.'
+                  : 'Lidunax proporciona un simulador automatizado de compatibilidad de hardware basado en las especificaciones oficiales publicadas por los fabricantes. Aunque trabajamos de forma continua para mantener la precisión de los datos, Lidunax no se hace responsable de variaciones mínimas en el ensamblaje final, revisiones de chasis no notificadas o modificaciones físicas realizadas por las marcas.'}
               </p>
             </div>
 
-            <!-- 02 Enlaces de Afiliados -->
             <div class="p-6 rounded-2xl border border-white/5 bg-white/[0.01] space-y-3">
-              <span class="text-[#00ffff] text-xs font-orbitron tracking-widest orb">02 // ENLACES DE AFILIADOS</span>
+              <span class="text-[#00ffff] text-xs font-orbitron tracking-widest orb">02 // {lang === 'en' ? 'AFFILIATE LINKS' : 'ENLACES DE AFILIADOS'}</span>
               <h2 class="text-white text-lg font-semibold" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-                Divulgación del Programa de Afiliados
+                {lang === 'en' ? 'Affiliate Program Disclosure' : 'Divulgación del Programa de Afiliados'}
               </h2>
               <p class="text-sm text-[#86868b] font-light leading-relaxed" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-                Lidunax participa en el <strong class="text-slate-200 font-medium">Programa de Afiliados de Amazon EU</strong>, un programa de publicidad para afiliados diseñado para ofrecer a sitios web un modo de obtener comisiones por publicidad, publicitando e incluyendo enlaces directos a <span class="text-[#00ffff] font-mono text-xs">Amazon.es</span> y otras tiendas asociadas.
+                {lang === 'en'
+                  ? 'Lidunax participates in the Amazon EU Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by linking to Amazon.'
+                  : 'Lidunax participa en el Programa de Afiliados de Amazon EU, un programa de publicidad para afiliados diseñado para ofrecer a sitios web un modo de obtener comisiones por publicidad, publicitando e incluyendo enlaces directos a Amazon.es y otras tiendas asociadas.'}
               </p>
             </div>
-
           </div>
 
-          <!-- Badge Footer de Transparencia -->
           <div class="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-6 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-4">
             <span class="text-xs text-[#86868b] font-light" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-              ¿Tienes alguna consulta legal o sobre tratamiento de datos?
+              {lang === 'en' ? 'Do you have legal or data handling inquiries?' : '¿Tienes alguna consulta legal o sobre tratamiento de datos?'}
             </span>
-            <a href="/contacto" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-[#00ffff]/50 text-xs font-orbitron text-[#00ffff] tracking-wider transition-all duration-300 orb">
-              CONTACTAR SOPORTE →
+            <a href={`${langPrefix}/contacto`} class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-[#00ffff]/50 text-xs font-orbitron text-[#00ffff] tracking-wider transition-all duration-300 orb">
+              {lang === 'en' ? 'CONTACT SUPPORT →' : 'CONTACTAR SOPORTE →'}
             </a>
           </div>
 
@@ -132,7 +143,6 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
       <Footer />
     </div>
 
-    <!-- Script de Partículas Reactivas -->
     <script>
       interface Dot { x: number; y: number; baseRadius: number; vx: number; vy: number; baseAlpha: number; }
 
@@ -210,40 +220,20 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
     </script>
 
     <style>
-      /* ───────── Tipografía y Sistema Global ───────── */
       .orb { font-family: 'Orbitron', sans-serif !important; }
-
-      .spotlight-campana {
-        background: radial-gradient(
-          ellipse 80% 50% at 50% 0%, rgba(0, 255, 255, 0.12) 0%, rgba(0, 255, 255, 0.03) 40%, rgba(0, 255, 255, 0.008) 70%, transparent 100%
-        );
-        filter: blur(60px);
-      }
-
-      /* ───────── Navbar (Reutilizado) ───────── */
+      .spotlight-campana { background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 255, 255, 0.12) 0%, rgba(0, 255, 255, 0.03) 40%, rgba(0, 255, 255, 0.008) 70%, transparent 100%); filter: blur(60px); }
       .nav { position: sticky; top: 0; z-index: 50; background: rgba(5, 5, 7, 0.55); border-bottom: 1px solid rgba(255, 255, 255, 0.06); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); }
       .nav__in { max-width: 1200px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
       .brand { display: flex; align-items: center; gap: 12px; }
-      .brand__mark { width: 34px; height: 34px; border-radius: 10px; background: #121215; border: 1px solid rgba(255, 255, 255, 0.1); display: grid; place-items: center; transition: border-color 0.3s, box-shadow 0.3s; }
-      .brand__mark span { color: #00ffff; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
-      .brand:hover .brand__mark { border-color: rgba(0, 255, 255, 0.5); box-shadow: 0 0 20px rgba(0, 255, 255, 0.15); }
       .brand__name { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.18em; color: #fff; }
       .nav__links { display: flex; gap: 32px; font-size: 14px; color: #86868b; }
       @media (max-width: 560px) { .brand__name { display: none; } .nav__links { gap: 20px; font-size: 13px; } }
-
-      /* ───────── Animaciones de Entrada ───────── */
       .rise { opacity: 0; animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s) forwards; }
       .rise-soft { opacity: 0; animation: rise-soft 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s) forwards; }
       @keyframes rise { from { opacity: 0; transform: translateY(16px); filter: blur(8px); } to { opacity: 1; transform: none; filter: none; } }
       @keyframes rise-soft { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
-
-      /* ───────── Tarjeta Liquid Glass Base ───────── */
       .card { border-radius: 28px; border: 1px solid rgba(255, 255, 255, 0.09); background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01) 45%, rgba(0, 0, 0, 0.6)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 30px 60px rgba(0,0,0,0.5); -webkit-backdrop-filter: blur(32px); backdrop-filter: blur(32px); }
-
-      /* Reduce motion fallback */
-      @media (prefers-reduced-motion: reduce) {
-        .rise, .rise-soft { animation: none; opacity: 1; transform: none; filter: none; }
-      }
+      @media (prefers-reduced-motion: reduce) { .rise, .rise-soft { animation: none; opacity: 1; transform: none; filter: none; } }
     </style>
   </body>
 </html>

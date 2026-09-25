@@ -2,10 +2,35 @@
 // src/pages/faq.astro - Página de Preguntas Frecuentes (Sci-Fi x Apple HUD)
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
 
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const langPrefix = lang === 'en' ? '/en' : '';
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
-const faqs = [
+const faqs = lang === 'en' ? [
+  {
+    question: "How does Lidunax calculate exact physical compatibility?",
+    answer: "We use our ClearanceEngine calculation core that compares the maximum clearance allowed by the case against 3D GPU or CPU cooler dimensions, deducting standard fan and front radiator thickness."
+  },
+  {
+    question: "What front clearance margin is considered safe?",
+    answer: "To ensure optimal intake airflow, we recommend a minimum net margin of 10 to 15 mm in front of the graphics card. Clearance under 5 mm may lead to severe thermal turbulence."
+  },
+  {
+    question: "Do you account for AIO Liquid Coolers?",
+    answer: "Yes. Mounting an AIO radiator at the front reduces total GPU clearance by 27 mm (slim radiator only) up to 55 mm (radiator + fans)."
+  },
+  {
+    question: "Why is lateral space critical for 12VHPWR connectors?",
+    answer: "The 12VHPWR standard (RTX 40 series) is sensitive to extreme bends near the connector. We recommend at least 35 mm lateral clearance to side glass panels to avoid electrical issues."
+  },
+  {
+    question: "How often is the component database updated?",
+    answer: "Our hardware database is continuously updated with official dimensions declared by NVIDIA, AMD, Intel, Corsair, NZXT, Fractal Design, and Lian Li."
+  }
+] : [
   {
     question: "¿Cómo calcula Lidunax la compatibilidad física exacta?",
     answer: "Utilizamos nuestro motor de cálculo (ClearanceEngine) que contrasta la longitud máxima permitida por el chasis con las dimensiones tridimensionales de la tarjeta gráfica o disipador. El sistema descuenta de forma automática los grosores estándar de ventiladores y estructuras frontales."
@@ -29,22 +54,34 @@ const faqs = [
 ];
 ---
 
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Preguntas Frecuentes (FAQ) - Telemetría de Montaje | LIDUNAX</title>
+    <title>{t('faq.title') || 'Preguntas Frecuentes (FAQ) - LIDUNAX'}</title>
     <link rel="icon" type="image/png" href="/logo2.webp?v=5" />
     <meta name="description" content="Resolvemos dudas técnicas sobre tolerancias físicas, holguras de GPU, instalación de radiadores AIO y márgenes de cableado 12VHPWR en el ensamble de PC." />
     <link rel="canonical" href={canonicalURL} />
 
-    <!-- Carga de Orbitron -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
 
-    <!-- Datos Estructurados JSON-LD Schema.org para FAQ -->
+    <!-- Detección automática de idioma ultrarrápida -->
+    <script is:inline>
+      (function () {
+        const savedLang = localStorage.getItem('lidunax_lang');
+        const browserLang = (navigator.language || navigator.userLanguage || '').slice(0, 2);
+        const targetLang = savedLang || (browserLang === 'en' ? 'en' : 'es');
+        const currentPath = window.location.pathname;
+
+        if (targetLang === 'en' && !currentPath.startsWith('/en')) {
+          window.location.replace('/en' + currentPath);
+        }
+      })();
+    </script>
+
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -61,46 +98,39 @@ const faqs = [
 
   <body class="bg-[#050507] text-white min-h-screen relative overflow-x-hidden flex flex-col justify-between selection:bg-[#00ffff] selection:text-black">
     
-    <!-- Canvas interactivo de partículas -->
     <canvas id="dotsCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0" aria-hidden="true"></canvas>
-
-    <!-- Campana Cenital (Fuente de luz) -->
     <div class="spotlight-campana absolute top-0 left-1/2 -translate-x-1/2 w-[100vw] h-[620px] pointer-events-none z-0" aria-hidden="true"></div>
 
     <div class="page relative z-10 flex flex-col min-h-screen justify-between">
       
-      <!-- Navbar Estandarizado -->
       <header class="nav sf">
         <div class="nav__in">
-          <a href="/" class="brand flex items-center gap-3">
-      <img src="/logoancho.webp" alt="LDX" width="160" height="32" class="h-8 sm:h-10 w-auto object-contain" />
-      <span class="brand__name orb">LIDUNAX</span>
-    </a>
+          <a href={langPrefix || '/'} class="brand flex items-center gap-3">
+            <img src="/logoancho.webp" alt="LDX" width="160" height="32" class="h-8 sm:h-10 w-auto object-contain" />
+            <span class="brand__name orb">LIDUNAX</span>
+          </a>
 
           <nav class="nav__links" aria-label="Principal" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-            <a href="/" class="hover:text-white transition-colors">Inicio</a>
-            <a href="/faq" class="is-current text-white font-medium" aria-current="page">FAQ</a>
-            <a href="/about" class="hover:text-white transition-colors">Sobre nosotros</a>
+            <a href={langPrefix || '/'} class="hover:text-white transition-colors">{t('nav.home')}</a>
+            <a href={`${langPrefix}/faq`} class="is-current text-white font-medium" aria-current="page">{t('nav.faq')}</a>
+            <a href={`${langPrefix}/about`} class="hover:text-white transition-colors">{t('nav.about')}</a>
           </nav>
         </div>
       </header>
 
-      <!-- Contenido Principal -->
       <main class="main w-full max-w-4xl mx-auto px-4 pt-16 pb-24 space-y-16">
-        
-        <!-- Hero Section FAQ -->
         <section class="text-center space-y-4 rise" style="--d:.05s">
           <h1 class="text-3xl sm:text-5xl font-bold tracking-widest uppercase orb bg-gradient-to-b from-[#ffffff] via-[#ffffff] to-[#8e8e93] bg-clip-text text-transparent">
-            BASE DE CONOCIMIENTO
+            {lang === 'en' ? 'KNOWLEDGE BASE' : 'BASE DE CONOCIMIENTO'}
           </h1>
           <p class="text-[#86868b] text-sm sm:text-base tracking-wide max-w-xl mx-auto font-light leading-relaxed" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-            Metrología, estándares de compatibilidad y tolerancias técnicas para el ensamblaje avanzado de PC.
+            {lang === 'en' 
+              ? 'Metrology, clearance standards, and technical tolerances for custom PC builds.'
+              : 'Metrología, estándares de compatibilidad y tolerancias técnicas para el ensamblaje avanzado de PC.'}
           </p>
         </section>
 
-        <!-- Bloque de Acordeones FAQ (Liquid Glass) -->
         <section class="faq-container card relative p-6 sm:p-10 rise-soft" style="--d:.2s">
-          <!-- Brillo superior decorativo de la tarjeta -->
           <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[1px] bg-gradient-to-r from-transparent via-[#00ffff]/30 to-transparent pointer-events-none"></div>
 
           <div class="faq__list space-y-2">
@@ -111,7 +141,6 @@ const faqs = [
                     <span class="text-[#00ffff] opacity-50 mr-2 text-xs tracking-widest orb">Q{String(index + 1).padStart(2, '0')}</span> 
                     {faq.question}
                   </h3>
-                  <!-- Icono de Cruz/Menos animado -->
                   <span class="plus flex-none w-3.5 h-3.5 relative mt-1.5 text-slate-400 transition-colors group-hover:text-[#00ffff]"></span>
                 </summary>
                 
@@ -124,13 +153,11 @@ const faqs = [
             ))}
           </div>
         </section>
-
       </main>
 
       <Footer />
     </div>
 
-    <!-- Script de Partículas Reactivas -->
     <script>
       interface Dot { x: number; y: number; baseRadius: number; vx: number; vy: number; baseAlpha: number; }
 
@@ -169,7 +196,7 @@ const faqs = [
           ctx.clearRect(0, 0, width, height);
 
           const lightX = width / 2;
-          const lightY = -window.scrollY; // Reacciona al scroll
+          const lightY = -window.scrollY;
           const maxLight = Math.min(width, height) * 0.65;
 
           for (const dot of dots) {
@@ -208,74 +235,30 @@ const faqs = [
     </script>
 
     <style>
-      /* ───────── Tipografía y Sistema Global ───────── */
       .orb { font-family: 'Orbitron', sans-serif !important; }
-
-      .spotlight-campana {
-        background: radial-gradient(
-          ellipse 80% 50% at 50% 0%, rgba(0, 255, 255, 0.12) 0%, rgba(0, 255, 255, 0.03) 40%, rgba(0, 255, 255, 0.008) 70%, transparent 100%
-        );
-        filter: blur(60px);
-      }
-
-      /* ───────── Navbar (Reutilizado) ───────── */
+      .spotlight-campana { background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 255, 255, 0.12) 0%, rgba(0, 255, 255, 0.03) 40%, rgba(0, 255, 255, 0.008) 70%, transparent 100%); filter: blur(60px); }
       .nav { position: sticky; top: 0; z-index: 50; background: rgba(5, 5, 7, 0.55); border-bottom: 1px solid rgba(255, 255, 255, 0.06); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); }
       .nav__in { max-width: 1200px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
       .brand { display: flex; align-items: center; gap: 12px; }
-      .brand__mark { width: 34px; height: 34px; border-radius: 10px; background: #121215; border: 1px solid rgba(255, 255, 255, 0.1); display: grid; place-items: center; transition: border-color 0.3s, box-shadow 0.3s; }
-      .brand__mark span { color: #00ffff; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
-      .brand:hover .brand__mark { border-color: rgba(0, 255, 255, 0.5); box-shadow: 0 0 20px rgba(0, 255, 255, 0.15); }
       .brand__name { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.18em; color: #fff; }
       .nav__links { display: flex; gap: 32px; font-size: 14px; color: #86868b; }
       @media (max-width: 560px) { .brand__name { display: none; } .nav__links { gap: 20px; font-size: 13px; } }
-
-      /* ───────── Animaciones de Entrada ───────── */
       .rise { opacity: 0; animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s) forwards; }
       .rise-soft { opacity: 0; animation: rise-soft 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s) forwards; }
       @keyframes rise { from { opacity: 0; transform: translateY(16px); filter: blur(8px); } to { opacity: 1; transform: none; filter: none; } }
       @keyframes rise-soft { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
-
-      /* ───────── Tarjeta Liquid Glass Base ───────── */
       .card { border-radius: 28px; border: 1px solid rgba(255, 255, 255, 0.09); background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01) 45%, rgba(0, 0, 0, 0.6)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 30px 60px rgba(0,0,0,0.5); -webkit-backdrop-filter: blur(32px); backdrop-filter: blur(32px); }
-
-      /* ───────── Detalles y Acordeones (FAQ) ───────── */
       details summary::-webkit-details-marker { display: none; }
-      
-      .plus::before, .plus::after {
-        content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1.5px; background: currentColor; transform: translateY(-50%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      }
+      .plus::before, .plus::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1.5px; background: currentColor; transform: translateY(-50%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
       .plus::after { transform: translateY(-50%) rotate(90deg); }
-      
       details[open] summary .plus { color: #00ffff; }
       details[open] summary .plus::after { transform: translateY(-50%) rotate(0deg); }
       details[open] summary h3 { color: #fff; }
-
-      /* Animación de apertura suave del contenido */
-      .answer-wrapper {
-        display: grid;
-        grid-template-rows: 0fr;
-        transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      details[open] .answer-wrapper {
-        grid-template-rows: 1fr;
-      }
-      .answer {
-        overflow: hidden;
-        opacity: 0;
-        transform: translateY(-8px);
-        transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      details[open] .answer {
-        opacity: 1;
-        transform: translateY(0);
-        transition-delay: 0.1s;
-      }
-
-      /* Reduce motion fallback */
-      @media (prefers-reduced-motion: reduce) {
-        .rise, .rise-soft { animation: none; opacity: 1; transform: none; filter: none; }
-        .answer-wrapper, .plus::before, .plus::after, .answer { transition: none !important; }
-      }
+      .answer-wrapper { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+      details[open] .answer-wrapper { grid-template-rows: 1fr; }
+      .answer { overflow: hidden; opacity: 0; transform: translateY(-8px); transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+      details[open] .answer { opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
+      @media (prefers-reduced-motion: reduce) { .rise, .rise-soft { animation: none; opacity: 1; transform: none; filter: none; } .answer-wrapper, .plus::before, .plus::after, .answer { transition: none !important; } }
     </style>
   </body>
 </html>

@@ -1,0 +1,18 @@
+{
+  "site.title": "LIDUNAX - Hardware & Physical Compatibility Checker",
+  "site.description": "Dynamic physical clearance analyzer for PC builds. Validate exact GPU, CPU, PSU, and chassis dimensions.",
+  "hero.title": "LIDUNAX",
+  "hero.subtitle": "Select the components you want to analyze for your next PC build.",
+  "nav.home": "Home",
+  "nav.faq": "FAQ",
+  "nav.about": "About us",
+  "sec.gpu.title": "GPU + CASE",
+  "sec.gpu.sub": "Validate exact dimensions and clearance",
+  "sec.cpu.title": "CPU + COOLER",
+  "sec.cpu.sub": "Sockets, clearance heights and RAM clearance",
+  "sec.psu.title": "PSU / POWER SUPPLY",
+  "sec.psu.sub": "Wattage, 12VHPWR connectors and cable management",
+  "sec.pc.title": "FULL PC BUILD",
+  "sec.pc.sub": "Full system compatibility and assembly scan",
+  "btn.analyze": "START ANALYSIS"
+}

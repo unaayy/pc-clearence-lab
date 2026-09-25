@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Case, GPU, ClearanceResult } from '../types/hardware';
+import type { Case, GPU, ClearanceResult } from '../../types/hardware';
 
 interface AffiliateBannersProps {
   result: ClearanceResult;

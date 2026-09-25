@@ -2,11 +2,15 @@
 // src/pages/about.astro - Página "Sobre Nosotros" (Liquid Glass HUD)
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
 
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const langPrefix = lang === 'en' ? '/en' : '';
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 ---
 
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,6 +24,20 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <!-- Detección automática de idioma ultrarrápida -->
+    <script is:inline>
+      (function () {
+        const savedLang = localStorage.getItem('lidunax_lang');
+        const browserLang = (navigator.language || navigator.userLanguage || '').slice(0, 2);
+        const targetLang = savedLang || (browserLang === 'en' ? 'en' : 'es');
+        const currentPath = window.location.pathname;
+
+        if (targetLang === 'en' && !currentPath.startsWith('/en')) {
+          window.location.replace('/en' + currentPath);
+        }
+      })();
+    </script>
 
     <!-- Datos Estructurados JSON-LD Schema.org para AboutPage -->
     <script type="application/ld+json" set:html={JSON.stringify({
@@ -38,105 +56,98 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
   <body class="bg-[#050507] text-white min-h-screen relative overflow-x-hidden flex flex-col justify-between selection:bg-[#00ffff] selection:text-black">
     
-    <!-- Canvas interactivo de partículas -->
     <canvas id="dotsCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0" aria-hidden="true"></canvas>
-
-    <!-- Campana Cenital (Fuente de luz) -->
     <div class="spotlight-campana absolute top-0 left-1/2 -translate-x-1/2 w-[100vw] h-[620px] pointer-events-none z-0" aria-hidden="true"></div>
 
     <div class="page relative z-10 flex flex-col min-h-screen justify-between">
       
-      <!-- Navbar Estandarizado -->
       <header class="nav sf">
         <div class="nav__in">
-          <a href="/" class="brand flex items-center gap-3">
-      <img src="/logoancho.webp" alt="LDX" width="160" height="32" class="h-8 sm:h-10 w-auto object-contain" />
-      <span class="brand__name orb">LIDUNAX</span>
-    </a>
+          <a href={langPrefix || '/'} class="brand flex items-center gap-3">
+            <img src="/logoancho.webp" alt="LDX" width="160" height="32" class="h-8 sm:h-10 w-auto object-contain" />
+            <span class="brand__name orb">LIDUNAX</span>
+          </a>
 
           <nav class="nav__links" aria-label="Principal" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-            <a href="/" class="hover:text-white transition-colors">Inicio</a>
-            <a href="/faq" class="hover:text-white transition-colors">FAQ</a>
-            <a href="/about" class="is-current text-white font-medium" aria-current="page">Sobre nosotros</a>
+            <a href={langPrefix || '/'} class="hover:text-white transition-colors">{t('nav.home')}</a>
+            <a href={`${langPrefix}/faq`} class="hover:text-white transition-colors">{t('nav.faq')}</a>
+            <a href={`${langPrefix}/about`} class="is-current text-white font-medium" aria-current="page">{t('nav.about')}</a>
           </nav>
         </div>
       </header>
 
-      <!-- Contenido Principal -->
       <main class="main w-full max-w-4xl mx-auto px-4 pt-16 pb-24 space-y-12">
-        
-        <!-- Hero Section About -->
         <section class="text-center space-y-4 rise" style="--d:.05s">
           <h1 class="text-3xl sm:text-5xl font-bold tracking-widest uppercase orb bg-gradient-to-b from-[#ffffff] via-[#ffffff] to-[#8e8e93] bg-clip-text text-transparent">
-            SOBRE LIDUNAX
+            {lang === 'en' ? 'ABOUT LIDUNAX' : 'SOBRE LIDUNAX'}
           </h1>
           <p class="text-[#86868b] text-sm sm:text-base tracking-wide max-w-xl mx-auto font-light leading-relaxed" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-            Plataforma especializada en la comprobación, simulación y metrología de dimensiones físicas para el ensamblaje de PC.
+            {lang === 'en' 
+              ? 'Specialized platform for checking, simulating, and measuring physical dimensions for PC assembly.'
+              : 'Plataforma especializada en la comprobación, simulación y metrología de dimensiones físicas para el ensamblaje de PC.'}
           </p>
         </section>
 
-        <!-- Bloque Principal Liquid Glass -->
         <section class="card relative p-6 sm:p-10 space-y-10 rise-soft" style="--d:.2s">
-          <!-- Brillo superior decorativo de la tarjeta -->
           <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[1px] bg-gradient-to-r from-transparent via-[#00ffff]/30 to-transparent pointer-events-none"></div>
 
-          <!-- Misión / Propósito -->
           <div class="space-y-4 border-b border-white/5 pb-8">
-            <span class="text-xs font-orbitron text-[#00ffff] tracking-widest uppercase orb opacity-80">// MISIÓN_TÉCNICA</span>
+            <span class="text-xs font-orbitron text-[#00ffff] tracking-widest uppercase orb opacity-80">// {lang === 'en' ? 'TECHNICAL_MISSION' : 'MISIÓN_TÉCNICA'}</span>
             <h2 class="text-xl sm:text-2xl font-bold text-white uppercase tracking-wider orb">
-              Precisión de Montaje en la Era Moderna
+              {lang === 'en' ? 'Assembly Precision in the Modern Era' : 'Precisión de Montaje en la Era Moderna'}
             </h2>
             <p class="text-slate-300 text-sm sm:text-base leading-relaxed font-light" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-              Lidunax nace para resolver uno de los grandes cuellos de botella del ensamblaje entusiasta de ordenadores: las incompatibilidades físicas impredecibles entre chasis compactos y tarjetas gráficas de última generación con disipadores masivos.
+              {lang === 'en'
+                ? 'Lidunax was born to solve one of the main bottlenecks in enthusiast PC building: unpredictable physical incompatibilities between compact cases and massive next-gen graphics cards.'
+                : 'Lidunax nace para resolver uno de los grandes cuellos de botella del ensamblaje entusiasta de ordenadores: las incompatibilidades físicas impredecibles entre chasis compactos y tarjetas gráficas de última generación con disipadores masivos.'}
             </p>
           </div>
 
-          <!-- Cuadrícula de Pilares Metrológicos -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="p-6 rounded-2xl border border-white/5 bg-white/[0.01] space-y-3">
               <span class="text-[#00ffff] text-xs font-orbitron tracking-widest orb">01 // CLEARANCE_ENGINE</span>
               <h3 class="text-white text-base font-semibold" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-                Cálculo de Holgura Netas
+                {lang === 'en' ? 'Net Clearance Calculation' : 'Cálculo de Holgura Netas'}
               </h3>
               <p class="text-sm text-[#86868b] font-light leading-relaxed" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-                Nuestro algoritmo analiza no solo la longitud nominal de la tarjeta gráfica, sino las deducciones requeridas por radiadores AIO (push/pull), grosor de ventiladores frontales y espacio de admisión de aire.
+                {lang === 'en'
+                  ? 'Our algorithm analyzes not only nominal GPU length, but also clearance required by AIO radiators (push/pull), front fan thickness, and air intake.'
+                  : 'Nuestro algoritmo analiza no solo la longitud nominal de la tarjeta gráfica, sino las deducciones requeridas por radiadores AIO (push/pull), grosor de ventiladores frontales y espacio de admisión de aire.'}
               </p>
             </div>
 
             <div class="p-6 rounded-2xl border border-white/5 bg-white/[0.01] space-y-3">
-              <span class="text-[#00ffff] text-xs font-orbitron tracking-widest orb">02 // VERIFICACIÓN 12VHPWR</span>
+              <span class="text-[#00ffff] text-xs font-orbitron tracking-widest orb">02 // {lang === 'en' ? '12VHPWR VERIFICATION' : 'VERIFICACIÓN 12VHPWR'}</span>
               <h3 class="text-white text-base font-semibold" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-                Seguridad en Cableado Lateral
+                {lang === 'en' ? 'Side Cable Safety' : 'Seguridad en Cableado Lateral'}
               </h3>
               <p class="text-sm text-[#86868b] font-light leading-relaxed" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-                Evaluamos el ancho del PCB y el conector de alimentación de la GPU respecto al panel de cristal templado, reduciendo riesgos de tensión excesiva en cables PCIe Gen 5.
+                {lang === 'en'
+                  ? 'We evaluate PCB width and GPU power connector space relative to side glass panels, mitigating risks of bending PCIe Gen 5 cables.'
+                  : 'Evaluamos el ancho del PCB y el conector de alimentación de la GPU respecto al panel de cristal templado, reduciendo riesgos de tensión excesiva en cables PCIe Gen 5.'}
               </p>
             </div>
           </div>
 
-          <!-- Bloque Inferior Dataset -->
           <div class="bg-black/40 border border-white/10 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="space-y-1 text-center sm:text-left">
               <h4 class="text-sm font-semibold text-white" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
-                Dataset Continuo & Verificado
+                {lang === 'en' ? 'Continuous & Verified Dataset' : 'Dataset Continuo & Verificado'}
               </h4>
               <p class="text-xs text-[#86868b] font-light" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;">
                 Calibrado con datos oficiales de NVIDIA, AMD, Corsair, NZXT, Lian Li y Fractal Design.
               </p>
             </div>
-            <a href="/" class="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-[#00ffff]/50 text-xs font-orbitron text-[#00ffff] tracking-wider transition-all duration-300 orb">
-              PROBAR TELEMETRÍA →
+            <a href={langPrefix || '/'} class="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-[#00ffff]/50 text-xs font-orbitron text-[#00ffff] tracking-wider transition-all duration-300 orb">
+              {lang === 'en' ? 'TEST CLEARANCE →' : 'PROBAR TELEMETRÍA →'}
             </a>
           </div>
-
         </section>
-
       </main>
 
       <Footer />
     </div>
 
-    <!-- Script de Partículas Reactivas -->
     <script>
       interface Dot { x: number; y: number; baseRadius: number; vx: number; vy: number; baseAlpha: number; }
 
@@ -214,40 +225,20 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
     </script>
 
     <style>
-      /* ───────── Tipografía y Sistema Global ───────── */
       .orb { font-family: 'Orbitron', sans-serif !important; }
-
-      .spotlight-campana {
-        background: radial-gradient(
-          ellipse 80% 50% at 50% 0%, rgba(0, 255, 255, 0.12) 0%, rgba(0, 255, 255, 0.03) 40%, rgba(0, 255, 255, 0.008) 70%, transparent 100%
-        );
-        filter: blur(60px);
-      }
-
-      /* ───────── Navbar (Reutilizado) ───────── */
+      .spotlight-campana { background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 255, 255, 0.12) 0%, rgba(0, 255, 255, 0.03) 40%, rgba(0, 255, 255, 0.008) 70%, transparent 100%); filter: blur(60px); }
       .nav { position: sticky; top: 0; z-index: 50; background: rgba(5, 5, 7, 0.55); border-bottom: 1px solid rgba(255, 255, 255, 0.06); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); }
       .nav__in { max-width: 1200px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
       .brand { display: flex; align-items: center; gap: 12px; }
-      .brand__mark { width: 34px; height: 34px; border-radius: 10px; background: #121215; border: 1px solid rgba(255, 255, 255, 0.1); display: grid; place-items: center; transition: border-color 0.3s, box-shadow 0.3s; }
-      .brand__mark span { color: #00ffff; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
-      .brand:hover .brand__mark { border-color: rgba(0, 255, 255, 0.5); box-shadow: 0 0 20px rgba(0, 255, 255, 0.15); }
       .brand__name { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.18em; color: #fff; }
       .nav__links { display: flex; gap: 32px; font-size: 14px; color: #86868b; }
       @media (max-width: 560px) { .brand__name { display: none; } .nav__links { gap: 20px; font-size: 13px; } }
-
-      /* ───────── Animaciones de Entrada ───────── */
       .rise { opacity: 0; animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s) forwards; }
       .rise-soft { opacity: 0; animation: rise-soft 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s) forwards; }
       @keyframes rise { from { opacity: 0; transform: translateY(16px); filter: blur(8px); } to { opacity: 1; transform: none; filter: none; } }
       @keyframes rise-soft { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
-
-      /* ───────── Tarjeta Liquid Glass Base ───────── */
       .card { border-radius: 28px; border: 1px solid rgba(255, 255, 255, 0.09); background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01) 45%, rgba(0, 0, 0, 0.6)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 30px 60px rgba(0,0,0,0.5); -webkit-backdrop-filter: blur(32px); backdrop-filter: blur(32px); }
-
-      /* Reduce motion fallback */
-      @media (prefers-reduced-motion: reduce) {
-        .rise, .rise-soft { animation: none; opacity: 1; transform: none; filter: none; }
-      }
+      @media (prefers-reduced-motion: reduce) { .rise, .rise-soft { animation: none; opacity: 1; transform: none; filter: none; } }
     </style>
   </body>
 </html>

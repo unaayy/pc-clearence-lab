@@ -1,0 +1,18 @@
+{
+  "site.title": "LIDUNAX - Comprobador de Hardware y Compatibilidad Física",
+  "site.description": "Analizador dinámico de compatibilidad física para configuraciones de PC. Valida dimensiones de GPU, CPU, fuentes y chasis.",
+  "hero.title": "LIDUNAX",
+  "hero.subtitle": "Selecciona los componentes que deseas analizar para tu próxima configuración.",
+  "nav.home": "Inicio",
+  "nav.faq": "FAQ",
+  "nav.about": "Sobre nosotros",
+  "sec.gpu.title": "GPU + CAJA",
+  "sec.gpu.sub": "Validar dimensiones y holguras exactas",
+  "sec.cpu.title": "CPU + REFRIGERACIÓN",
+  "sec.cpu.sub": "Sockets, alturas y despeje de memorias RAM",
+  "sec.psu.title": "FUENTE / PSU",
+  "sec.psu.sub": "Vatios, conectores 12VHPWR y gestión de cables",
+  "sec.pc.title": "PC COMPLETO",
+  "sec.pc.sub": "Escáner total de compatibilidad y ensamble",
+  "btn.analyze": "INICIAR ANÁLISIS"
+}
