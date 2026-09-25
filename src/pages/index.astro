@@ -13,18 +13,28 @@ const secciones = [
 ---
 
 <html lang="es">
-  <head>
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LIDUNAX - Comprobador de Hardware y Compatibilidad Física</title>
     <link rel="icon" type="image/png" href="/logo2.webp?v=5" />
     <meta name="description" content="Analizador dinámico de compatibilidad física para configuraciones de PC. Valida dimensiones de GPU, CPU, fuentes y chasis." />
 
-    <!-- Carga directa e ininterrumpida de Orbitron de Google Fonts -->
+    <!-- Precarga de imagen crítica para LCP en móvil -->
+    <link rel="preload" as="image" href="/gpu.webp" type="image/webp" fetchpriority="high" />
+
+    <!-- Carga asíncrona de Google Fonts (Evita el bloqueo de 1.450 ms) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" />
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <link 
+      rel="stylesheet" 
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" 
+      media="print" 
+      onload="this.media='all'" 
+    />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" />
+    </noscript>
   </head>
 
   <body class="bg-[#050507] text-white min-h-screen relative overflow-x-hidden flex flex-col justify-between selection:bg-[#00ffff] selection:text-black">
