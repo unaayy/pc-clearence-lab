@@ -33,6 +33,7 @@ const pairs = cases.slice(0, 3).flatMap((caseItem) =>
     <!-- Carga directa e ininterrumpida de Orbitron de Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
 
     <!-- URL Canónica -->
@@ -59,7 +60,7 @@ const pairs = cases.slice(0, 3).flatMap((caseItem) =>
       <header class="nav sf">
         <div class="nav__in">
           <a href="/" class="brand flex items-center gap-3">
-      <img src="/logoancho.png" alt="LDX" class="h-8 sm:h-10 w-auto object-contain" />
+      <img src="/logoancho.png" alt="LDX" width="160" height="32" class="h-8 sm:h-10 w-auto object-contain" />
       <span class="brand__name orb">LIDUNAX</span>
     </a>
 
@@ -85,7 +86,7 @@ const pairs = cases.slice(0, 3).flatMap((caseItem) =>
 
           <!-- Buscador interactivo de React con Liquid Glass -->
           <div class="tool rise-soft mt-8" style="--d:.8s">
-            <SearchInterface client:load cases={cases} gpus={gpus} />
+            <SearchInterface client:idle cases={cases} gpus={gpus} />
           </div>
         </section>
 
@@ -296,7 +297,7 @@ const pairs = cases.slice(0, 3).flatMap((caseItem) =>
         animate();
       }
 
-      // Texto que se ilumina palabra a palabra mientras haces scroll.
+      // Texto que se ilumina palabra a palabra. IntersectionObserver: 0% CPU fuera de pantalla.
       function initLit() {
         const el = document.querySelector('[data-lit]') as HTMLElement | null;
         if (!el || el.dataset.ready) return;
@@ -307,14 +308,11 @@ const pairs = cases.slice(0, 3).flatMap((caseItem) =>
         el.classList.add('armed');
 
         let ticking = false;
+        let listening = false;
 
         const update = () => {
           ticking = false;
-          if (!el.isConnected) {
-            window.removeEventListener('scroll', onScroll);
-            window.removeEventListener('resize', onScroll);
-            return;
-          }
+          if (!el.isConnected) return;
           const vh = window.innerHeight;
           const rect = el.getBoundingClientRect();
           const start = vh * 0.9;
@@ -330,9 +328,26 @@ const pairs = cases.slice(0, 3).flatMap((caseItem) =>
           requestAnimationFrame(update);
         };
 
-        window.addEventListener('scroll', onScroll, { passive: true });
-        window.addEventListener('resize', onScroll);
-        update();
+        const startListening = () => {
+          if (listening) return;
+          listening = true;
+          window.addEventListener('scroll', onScroll, { passive: true });
+          window.addEventListener('resize', onScroll);
+          onScroll();
+        };
+
+        const stopListening = () => {
+          if (!listening) return;
+          listening = false;
+          window.removeEventListener('scroll', onScroll);
+          window.removeEventListener('resize', onScroll);
+        };
+
+        const io = new IntersectionObserver((entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) startListening();
+          else stopListening();
+        });
+        io.observe(el);
       }
 
       function init() {

@@ -50,3 +50,27 @@
 ::view-transition-new(root) {
   opacity: 0;
 }
+
+/* GPU: en móvil se desactivan filtros SVG, sombras y animaciones continuas */
+@media (max-width: 768px) {
+  svg filter {
+    display: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-shadow: none !important;
+  }
+
+  .animate-cable,
+  .animate-glow,
+  .animate-ambient,
+  .fan-spin,
+  .liquid-hot,
+  .liquid-cold,
+  .heatpipe-glow,
+  .wind-line {
+    animation: none !important;
+  }
+}

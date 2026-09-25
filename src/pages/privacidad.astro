@@ -18,6 +18,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
     <!-- Carga de Orbitron -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
 
     <!-- Datos Estructurados JSON-LD Schema.org para WebPage -->
@@ -49,7 +50,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
       <header class="nav sf">
         <div class="nav__in">
          <a href="/" class="brand flex items-center gap-3">
-      <img src="/logoancho.png" alt="LDX" class="h-8 sm:h-10 w-auto object-contain" />
+      <img src="/logoancho.png" alt="LDX" width="160" height="32" class="h-8 sm:h-10 w-auto object-contain" />
       <span class="brand__name orb">LIDUNAX</span>
     </a>
 

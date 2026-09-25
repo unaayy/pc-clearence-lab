@@ -10,11 +10,6 @@ const normalize = (s) =>
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');
 
-const toNum = (v) => {
-  const n = Number(v);
-  return Number.isFinite(n) && n > 0 ? n : null;
-};
-
 /* ───────── Iconos Técnicos HUD ───────── */
 const IconSearch = () => (
   <svg className="w-5 h-5 text-white/30 group-focus-within:text-[#00ffff] transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

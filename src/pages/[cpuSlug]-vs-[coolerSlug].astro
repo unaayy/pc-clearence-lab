@@ -98,6 +98,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="canonical" href={canonicalURL} />
   </head>
@@ -108,7 +109,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
     <header class="border-b border-white/10 bg-black/50 backdrop-blur-md sticky top-0 z-50">
       <div class="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
         <a href="/" class="flex items-center gap-3">
-          <img src="/logoancho.png" alt="LDX" class="h-8 w-auto object-contain" />
+          <img src="/logoancho.png" alt="LDX" width="160" height="32" class="h-8 w-auto object-contain" />
           <span class="font-orbitron font-bold tracking-widest hidden sm:block">LIDUNAX</span>
         </a>
         <nav class="flex gap-6 text-sm font-orbitron tracking-wider text-slate-400">
@@ -460,6 +461,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
         const words = Array.from(el.querySelectorAll('.w')) as HTMLElement[];
         el.classList.add('armed');
         let ticking = false;
+        let listening = false;
         const update = () => {
           ticking = false;
           if (!el.isConnected) return;
@@ -471,9 +473,24 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
           words.forEach((w, i) => w.classList.toggle('on', i < lit));
         };
         const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
-        window.addEventListener('scroll', onScroll, { passive: true });
-        window.addEventListener('resize', onScroll);
-        update();
+        const startListening = () => {
+          if (listening) return;
+          listening = true;
+          window.addEventListener('scroll', onScroll, { passive: true });
+          window.addEventListener('resize', onScroll);
+          onScroll();
+        };
+        const stopListening = () => {
+          if (!listening) return;
+          listening = false;
+          window.removeEventListener('scroll', onScroll);
+          window.removeEventListener('resize', onScroll);
+        };
+        const io = new IntersectionObserver((entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) startListening();
+          else stopListening();
+        });
+        io.observe(el);
       }
 
       document.addEventListener('astro:page-load', initLit);
