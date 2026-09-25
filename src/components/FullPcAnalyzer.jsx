@@ -46,6 +46,7 @@ export function getBuildSeoMeta(build, isEn = false) {
 }
 
 export default function FullPcAnalyzer({ db, searchParams, lang }) {
+  // Detección directa y robusta del idioma por la URL
   const isEn = typeof window !== 'undefined' 
     ? (window.location.pathname.startsWith('/en') || lang === 'en')
     : lang === 'en';
@@ -53,7 +54,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
   const currentLang = isEn ? 'en' : 'es';
   const stores = getStoresForLocale(currentLang);
 
-  // RESOLUCIÓN RESILIENTE EN CLIENTE/SERVIDOR
   const build = useMemo(() => {
     if (!db) return null;
     let sp = searchParams;
@@ -104,6 +104,7 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
     );
   }
 
+  // --- CÁLCULOS Y VALIDACIONES ---
   const cpuTdp = build.cpu?.tdp || 120;
   const gpuTdp = build.gpu?.tdp || 250;
   const rawPower = cpuTdp + gpuTdp + 80;
@@ -290,32 +291,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
     { q: isEn ? 'What cooling system can I install in this chassis?' : '¿Qué refrigeración puedo instalar en este chasis?', a: faqCooler },
   ];
 
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faqItems.map((item) => ({
-      '@type': 'Question',
-      name: item.q,
-      acceptedAnswer: { '@type': 'Answer', text: item.a },
-    })),
-  };
-
-  const itemListSchema = selectedComponents.length > 0
-    ? {
-        '@context': 'https://schema.org',
-        '@type': 'ItemList',
-        itemListElement: selectedComponents.map((c, i) => ({
-          '@type': 'ListItem',
-          position: i + 1,
-          name: `${c.label}: ${formatName(c.data)}`,
-        })),
-      }
-    : null;
-
-  const diagramTitle = isEn 
-    ? `Assembly Diagram: ${build.case ? formatName(build.case) : 'case'} with ${build.cpu ? formatName(build.cpu) : 'CPU'} and ${build.gpu ? formatName(build.gpu) : 'GPU'}`
-    : `Diagrama del ensamblaje: ${build.case ? formatName(build.case) : 'chasis'} con ${build.cpu ? formatName(build.cpu) : 'CPU'} y ${build.gpu ? formatName(build.gpu) : 'GPU'}`;
-
   return (
     <div className="w-full font-sans animate-[fadeIn_0.5s_ease-out]">
       <style>{`
@@ -329,11 +304,7 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
         .spin-slow { animation: spinSlow 3s linear infinite; }
       `}</style>
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      {itemListSchema && (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
-      )}
-
+      {/* ENCABEZADO DE AUDITORÍA */}
       <div className="mb-10 text-center sm:text-left">
         <h1 className="text-3xl sm:text-4xl font-bold font-orbitron mb-3 uppercase tracking-wide">
           <span className="text-slate-400 block text-lg mb-1">
@@ -348,12 +319,12 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
         </p>
       </div>
 
+      {/* BLOQUE PRINCIPAL DEL DIAGRAMA Y HUD */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 lg:gap-8 mb-16">
         <div className="relative bg-[#0a0a0c] border border-white/5 rounded-[24px] overflow-hidden min-h-[460px] flex items-center justify-center p-4 shadow-[inset_0_0_80px_rgba(0,0,0,0.8)]">
           <div className="absolute inset-0 opacity-[0.15]" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
 
-          <svg role="img" aria-labelledby="pcDiagramTitle" viewBox="0 0 400 480" className="w-full max-w-[360px] max-h-[460px] relative z-10 drop-shadow-[0_0_15px_rgba(0,0,0,0.5)]">
-            <title id="pcDiagramTitle">{diagramTitle}</title>
+          <svg viewBox="0 0 400 480" className="w-full max-w-[360px] max-h-[460px] relative z-10 drop-shadow-[0_0_15px_rgba(0,0,0,0.5)]">
             <defs>
               <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
                 <feGaussianBlur stdDeviation="4" result="blur" />
@@ -480,6 +451,7 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
           </svg>
         </div>
 
+        {/* HUD LATERAL */}
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2.5 mb-1 px-1">
             <span className="w-1.5 h-1.5 rounded-full bg-[#00ffff]"></span>
@@ -495,7 +467,7 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: mainStatusColor }}></span>
               </span>
               <span className="font-orbitron text-[9px] tracking-[0.2em] uppercase" style={{ color: mainStatusColor }}>
-                {allClear ? (isEn ? 'System verified' : 'Sistema verificado') : (isEn ? 'Review required' : 'Revisión requerida')}
+                {allClear ? (isEn ? 'SYSTEM VERIFIED' : 'SISTEMA VERIFICADO') : (isEn ? 'REVIEW REQUIRED' : 'REVISIÓN REQUERIDA')}
               </span>
             </div>
             <h2 className="font-orbitron font-bold tracking-wide text-[15px] text-white leading-snug">
@@ -531,6 +503,7 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
 
       </div>
 
+      {/* INVENTARIO PARAMÉTRICO */}
       <div className="mb-12 max-w-[1200px] mx-auto">
         <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">
           {isEn ? 'Parametric Inventory' : 'Inventario Paramétrico'}
@@ -558,6 +531,7 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
         </div>
       </div>
 
+      {/* CENTRAL DE ADQUISICIÓN DE TIENDAS */}
       {selectedComponents.length > 0 && (
         <div className="mb-16 max-w-[1200px] mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-6">
@@ -617,6 +591,7 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
         </div>
       )}
 
+      {/* ANÁLISIS TÉCNICO Y INGENIERÍA */}
       <div className="mb-16 max-w-5xl mx-auto">
         <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">
           {isEn ? 'Engineering & Assembly Analysis' : 'Análisis de Ingeniería y Ensamble'}
@@ -652,6 +627,7 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
         </div>
       </div>
 
+      {/* CÓMO CALCULAMOS CADA COMPATIBILIDAD */}
       <div className="mb-16 max-w-5xl mx-auto">
         <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">
           {isEn ? 'How We Calculate Compatibility' : 'Cómo Calculamos Cada Compatibilidad'}
@@ -698,6 +674,7 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
         </div>
       </div>
 
+      {/* TABLA RESUMEN DE COMPATIBILIDAD */}
       <div className="mb-16 max-w-5xl mx-auto">
         <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">
           {isEn ? 'Compatibility Summary' : 'Resumen de Compatibilidad'}
@@ -724,6 +701,7 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
         </div>
       </div>
 
+      {/* PREGUNTAS FRECUENTES */}
       <div className="mb-16 max-w-5xl mx-auto">
         <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">
           {isEn ? 'Frequently Asked Questions' : 'Preguntas Frecuentes'}

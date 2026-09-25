@@ -149,7 +149,14 @@ function CompactCombobox({ label, step, placeholder, items = [], selected, onSel
   );
 }
 
-export default function SearchInterfaceFullPc({ cpus = [], coolers = [], gpus = [], psus = [], cases = [], motherboards = [], rams = [], storages = [], lang = 'es' }) {
+export default function SearchInterfaceFullPc({ cpus = [], coolers = [], gpus = [], psus = [], cases = [], motherboards = [], rams = [], storages = [], lang }) {
+  // Detección directa de idioma por URL en el cliente
+  const isEn = typeof window !== 'undefined' 
+    ? (window.location.pathname.startsWith('/en') || lang === 'en')
+    : lang === 'en';
+
+  const currentLang = isEn ? 'en' : 'es';
+
   const [selectedCase, setSelectedCase] = useState(null);
   const [selectedMb, setSelectedMb] = useState(null);
   const [selectedCpu, setSelectedCpu] = useState(null);
@@ -160,7 +167,6 @@ export default function SearchInterfaceFullPc({ cpus = [], coolers = [], gpus = 
   const [selectedPsu, setSelectedPsu] = useState(null);
   const [isVerifying, setIsVerifying] = useState(false);
 
-  const isEn = lang === 'en';
   const ready = Boolean(selectedCase && selectedCpu && selectedGpu && selectedPsu);
 
   const handleNavigate = (e) => {
@@ -177,8 +183,8 @@ export default function SearchInterfaceFullPc({ cpus = [], coolers = [], gpus = 
     if (selectedMb) queryParams.set('mb', selectedMb.slug);
     if (selectedRam) queryParams.set('ram', selectedRam.slug);
     if (selectedStorage) queryParams.set('storage', selectedStorage.slug);
-    if (isEn) queryParams.set('lang', 'en');
 
+    // Fuerza la ruta inglesa si estamos en /en/
     const basePath = isEn ? '/en/build' : '/build';
     window.location.href = `${basePath}?${queryParams.toString()}`;
   };
@@ -188,10 +194,10 @@ export default function SearchInterfaceFullPc({ cpus = [], coolers = [], gpus = 
       <div className="relative rounded-[2rem] bg-[#050507]/90 border border-white/10 backdrop-blur-2xl p-6 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] overflow-visible">
         <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr_300px] gap-8 items-start relative z-10">
           <div className="flex flex-col gap-6 order-2 lg:order-1 relative z-30">
-            <CompactCombobox label={isEn ? "PROCESSOR (CPU)" : "PROCESADOR (CPU)"} step="01" placeholder="INTEL I9, RYZEN 7..." items={cpus} selected={selectedCpu} onSelect={setSelectedCpu} lang={lang} />
-            <CompactCombobox label={isEn ? "COOLER / HEATSINK" : "REFRIGERACIÓN"} step="02" placeholder="AIO 360, TORRE..." items={coolers} selected={selectedCooler} onSelect={setSelectedCooler} lang={lang} />
-            <CompactCombobox label={isEn ? "MOTHERBOARD" : "PLACA BASE"} step="03" placeholder="Z790, B650..." items={motherboards} selected={selectedMb} onSelect={setSelectedMb} lang={lang} />
-            <CompactCombobox label={isEn ? "RAM MEMORY" : "MEMORIA RAM"} step="04" placeholder="DDR5 6000MHZ..." items={rams} selected={selectedRam} onSelect={setSelectedRam} lang={lang} />
+            <CompactCombobox label={isEn ? "PROCESSOR (CPU)" : "PROCESADOR (CPU)"} step="01" placeholder="INTEL I9, RYZEN 7..." items={cpus} selected={selectedCpu} onSelect={setSelectedCpu} lang={currentLang} />
+            <CompactCombobox label={isEn ? "COOLER / HEATSINK" : "REFRIGERACIÓN"} step="02" placeholder="AIO 360, TORRE..." items={coolers} selected={selectedCooler} onSelect={setSelectedCooler} lang={currentLang} />
+            <CompactCombobox label={isEn ? "MOTHERBOARD" : "PLACA BASE"} step="03" placeholder="Z790, B650..." items={motherboards} selected={selectedMb} onSelect={setSelectedMb} lang={currentLang} />
+            <CompactCombobox label={isEn ? "RAM MEMORY" : "MEMORIA RAM"} step="04" placeholder="DDR5 6000MHZ..." items={rams} selected={selectedRam} onSelect={setSelectedRam} lang={currentLang} />
           </div>
 
           <div className="flex justify-center items-center order-1 lg:order-2 h-full min-h-[400px] relative z-10">
@@ -209,10 +215,10 @@ export default function SearchInterfaceFullPc({ cpus = [], coolers = [], gpus = 
           </div>
 
           <div className="flex flex-col gap-6 order-3 lg:order-3 relative z-30">
-            <CompactCombobox label={isEn ? "CHASSIS / CASE" : "CHASIS / CAJA"} step="05" placeholder="NZXT H9, CORSAIR..." items={cases} selected={selectedCase} onSelect={setSelectedCase} align="right" lang={lang} />
-            <CompactCombobox label="GRAPHICS CARD (GPU)" step="06" placeholder="RTX 4090, RX 7900..." items={gpus} selected={selectedGpu} onSelect={setSelectedGpu} align="right" lang={lang} />
-            <CompactCombobox label={isEn ? "POWER SUPPLY (PSU)" : "FUENTE (PSU)"} step="07" placeholder="1000W ATX 3.0..." items={psus} selected={selectedPsu} onSelect={setSelectedPsu} align="right" lang={lang} />
-            <CompactCombobox label={isEn ? "STORAGE" : "ALMACENAMIENTO"} step="08" placeholder="NVME 2TB GEN4..." items={storages} selected={selectedStorage} onSelect={setSelectedStorage} align="right" lang={lang} />
+            <CompactCombobox label={isEn ? "CHASSIS / CASE" : "CHASIS / CAJA"} step="05" placeholder="NZXT H9, CORSAIR..." items={cases} selected={selectedCase} onSelect={setSelectedCase} align="right" lang={currentLang} />
+            <CompactCombobox label={isEn ? "GRAPHICS CARD (GPU)" : "TARJETA GRÁFICA (GPU)"} step="06" placeholder="RTX 4090, RX 7900..." items={gpus} selected={selectedGpu} onSelect={setSelectedGpu} align="right" lang={currentLang} />
+            <CompactCombobox label={isEn ? "POWER SUPPLY (PSU)" : "FUENTE (PSU)"} step="07" placeholder="1000W ATX 3.0..." items={psus} selected={selectedPsu} onSelect={setSelectedPsu} align="right" lang={currentLang} />
+            <CompactCombobox label={isEn ? "STORAGE" : "ALMACENAMIENTO"} step="08" placeholder="NVME 2TB GEN4..." items={storages} selected={selectedStorage} onSelect={setSelectedStorage} align="right" lang={currentLang} />
           </div>
         </div>
 
