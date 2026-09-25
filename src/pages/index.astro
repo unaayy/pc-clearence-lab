@@ -5,25 +5,25 @@ import '../styles/global.css';
 
 // Datos del selector (una sola fuente de verdad para las 4 opciones)
 const secciones = [
-{ href: '/gpu-caja',        img: '/gpu.webp',    index: '01', tag: '01 // TELEMETRÍA', title: 'GPU + CAJA',          sub: 'Validar dimensiones y holguras exactas', disabled: false },
-  { href: '/cpu-refrig',      img: '/cpu.webp',    index: '02', tag: '02 // TÉRMICA',    title: 'CPU + REFRIGERACIÓN', sub: 'Sockets, alturas y despeje de memorias RAM', disabled: false },
-  { href: '/fuente-psu',      img: '/fuente.webp', index: '03', tag: '03 // ENERGÍA',    title: 'FUENTE / PSU',        sub: 'Vatios, conectores 12VHPWR y gestión de cables', disabled: false },
-  { href: '/full-pc', img: '/pc.webp', index: '04', tag: '04 // INTEGRAL', title: 'PC COMPLETO', sub: 'Escáner total de compatibilidad y ensamble' }
+  { href: '/gpu-caja',   img: '/gpu.webp',    index: '01', tag: '01 // TELEMETRÍA', title: 'GPU + CAJA',          sub: 'Validar dimensiones y holguras exactas', disabled: false },
+  { href: '/cpu-refrig', img: '/cpu.webp',    index: '02', tag: '02 // TÉRMICA',    title: 'CPU + REFRIGERACIÓN', sub: 'Sockets, alturas y despeje de memorias RAM', disabled: false },
+  { href: '/fuente-psu', img: '/fuente.webp', index: '03', tag: '03 // ENERGÍA',    title: 'FUENTE / PSU',        sub: 'Vatios, conectores 12VHPWR y gestión de cables', disabled: false },
+  { href: '/full-pc',    img: '/pc.webp',     index: '04', tag: '04 // INTEGRAL',   title: 'PC COMPLETO',         sub: 'Escáner total de compatibilidad y ensamble' }
 ]
 ---
 
 <html lang="es">
-<head>
+  <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LIDUNAX - Comprobador de Hardware y Compatibilidad Física</title>
     <link rel="icon" type="image/png" href="/logo2.webp?v=5" />
     <meta name="description" content="Analizador dinámico de compatibilidad física para configuraciones de PC. Valida dimensiones de GPU, CPU, fuentes y chasis." />
 
-    <!-- Precarga de imagen crítica para LCP en móvil -->
+    <!-- Precarga directa del recurso crítico LCP para móvil -->
     <link rel="preload" as="image" href="/gpu.webp" type="image/webp" fetchpriority="high" />
 
-    <!-- Carga asíncrona de Google Fonts (Evita el bloqueo de 1.450 ms) -->
+    <!-- Carga de Google Fonts no bloqueante -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link 
@@ -33,7 +33,7 @@ const secciones = [
       onload="this.media='all'" 
     />
     <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" />
+      <link rel="stylesheet" href="https://fonts.googleapis.com" />
     </noscript>
   </head>
 
@@ -74,8 +74,8 @@ const secciones = [
           </p>
         </section>
 
-        <!-- SELECTOR PREMIUM: paneles que se despliegan, con linterna de escaneo -->
-        <section class="selector-section rise-soft" style="--d:.4s" aria-label="Selector de análisis">
+        <!-- SELECTOR PREMIUM -->
+        <section class="selector-section" aria-label="Selector de análisis">
           <div class="sel" data-selector role="group" aria-label="Elige qué quieres analizar">
             {secciones.map((s, i) => (
               <a
@@ -85,11 +85,31 @@ const secciones = [
               >
                 <!-- Capa base: hardware apagado -->
                 <div class="sel__layer sel__layer--base" aria-hidden="true">
-                  <div class="sel__media"><img src={s.img} alt="" decoding="async" /></div>
+                  <div class="sel__media">
+                    <img 
+                      src={s.img} 
+                      alt="" 
+                      width="680" 
+                      height="540" 
+                      loading={i === 0 ? "eager" : "lazy"} 
+                      fetchpriority={i === 0 ? "high" : "low"} 
+                      decoding={i === 0 ? "sync" : "async"}
+                    />
+                  </div>
                 </div>
                 <!-- Capa iluminada: solo se ve bajo el haz de luz del cursor -->
                 <div class="sel__layer sel__layer--lit" aria-hidden="true">
-                  <div class="sel__media"><img src={s.img} alt="" decoding="async" /></div>
+                  <div class="sel__media">
+                    <img 
+                      src={s.img} 
+                      alt="" 
+                      width="680" 
+                      height="540" 
+                      loading={i === 0 ? "eager" : "lazy"} 
+                      fetchpriority={i === 0 ? "high" : "low"} 
+                      decoding={i === 0 ? "sync" : "async"}
+                    />
+                  </div>
                 </div>
 
                 <span class="sel__glow" aria-hidden="true"></span>
@@ -145,6 +165,10 @@ const secciones = [
       function initDots() {
         const canvas = document.getElementById('dotsCanvas') as HTMLCanvasElement | null;
         if (!canvas || canvas.dataset.ready) return;
+
+        // Desactivar partículas en móviles de pantalla estrecha para reducir consumo de GPU y acelerar LCP
+        if (window.innerWidth < 768) return;
+
         const ctx = canvas.getContext('2d') as CanvasRenderingContext2D | null;
         if (!ctx) return;
         canvas.dataset.ready = '1';
@@ -169,7 +193,7 @@ const secciones = [
         window.addEventListener('resize', resize);
 
         const dots: Dot[] = [];
-        const numDots = Math.min(240, Math.floor((width * height) / 9000));
+        const numDots = Math.min(180, Math.floor((width * height) / 12000));
         for (let i = 0; i < numDots; i++) {
           dots.push({
             x: Math.random() * width,
@@ -238,7 +262,7 @@ const secciones = [
       initDots();
     </script>
 
-    <!-- Script del selector: despliegue, linterna de escaneo y lanzamiento -->
+    <!-- Script del selector -->
     <script>
       function initSelector() {
         const root = document.querySelector<HTMLElement>('[data-selector]');
@@ -260,16 +284,14 @@ const secciones = [
           for (const p of panels) p.classList.toggle('is-active', p === target);
         };
 
-        /* ── Apertura inicial: arranca plegado y despliega el primero ── */
         if (!reduce) {
           const first = panels.find((p) => p.classList.contains('is-active')) ?? panels[0];
           first.classList.remove('is-active');
           window.setTimeout(() => {
             if (!panels.some((p) => p.classList.contains('is-active'))) activate(first);
-          }, 1000);
+          }, 100);
         }
 
-        /* ── Estado de la luz por panel ── */
         const state = panels.map(() => ({ x: 0, y: 0, cx: 0, cy: 0, hot: false, seeded: false }));
 
         const seed = (i: number, r: DOMRect) => {
@@ -310,7 +332,6 @@ const secciones = [
           });
         });
 
-        /* ── Bucle único: sigue al cursor o barre el hardware ── */
         let raf = 0;
         const tick = (t: number) => {
           if (!root.isConnected) return;
@@ -355,7 +376,6 @@ const secciones = [
         });
         io.observe(root);
 
-        /* ── Teclado y foco ── */
         root.addEventListener('focusin', (e) => {
           const p = (e.target as Element).closest<HTMLAnchorElement>('.sel__panel');
           if (p && p.matches(':focus-visible')) activate(p);
@@ -377,17 +397,14 @@ const secciones = [
           activate(panels[n]);
         });
 
-        /* ── Táctil: 1er toque despliega, 2º toque entra ── */
         root.addEventListener('pointerdown', (e) => {
           lastPointer = e.pointerType;
         }, true);
 
-        /* ── Lanzamiento ── */
         root.addEventListener('click', (e) => {
           const link = (e.target as Element).closest<HTMLAnchorElement>('.sel__panel');
           if (!link || launching) return;
 
-          // Si el panel está deshabilitado, anulamos cualquier navegación
           if (link.classList.contains('is-disabled')) {
             e.preventDefault();
             activate(link);
@@ -526,10 +543,6 @@ const secciones = [
         opacity: 0;
         animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s) forwards;
       }
-      .rise-soft {
-        opacity: 0;
-        animation: rise-soft 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s) forwards;
-      }
       @keyframes rise {
         from {
           opacity: 0;
@@ -540,16 +553,6 @@ const secciones = [
           opacity: 1;
           transform: none;
           filter: none;
-        }
-      }
-      @keyframes rise-soft {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: none;
         }
       }
 
@@ -625,7 +628,6 @@ const secciones = [
         box-shadow: 0 30px 90px rgba(0, 255, 255, 0.15), inset 0 1.5px 1px rgba(0, 255, 255, 0.5);
       }
       
-      /* Estilos para estado Deshabilitado (Próximamente) */
       .sel__panel.is-disabled {
         cursor: not-allowed;
       }
@@ -999,8 +1001,7 @@ const secciones = [
       }
 
       @media (prefers-reduced-motion: reduce) {
-        .rise,
-        .rise-soft {
+        .rise {
           animation: none !important;
           transition: none !important;
           opacity: 1 !important;
