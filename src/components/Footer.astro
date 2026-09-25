@@ -1,28 +1,38 @@
 ---
 import CookieBanner from './CookieBanner.astro';
+import { getLangFromUrl } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const langPrefix = lang === 'en' ? '/en' : '';
+const isEn = lang === 'en';
 const currentYear = new Date().getFullYear();
 ---
 
 <footer class="relative z-10 border-t border-white/10 bg-black/60 backdrop-blur-md py-8 mt-16">
   <div class="max-w-4xl mx-auto px-4 text-center space-y-4">
     
-    <!-- Disclaimer obligatorio de Amazon -->
     <p class="text-xs text-slate-400 font-mono max-w-2xl mx-auto leading-relaxed">
-      Como asociado de Amazon, obtengo ingresos por las compras adscritas que cumplen los requisitos aplicables.
+      {isEn 
+        ? 'As an Amazon Associate, I earn from qualifying purchases.' 
+        : 'Como asociado de Amazon, obtengo ingresos por las compras adscritas que cumplen los requisitos aplicables.'}
     </p>
 
-    <!-- Enlaces Legales -->
     <div class="flex items-center justify-center gap-6 text-xs text-slate-300 font-mono">
-      <a href="/privacidad" class="hover:text-[#00F0FF] transition-colors">Privacidad</a>
+      <a href={`${langPrefix}/privacidad`} class="hover:text-[#00F0FF] transition-colors">
+        {isEn ? 'Privacy' : 'Privacidad'}
+      </a>
       <span class="text-slate-600">•</span>
-      <a href="/aviso-legal" class="hover:text-[#00F0FF] transition-colors">Aviso Legal</a>
+      <a href={`${langPrefix}/aviso-legal`} class="hover:text-[#00F0FF] transition-colors">
+        {isEn ? 'Legal Notice' : 'Aviso Legal'}
+      </a>
       <span class="text-slate-600">•</span>
-      <a href="/contacto" class="hover:text-[#00F0FF] transition-colors">Contacto</a>
+      <a href={`${langPrefix}/contacto`} class="hover:text-[#00F0FF] transition-colors">
+        {isEn ? 'Contact' : 'Contacto'}
+      </a>
     </div>
 
-    <!-- Copyright de Lidunax -->
     <p class="text-xs text-slate-500 font-mono pt-2">
-      © {currentYear} LIDUNAX. Todos los derechos reservados.
+      © {currentYear} LIDUNAX. {isEn ? 'All rights reserved.' : 'Todos los derechos reservados.'}
     </p>
 
   </div>

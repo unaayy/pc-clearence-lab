@@ -6,41 +6,36 @@ interface ClearanceCanvasProps {
   caseData?: any;
   gpuData?: any;
   status?: string;
+  lang?: string;
 }
 
 export const ClearanceCanvas: React.FC<ClearanceCanvasProps> = (props) => {
+  const isEn = props.lang === 'en';
   const cData = props.caseObj || props.caseData;
   const gData = props.gpuObj || props.gpuData;
 
   if (!cData || !gData) {
     return (
       <div className="w-full py-8 text-center text-slate-500 font-mono text-xs">
-        CARGANDO VISTA TÉCNICA...
+        {isEn ? 'LOADING TECHNICAL VIEW...' : 'CARGANDO VISTA TÉCNICA...'}
       </div>
     );
   }
 
-  // Medidas milimétricas
   const maxGpuLength = Number(cData.maxGpuLengthMM || cData.maxGpuLength || 360);
   const gpuLength = Number(gData.dimensions?.lengthMM || gData.dimensions?.length || gData.lengthMM || 300);
   const clearanceMM = Math.round(maxGpuLength - gpuLength);
 
-  // CONEXIÓN DIRECTA AL MOTOR
-  // Si tu función calculateClearance dictamina 'RED' (ej. choca con el cristal), forzamos la incompatibilidad.
   const isEngineIncompatible = props.status === 'RED';
-
-  // Es compatible visualmente SOLO si el motor no está en RED Y el largo físico encaja
   const compatible = !isEngineIncompatible && clearanceMM >= 0;
 
-  // Texto de la cartela
   let badgeText = `${clearanceMM >= 0 ? '+' : ''}${clearanceMM}mm`;
   if (isEngineIncompatible && clearanceMM >= 0) {
-    badgeText = 'INCOMPATIBLE'; // Falla por lateral (grosor) aunque sobre largo
+    badgeText = isEn ? 'INCOMPATIBLE' : 'INCOMPATIBLE';
   } else if (!compatible) {
-    badgeText = `${clearanceMM}mm`; // Falla porque no cabe de largo
+    badgeText = `${clearanceMM}mm`;
   }
 
-  // Escala
   const scale = 0.95;
   const caseWidth = Math.max(maxGpuLength + 80, 430) * scale;
   const caseHeight = 280 * scale;
@@ -70,11 +65,9 @@ export const ClearanceCanvas: React.FC<ClearanceCanvasProps> = (props) => {
         <rect width="100%" height="100%" fill="url(#dotGrid)" />
 
         <g transform="translate(40, 35)">
-          {/* PATAS */}
           <path d={`M 20 ${caseHeight} L 30 ${caseHeight + 10} L 60 ${caseHeight + 10} L 70 ${caseHeight} Z`} fill="#1e293b" stroke={strokeColor} strokeWidth="1" />
           <path d={`M ${caseWidth - 70} ${caseHeight} L ${caseWidth - 60} ${caseHeight + 10} L ${caseWidth - 30} ${caseHeight + 10} L ${caseWidth - 20} ${caseHeight} Z`} fill="#1e293b" stroke={strokeColor} strokeWidth="1" />
 
-          {/* CHASIS */}
           <path 
             d={`M 15 0 L ${caseWidth - 15} 0 L ${caseWidth} 15 L ${caseWidth} ${caseHeight - 10} L ${caseWidth - 10} ${caseHeight} L 10 ${caseHeight} L 0 ${caseHeight - 10} L 0 15 Z`}
             fill="#050811" stroke={strokeColor} strokeWidth="2" 
@@ -85,10 +78,11 @@ export const ClearanceCanvas: React.FC<ClearanceCanvasProps> = (props) => {
           <rect x="0" y={caseHeight - 45} width={caseWidth - 20} height="45" fill="#090d16" stroke="#1e293b" strokeWidth="1.5" />
           <rect x={30 + gpuW - 15} y={caseHeight - 45} width="30" height="6" fill="#020408" stroke={strokeColor} strokeWidth="1" rx="2" />
           <rect x="30" y="25" width={caseWidth - 75} height={caseHeight - 80} fill="rgba(15, 23, 42, 0.4)" stroke="#1e293b" strokeWidth="1" rx="4" />
-          <text x="40" y="40" fill="#475569" fontSize="8" style={fontStyle}>MOTHERBOARD ATX</text>
+          <text x="40" y="40" fill="#475569" fontSize="8" style={fontStyle}>
+            {isEn ? 'MOTHERBOARD ATX' : 'PLACA BASE ATX'}
+          </text>
           <rect x="30" y={caseHeight - 100} width="160" height="7" fill="#020408" stroke="#334155" strokeWidth="1" rx="1" />
 
-          {/* GPU */}
           <g transform={`translate(30, ${caseHeight - 140})`}>
             <rect x="-10" y="-8" width="10" height={gpuH + 20} fill="#334155" stroke="#64748b" strokeWidth="1" rx="2" />
             <rect x="0" y="0" width={gpuW} height={gpuH} fill="url(#gpuBodyGrad)" stroke={strokeColor} strokeWidth="2" rx="8" />
@@ -110,7 +104,6 @@ export const ClearanceCanvas: React.FC<ClearanceCanvasProps> = (props) => {
             <rect x={gpuW - 40} y="-20" width="18" height="4" fill="#020408" stroke={strokeColor} strokeWidth="1" rx="1" transform={`rotate(-15 ${gpuW - 40} -20)`} />
           </g>
 
-          {/* CARTELA */}
           <g transform={`translate(${30 + gpuW}, ${caseHeight - 116})`}>
             <line x1="5" y1="0" x2={Math.max(5, caseWidth - 35 - gpuW)} y2="0" stroke={strokeColor} strokeWidth="1.5" strokeDasharray="3 3" />
             <g transform={`translate(${Math.max(0, (caseWidth - 40 - gpuW) / 2 - 45)}, -28)`}>

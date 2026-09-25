@@ -1,46 +1,52 @@
 ---
-import psusData from '../data/psus.json';
-import gpusData from '../data/gpus.json';
-import cpusData from '../data/cpus.json';
-import Footer from '../components/Footer.astro';
-import '../styles/global.css';
-import { getStoresForLocale } from '../config/stores.js';
-import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import psusData from '../../data/psus.json';
+import gpusData from '../../data/gpus.json';
+import cpusData from '../../data/cpus.json';
+import Footer from '../../components/Footer.astro';
+import '../../styles/global.css';
+import { getStoresForLocale } from '../../config/stores.js';
+import { useTranslations } from '../../i18n/utils';
 
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
-const langPrefix = lang === 'en' ? '/en' : '';
-
-// 1. GENERADOR DE RUTAS (REQUERIDO POR ASTRO EN MODO ESTÁTICO)
+// 1. GENERADOR DE RUTAS AMBAS LENGUAS
 export async function getStaticPaths() {
   const psus = psusData.slice(0, 10);
   const gpus = gpusData.slice(0, 10);
   const cpus = cpusData.slice(0, 10);
 
   const paths = [];
-  for (const psu of psus) {
-    for (const gpu of gpus) {
-      for (const cpu of cpus) {
-        paths.push({
-          params: { 
-            psuSlug: psu.slug, 
-            gpuSlug: gpu.slug, 
-            cpuSlug: cpu.slug 
-          },
-          props: { psu, gpu, cpu }
-        });
+  const langs = [undefined, 'en'];
+
+  for (const lang of langs) {
+    for (const psu of psus) {
+      for (const gpu of gpus) {
+        for (const cpu of cpus) {
+          paths.push({
+            params: { 
+              lang,
+              psuSlug: psu.slug, 
+              gpuSlug: gpu.slug, 
+              cpuSlug: cpu.slug 
+            },
+            props: { psu, gpu, cpu }
+          });
+        }
       }
     }
   }
   return paths;
 }
 
-// 2. RECUPERAR DATOS DE LA COMBINACIÓN ACTUAL
+// 2. RECUPERAR DATOS DE LA COMBINACIÓN ACTUAL (UNA SOLA VEZ)
 const { psu, gpu, cpu } = Astro.props;
+const { lang: langParam } = Astro.params;
+const lang = langParam === 'en' ? 'en' : 'es';
 
 if (!psu || !gpu || !cpu) {
   return Astro.redirect('/404');
 }
+
+const t = useTranslations(lang);
+const langPrefix = lang === 'en' ? '/en' : '';
 
 // Configuración dinámica de tiendas por idioma
 const currentLang = lang;
@@ -49,36 +55,34 @@ const stores = getStoresForLocale(currentLang);
 const psuQuery = `${psu.brand} ${psu.model}`.trim();
 const gpuQuery = `${gpu.brand} ${gpu.model}`.trim();
 
-// Fallbacks de TDP por si el JSON carece del valor exacto
+// Fallbacks de TDP
 const gpuTdp = gpu.tdp || gpu.watts || 250;
 const cpuTdp = cpu.tdp || cpu.watts || 120;
 
-// 3. MOTOR DE CÁLCULO ENERGÉTICO (Intacto)
-const overhead = 80; // Placa base, RAM, SSD, ventiladores
+// MOTOR DE CÁLCULO ENERGÉTICO
+const overhead = 80;
 const rawDemand = gpuTdp + cpuTdp + overhead;
-const recommendedDemand = Math.ceil(rawDemand * 1.25); // Margen de seguridad +25%
+const recommendedDemand = Math.ceil(rawDemand * 1.25);
 const psuPower = psu.wattage || psu.watts || 750;
 const margin = psuPower - recommendedDemand;
 
-// Lógica de colores semáforo
 let status = 'verde';
-let colorHex = '#10b981'; // Emerald
+let colorHex = '#10b981';
 let statusText = lang === 'en' ? 'OPTIMAL POWER' : 'POTENCIA ÓPTIMA';
 let statusMessage = lang === 'en' ? 'STABLE POWER FLOW' : 'FLUJO ENERGÉTICO ESTABLE';
 
 if (margin < 0) {
   status = 'rojo';
-  colorHex = '#f43f5e'; // Rose
+  colorHex = '#f43f5e';
   statusText = lang === 'en' ? 'INSUFFICIENT POWER' : 'POTENCIA INSUFICIENTE';
   statusMessage = lang === 'en' ? 'CRITICAL POWER DEFICIT' : 'DÉFICIT ENERGÉTICO CRÍTICO';
 } else if (margin < 100) {
   status = 'amarillo';
-  colorHex = '#fbbf24'; // Amber
+  colorHex = '#fbbf24';
   statusText = lang === 'en' ? 'POWER AT LIMIT' : 'POTENCIA AL LÍMITE';
   statusMessage = lang === 'en' ? 'OVERLOAD WARNING' : 'ADVERTENCIA DE SOBRECARGA';
 }
 
-// Texto SEO declarativo para el scroller
 const statement = lang === 'en'
   ? `Lidunax telemetry engine analyzes peak consumption curves of graphics card ${gpu.brand} ${gpu.model} with processor ${cpu.brand} ${cpu.model}, verifying if power supply ${psu.brand} ${psu.model} (${psuPower}W) provides required current.`
   : `El motor de telemetría de Lidunax analiza la curva de consumo en pico de la tarjeta gráfica ${gpu.brand} ${gpu.model} junto al procesador ${cpu.brand} ${cpu.model}, verificando si la fuente ${psu.brand} ${psu.model} de ${psuPower}W ofrece la entrega de corriente estable requerida.`;

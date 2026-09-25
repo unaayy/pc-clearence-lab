@@ -1,4 +1,4 @@
-// src/components/CpuSearchInterface.jsx - Interfaz HUD CPU vs Refrigeración
+// src/components/CpuCoolerSearchInterface.jsx
 import React, { useId, useMemo, useRef, useState } from 'react';
 
 const MAX_RESULTS = 40;
@@ -10,7 +10,6 @@ const normalize = (s) =>
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');
 
-/* ───────── Iconos Técnicos HUD ───────── */
 const IconSearch = () => (
   <svg className="w-5 h-5 text-white/30 group-focus-within:text-[#00ffff] transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
     <circle cx="11" cy="11" r="7" />
@@ -30,10 +29,10 @@ const IconClear = () => (
   </svg>
 );
 
-/* ───────── Input Combobox HUD ───────── */
-function HudCombobox({ label, placeholder, items, selected, onSelect, onChosen, inputRef, step }) {
+function HudCombobox({ label, placeholder, items, selected, onSelect, onChosen, inputRef, step, lang = 'es' }) {
   const uid = useId();
   const inputId = `${uid}-input`;
+  const isEn = lang === 'en';
 
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
@@ -148,7 +147,9 @@ function HudCombobox({ label, placeholder, items, selected, onSelect, onChosen, 
         {open && (
           <div className="absolute top-full left-0 right-0 z-[100] bg-[#08080a] border border-white/15 border-t-[#00ffff]/30 rounded-b-xl shadow-[0_30px_70px_rgba(0,0,0,0.95)] max-h-[280px] overflow-y-auto transform origin-top animate-dropdown-open flex flex-col p-2 gap-1 custom-scrollbar">
             {results.length === 0 && (
-              <div className="p-4 text-sm text-[#86868b] font-light">Sin datos para «{query}»...</div>
+              <div className="p-4 text-sm text-[#86868b] font-light">
+                {isEn ? `No data for "${query}"...` : `Sin datos para «${query}»...`}
+              </div>
             )}
             {results.map((it, i) => {
               const isSelected = i === current;
@@ -163,18 +164,16 @@ function HudCombobox({ label, placeholder, items, selected, onSelect, onChosen, 
                   onClick={() => choose(it)}
                 >
                   {isSelected && <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#00ffff] shadow-[0_0_10px_#00ffff]"></div>}
-                  
-                  {/* Renderizado de la lista con filtrado de 'Genérica' */}
-<span className="truncate pr-4 flex-1">
-  {it.brand && !it.brand.toLowerCase().includes('genér') && !it.brand.toLowerCase().includes('gener') && (
-    <span className={`font-orbitron font-bold tracking-wide mr-1 ${isSelected ? 'text-[#00ffff]' : 'text-slate-300 group-hover/item:text-white'}`}>
-      {it.brand}
-    </span>
-  )}
-  <span className={`font-sans font-light ${isSelected ? 'text-white' : 'text-slate-400 group-hover/item:text-slate-200'}`}>
-    {it.model}
-  </span>
-</span>
+                  <span className="truncate pr-4 flex-1">
+                    {it.brand && !it.brand.toLowerCase().includes('genér') && !it.brand.toLowerCase().includes('gener') && (
+                      <span className={`font-orbitron font-bold tracking-wide mr-1 ${isSelected ? 'text-[#00ffff]' : 'text-slate-300 group-hover/item:text-white'}`}>
+                        {it.brand}
+                      </span>
+                    )}
+                    <span className={`font-sans font-light ${isSelected ? 'text-white' : 'text-slate-400 group-hover/item:text-slate-200'}`}>
+                      {it.model}
+                    </span>
+                  </span>
                 </div>
               );
             })}
@@ -185,8 +184,7 @@ function HudCombobox({ label, placeholder, items, selected, onSelect, onChosen, 
   );
 }
 
-/* ───────── Componente Principal (CPU vs Refrigeración) ───────── */
-export default function CpuSearchInterface({ cpus = [], coolers = [] }) {
+export default function CpuSearchInterface({ cpus = [], coolers = [], lang = 'es' }) {
   const [selectedCpu, setSelectedCpu] = useState(null);
   const [selectedCooler, setSelectedCooler] = useState(null);
   const [isVerifying, setIsVerifying] = useState(false);
@@ -194,10 +192,11 @@ export default function CpuSearchInterface({ cpus = [], coolers = [] }) {
   const cpuInput = useRef(null);
   const coolerInput = useRef(null);
 
+  const isEn = lang === 'en';
+  const langPrefix = isEn ? '/en' : '';
   const ready = Boolean(selectedCpu && selectedCooler);
 
-  // Redirige a la página autogenerada [cpuSlug]-vs-[coolerSlug].astro
-  const targetUrl = ready ? `/${selectedCpu.slug}-vs-${selectedCooler.slug}` : '#';
+  const targetUrl = ready ? `${langPrefix}/${selectedCpu.slug}-vs-${selectedCooler.slug}` : '#';
 
   const handleNavigate = (e) => {
     e.preventDefault();
@@ -211,38 +210,12 @@ export default function CpuSearchInterface({ cpus = [], coolers = [] }) {
 
   return (
     <div className="relative w-full max-w-[920px] mx-auto z-20 mt-8 sm:mt-12">
-      
-      <style>{`
-        @keyframes scan { 0% { transform: translateY(-100%); } 50% { transform: translateY(100%); } 100% { transform: translateY(-100%); } }
-        .animate-scan { animation: scan 3s linear infinite; }
-        @keyframes dropdown-open { 0% { opacity: 0; transform: scaleY(0.9) translateY(-10px); } 100% { opacity: 1; transform: scaleY(1) translateY(0); } }
-        .animate-dropdown-open { animation: dropdown-open 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes item-enter { 0% { opacity: 0; transform: translateX(-15px); } 100% { opacity: 1; transform: translateX(0); } }
-        .animate-item-enter { opacity: 0; animation: item-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes telemetry-in { 0% { opacity: 0; transform: translateY(20px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
-        .animate-telemetry-in { animation: telemetry-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,255,255,0.2); border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0,255,255,0.5); }
-      `}</style>
-
-      {/* Halo ambiental */}
-      <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-[120%] h-32 bg-gradient-to-b from-[#00ffff]/10 via-[#00ffff]/2 to-transparent blur-3xl pointer-events-none"></div>
-
-      {/* Contenedor Panoramic Liquid Glass */}
       <div className="relative rounded-[2rem] bg-gradient-to-b from-white/[0.06] via-white/[0.02] to-black/80 border border-white/10 backdrop-blur-3xl p-6 sm:p-10 shadow-[0_40px_80px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.2)] overflow-visible">
-        
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[85%] h-[1px] bg-gradient-to-r from-transparent via-[#00ffff]/50 to-transparent pointer-events-none blur-[0.5px]"></div>
-        
         <div className="relative z-10 flex flex-col items-center">
-          
-          {/* LAYOUT EN PARALELO: CPU vs Refrigeración */}
           <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 w-full z-20">
-            
             <div className="flex-1 w-full">
               <HudCombobox
-                label="PROCESADOR (CPU)"
+                label={isEn ? "PROCESSOR (CPU)" : "PROCESADOR (CPU)"}
                 step="01"
                 placeholder="INTEL I9, RYZEN 7..."
                 items={cpus}
@@ -250,10 +223,10 @@ export default function CpuSearchInterface({ cpus = [], coolers = [] }) {
                 onSelect={setSelectedCpu}
                 onChosen={afterCpu}
                 inputRef={cpuInput}
+                lang={lang}
               />
             </div>
 
-            {/* Rombo VS central */}
             <div className="hidden md:flex items-center justify-center w-10 h-10 bg-[#08080a] border border-white/10 rounded-sm rotate-45 shadow-[0_0_15px_rgba(0,255,255,0.05)] shrink-0 mt-4 transition-all duration-500">
               <span className={`rotate-[-45deg] font-orbitron text-[10px] tracking-widest font-bold transition-colors duration-500 ${ready ? 'text-[#00ffff] drop-shadow-[0_0_5px_rgba(0,255,255,0.8)]' : 'text-white/30'}`}>
                 VS
@@ -262,7 +235,7 @@ export default function CpuSearchInterface({ cpus = [], coolers = [] }) {
 
             <div className="flex-1 w-full">
               <HudCombobox
-                label="REFRIGERACIÓN"
+                label={isEn ? "COOLER / HEATSINK" : "REFRIGERACIÓN"}
                 step="02"
                 placeholder="NOCTUA, ARCTIC, NZXT..."
                 items={coolers}
@@ -270,14 +243,12 @@ export default function CpuSearchInterface({ cpus = [], coolers = [] }) {
                 onSelect={setSelectedCooler}
                 onChosen={afterCooler}
                 inputRef={coolerInput}
+                lang={lang}
               />
             </div>
-
           </div>
 
-          {/* BARRA INFERIOR: ESTADO NEUTRAL + BOTÓN DE ANÁLISIS */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-8 w-full mt-8 pt-8 border-t border-white/5 min-h-[80px]">
-            
             <div className="flex-1 w-full flex items-center justify-center md:justify-start">
               {ready ? (
                 <div className="flex items-center gap-4 animate-telemetry-in">
@@ -287,20 +258,19 @@ export default function CpuSearchInterface({ cpus = [], coolers = [] }) {
                     </svg>
                   </div>
                   <p className="text-xs text-[#00ffff] font-orbitron tracking-widest uppercase leading-relaxed">
-                    Sockets & TDP vinculados.<br/>Listo para escáner térmico.
+                    {isEn ? <>Sockets & TDP linked.<br/>Ready for thermal scan.</> : <>Sockets & TDP vinculados.<br/>Listo para escáner térmico.</>}
                   </p>
                 </div>
               ) : (
                 <div className="flex items-center gap-4 opacity-50">
                   <div className="w-10 h-10 rounded-full border border-dashed border-[#00ffff]/40 animate-[spin_10s_linear_infinite]"></div>
                   <p className="text-xs text-[#86868b] font-orbitron tracking-widest uppercase leading-relaxed">
-                    A la espera de enlazar<br/>los 2 nodos térmicos...
+                    {isEn ? <>Awaiting linking<br/>the 2 thermal nodes...</> : <>A la espera de enlazar<br/>los 2 nodos térmicos...</>}
                   </p>
                 </div>
               )}
             </div>
 
-            {/* ENLACE DIRECTO DE REDIRECCIÓN */}
             <a 
               href={targetUrl}
               onClick={handleNavigate}
@@ -310,13 +280,12 @@ export default function CpuSearchInterface({ cpus = [], coolers = [] }) {
                   : 'bg-white/5 text-white/20 border border-white/10 cursor-not-allowed pointer-events-none'
               }`}
             >
-              {ready && <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>}
-              <span className="relative z-10">{isVerifying ? 'PROCESANDO...' : 'INICIAR ANÁLISIS'}</span>
+              <span className="relative z-10">
+                {isVerifying ? (isEn ? 'PROCESSING...' : 'PROCESANDO...') : (isEn ? 'START ANALYSIS' : 'INICIAR ANÁLISIS')}
+              </span>
             </a>
-
           </div>
         </div>
-
       </div>
     </div>
   );

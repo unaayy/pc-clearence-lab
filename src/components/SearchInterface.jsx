@@ -1,4 +1,4 @@
-// src/components/SearchInterface.jsx - Interfaz HUD Caja vs GPU (Corregido)
+// src/components/SearchInterface.jsx
 import React, { useId, useMemo, useRef, useState } from 'react';
 
 const MAX_RESULTS = 40;
@@ -10,7 +10,6 @@ const normalize = (s) =>
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');
 
-/* ───────── Iconos Técnicos HUD ───────── */
 const IconSearch = () => (
   <svg className="w-5 h-5 text-white/30 group-focus-within:text-[#00ffff] transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
     <circle cx="11" cy="11" r="7" />
@@ -30,10 +29,10 @@ const IconClear = () => (
   </svg>
 );
 
-/* ───────── Input HUD ───────── */
-function HudCombobox({ label, placeholder, items = [], selected, onSelect, onChosen, inputRef, step }) {
+function HudCombobox({ label, placeholder, items = [], selected, onSelect, onChosen, inputRef, step, lang = 'es' }) {
   const uid = useId();
   const inputId = `${uid}-input`;
+  const isEn = lang === 'en';
 
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
@@ -99,9 +98,6 @@ function HudCombobox({ label, placeholder, items = [], selected, onSelect, onCho
       </div>
 
       <div className={`relative group transition-all duration-500 ${isLocked ? 'is-locked scale-[0.98]' : ''}`}>
-        <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[#00ffff]/0 group-focus-within:border-[#00ffff]/80 transition-all duration-300 -translate-x-1 -translate-y-1 group-focus-within:translate-x-0 group-focus-within:translate-y-0 z-20 pointer-events-none"></div>
-        <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-[#00ffff]/0 group-focus-within:border-[#00ffff]/80 transition-all duration-300 translate-x-1 translate-y-1 group-focus-within:translate-x-0 group-focus-within:translate-y-0 z-20 pointer-events-none"></div>
-
         <div className={`relative flex items-center w-full h-14 pl-4 pr-3 overflow-hidden backdrop-blur-md transition-all duration-300 z-10 border ${
           isLocked
             ? 'bg-gradient-to-r from-[#00ffff]/10 to-transparent border-[#00ffff]/40 shadow-[inset_0_0_20px_rgba(0,255,255,0.1)] rounded-lg'
@@ -109,8 +105,6 @@ function HudCombobox({ label, placeholder, items = [], selected, onSelect, onCho
             ? 'bg-black/90 border-[#00ffff]/50 shadow-[0_0_20px_rgba(0,255,255,0.15)] rounded-t-xl rounded-b-none'
             : 'bg-white/[0.03] border-white/10 hover:border-white/30 rounded-xl'
         }`}>
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#00ffff]/10 to-transparent opacity-0 group-focus-within:opacity-100 group-focus-within:animate-scan pointer-events-none"></div>
-
           {isLocked ? <IconLock /> : <IconSearch />}
           
           <input
@@ -118,8 +112,6 @@ function HudCombobox({ label, placeholder, items = [], selected, onSelect, onCho
             ref={inputRef}
             type="text"
             autoComplete="off"
-            autoCorrect="off"
-            spellCheck="false"
             className={`flex-1 bg-transparent border-none outline-none text-xs sm:text-sm px-3 w-full font-orbitron uppercase tracking-wider relative z-10 transition-colors ${
               isLocked ? 'text-[#00ffff] font-bold' : 'text-white placeholder-[#666670]'
             }`}
@@ -149,7 +141,9 @@ function HudCombobox({ label, placeholder, items = [], selected, onSelect, onCho
         {open && (
           <div className="absolute top-full left-0 right-0 z-[100] bg-[#08080a] border border-white/15 border-t-[#00ffff]/30 rounded-b-xl shadow-[0_30px_70px_rgba(0,0,0,0.95)] max-h-[280px] overflow-y-auto transform origin-top animate-dropdown-open flex flex-col p-2 gap-1 custom-scrollbar">
             {results.length === 0 && (
-              <div className="p-4 text-sm text-[#86868b] font-light">Sin datos para «{query}»...</div>
+              <div className="p-4 text-sm text-[#86868b] font-light">
+                {isEn ? `No data for "${query}"...` : `Sin datos para «${query}»...`}
+              </div>
             )}
             {results.map((it, i) => {
               const isSelected = i === current;
@@ -162,13 +156,11 @@ function HudCombobox({ label, placeholder, items = [], selected, onSelect, onCho
                   style={{ animationDelay: `${i * 35}ms` }}
                   onMouseEnter={() => setActive(i)}
                   onMouseDown={(e) => {
-                    // Evita que el evento Blur del input cancele el clic antes de registrar la selección
                     e.preventDefault();
                     choose(it);
                   }}
                 >
                   {isSelected && <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#00ffff] shadow-[0_0_10px_#00ffff]"></div>}
-                  
                   <span className="truncate pr-4 flex-1">
                     {it.brand && !it.brand.toLowerCase().includes('genér') && !it.brand.toLowerCase().includes('gener') && (
                       <span className={`font-orbitron font-bold tracking-wide mr-1 ${isSelected ? 'text-[#00ffff]' : 'text-slate-300 group-hover/item:text-white'}`}>
@@ -189,8 +181,7 @@ function HudCombobox({ label, placeholder, items = [], selected, onSelect, onCho
   );
 }
 
-/* ───────── Componente Principal (Caja vs GPU) ───────── */
-export default function SearchInterface({ cases = [], gpus = [] }) {
+export default function SearchInterface({ cases = [], gpus = [], lang = 'es' }) {
   const [selectedCase, setSelectedCase] = useState(null);
   const [selectedGpu, setSelectedGpu] = useState(null);
   const [isVerifying, setIsVerifying] = useState(false);
@@ -198,12 +189,14 @@ export default function SearchInterface({ cases = [], gpus = [] }) {
   const caseInput = useRef(null);
   const gpuInput = useRef(null);
 
+  const isEn = lang === 'en';
+  const langPrefix = isEn ? '/en' : '';
   const ready = Boolean(selectedCase && selectedGpu);
 
   const caseSlug = selectedCase?.slug;
   const gpuSlug = selectedGpu?.slug;
 
-  const targetUrl = (caseSlug && gpuSlug) ? `/${caseSlug}-vs-${gpuSlug}` : '#';
+  const targetUrl = (caseSlug && gpuSlug) ? `${langPrefix}/${caseSlug}-vs-${gpuSlug}` : '#';
 
   const handleNavigate = (e) => {
     e.preventDefault();
@@ -217,38 +210,12 @@ export default function SearchInterface({ cases = [], gpus = [] }) {
 
   return (
     <div className="relative w-full max-w-[920px] mx-auto z-20 mt-8 sm:mt-12">
-      
-      <style>{`
-        @keyframes scan { 0% { transform: translateY(-100%); } 50% { transform: translateY(100%); } 100% { transform: translateY(-100%); } }
-        .animate-scan { animation: scan 3s linear infinite; }
-        @keyframes dropdown-open { 0% { opacity: 0; transform: scaleY(0.9) translateY(-10px); } 100% { opacity: 1; transform: scaleY(1) translateY(0); } }
-        .animate-dropdown-open { animation: dropdown-open 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes item-enter { 0% { opacity: 0; transform: translateX(-15px); } 100% { opacity: 1; transform: translateX(0); } }
-        .animate-item-enter { opacity: 0; animation: item-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes telemetry-in { 0% { opacity: 0; transform: translateY(20px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
-        .animate-telemetry-in { animation: telemetry-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,255,255,0.2); border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0,255,255,0.5); }
-      `}</style>
-
-      {/* Halo ambiental */}
-      <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-[120%] h-32 bg-gradient-to-b from-[#00ffff]/10 via-[#00ffff]/2 to-transparent blur-3xl pointer-events-none"></div>
-
-      {/* Contenedor Panoramic Liquid Glass */}
       <div className="relative rounded-[2rem] bg-gradient-to-b from-white/[0.06] via-white/[0.02] to-black/80 border border-white/10 backdrop-blur-3xl p-6 sm:p-10 shadow-[0_40px_80px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.2)] overflow-visible">
-        
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[85%] h-[1px] bg-gradient-to-r from-transparent via-[#00ffff]/50 to-transparent pointer-events-none blur-[0.5px]"></div>
-        
         <div className="relative z-10 flex flex-col items-center">
-          
-          {/* LAYOUT EN PARALELO: Caja vs GPU */}
           <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 w-full z-20">
-            
             <div className="flex-1 w-full">
               <HudCombobox
-                label="CHASIS DETALLE"
+                label={isEn ? "CHASSIS / CASE" : "CHASIS DETALLE"}
                 step="01"
                 placeholder="NZXT, CORSAIR, LIAN LI..."
                 items={cases}
@@ -256,10 +223,10 @@ export default function SearchInterface({ cases = [], gpus = [] }) {
                 onSelect={setSelectedCase}
                 onChosen={afterCase}
                 inputRef={caseInput}
+                lang={lang}
               />
             </div>
 
-            {/* Rombo VS central */}
             <div className="hidden md:flex items-center justify-center w-10 h-10 bg-[#08080a] border border-white/10 rounded-sm rotate-45 shadow-[0_0_15px_rgba(0,255,255,0.05)] shrink-0 mt-4 transition-all duration-500">
               <span className={`rotate-[-45deg] font-orbitron text-[10px] tracking-widest font-bold transition-colors duration-500 ${ready ? 'text-[#00ffff] drop-shadow-[0_0_5px_rgba(0,255,255,0.8)]' : 'text-white/30'}`}>
                 VS
@@ -276,14 +243,12 @@ export default function SearchInterface({ cases = [], gpus = [] }) {
                 onSelect={setSelectedGpu}
                 onChosen={afterGpu}
                 inputRef={gpuInput}
+                lang={lang}
               />
             </div>
-
           </div>
 
-          {/* BARRA INFERIOR: ESTADO NEUTRAL + BOTÓN DE ANÁLISIS */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-8 w-full mt-8 pt-8 border-t border-white/5 min-h-[80px]">
-            
             <div className="flex-1 w-full flex items-center justify-center md:justify-start">
               {ready ? (
                 <div className="flex items-center gap-4 animate-telemetry-in">
@@ -293,20 +258,19 @@ export default function SearchInterface({ cases = [], gpus = [] }) {
                     </svg>
                   </div>
                   <p className="text-xs text-[#00ffff] font-orbitron tracking-widest uppercase leading-relaxed">
-                    Nodos físicos vinculados.<br/>Listo para escáner de dimensiones.
+                    {isEn ? <>Physical nodes linked.<br/>Ready for dimensions scan.</> : <>Nodos físicos vinculados.<br/>Listo para escáner de dimensiones.</>}
                   </p>
                 </div>
               ) : (
                 <div className="flex items-center gap-4 opacity-50">
                   <div className="w-10 h-10 rounded-full border border-dashed border-[#00ffff]/40 animate-[spin_10s_linear_infinite]"></div>
                   <p className="text-xs text-[#86868b] font-orbitron tracking-widest uppercase leading-relaxed">
-                    A la espera de enlazar<br/>los 2 nodos de hardware...
+                    {isEn ? <>Awaiting linking<br/>the 2 hardware nodes...</> : <>A la espera de enlazar<br/>los 2 nodos de hardware...</>}
                   </p>
                 </div>
               )}
             </div>
 
-            {/* ENLACE DIRECTO DE REDIRECCIÓN */}
             <a
               href={targetUrl}
               onClick={handleNavigate}
@@ -316,13 +280,12 @@ export default function SearchInterface({ cases = [], gpus = [] }) {
                   : 'bg-white/5 text-white/20 border border-white/10 cursor-not-allowed pointer-events-none'
               }`}
             >
-              {ready && <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>}
-              <span className="relative z-10">{isVerifying ? 'PROCESANDO...' : 'INICIAR ANÁLISIS'}</span>
+              <span className="relative z-10">
+                {isVerifying ? (isEn ? 'PROCESSING...' : 'PROCESANDO...') : (isEn ? 'START ANALYSIS' : 'INICIAR ANÁLISIS')}
+              </span>
             </a>
-
           </div>
         </div>
-
       </div>
     </div>
   );

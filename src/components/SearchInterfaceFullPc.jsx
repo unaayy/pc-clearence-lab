@@ -1,3 +1,4 @@
+// src/components/SearchInterfaceFullPc.jsx
 import React, { useId, useMemo, useRef, useState } from 'react';
 
 const MAX_RESULTS = 40;
@@ -22,10 +23,11 @@ const IconClear = () => (
   </svg>
 );
 
-function CompactCombobox({ label, step, placeholder, items = [], selected, onSelect, align = 'left' }) {
+function CompactCombobox({ label, step, placeholder, items = [], selected, onSelect, align = 'left', lang = 'es' }) {
   const uid = useId();
   const inputId = `${uid}-input`;
   const inputRef = useRef(null);
+  const isEn = lang === 'en';
 
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
@@ -75,9 +77,6 @@ function CompactCombobox({ label, step, placeholder, items = [], selected, onSel
             ? 'bg-black/90 border-[#00ffff]/50 rounded-t-lg rounded-b-none'
             : 'bg-white/[0.03] border-white/10 hover:border-white/30 rounded-lg'
         } ${align === 'right' ? 'flex-row-reverse' : ''}`}>
-          
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#00ffff]/10 to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none"></div>
-
           {isLocked ? <IconLock /> : <IconSearch />}
           
           <input
@@ -89,7 +88,7 @@ function CompactCombobox({ label, step, placeholder, items = [], selected, onSel
             className={`flex-1 bg-transparent border-none outline-none text-xs px-2 w-full font-orbitron uppercase tracking-wider relative z-10 transition-colors ${
               align === 'right' ? 'text-right' : 'text-left'
             } ${isLocked ? 'text-[#00ffff] font-bold' : 'text-white placeholder-[#666670]'} ${!hasData ? 'cursor-not-allowed opacity-50' : ''}`}
-            placeholder={hasData ? placeholder : 'PRÓXIMAMENTE...'}
+            placeholder={hasData ? placeholder : (isEn ? 'COMING SOON...' : 'PRÓXIMAMENTE...')}
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -97,16 +96,13 @@ function CompactCombobox({ label, step, placeholder, items = [], selected, onSel
               setOpen(true);
               if (selected) onSelect(null);
             }}
-            onFocus={(e) => {
+            onFocus={() => {
               if (hasData) { 
                 setOpen(true); 
-                if (selected) e.target.select(); 
+                if (selected) inputRef.current?.select(); 
               }
             }}
-            onBlur={() => {
-              // Retardo seguro antes de cerrar
-              setTimeout(() => setOpen(false), 250);
-            }}
+            onBlur={() => setTimeout(() => setOpen(false), 250)}
           />
 
           {query && (
@@ -119,13 +115,12 @@ function CompactCombobox({ label, step, placeholder, items = [], selected, onSel
         {open && hasData && (
           <div className="absolute top-full left-0 right-0 z-[120] bg-[#08080a] border border-white/15 border-t-[#00ffff]/30 rounded-b-lg shadow-[0_20px_50px_rgba(0,0,0,0.95)] max-h-[220px] overflow-y-auto transform origin-top flex flex-col p-1.5 gap-1">
             {results.length === 0 ? (
-              <div className="p-3 text-xs text-[#86868b] font-light">Sin coincidencias...</div>
+              <div className="p-3 text-xs text-[#86868b] font-light">{isEn ? 'No matches...' : 'Sin coincidencias...'}</div>
             ) : (
               results.map((it, i) => (
                 <div
                   key={it.slug || i}
                   onMouseDown={(e) => {
-                    // Evita que el evento Blur del input cierre la lista antes de seleccionar
                     e.preventDefault();
                     choose(it);
                   }}
@@ -154,7 +149,7 @@ function CompactCombobox({ label, step, placeholder, items = [], selected, onSel
   );
 }
 
-export default function SearchInterfaceFullPc({ cpus = [], coolers = [], gpus = [], psus = [], cases = [], motherboards = [], rams = [], storages = [] }) {
+export default function SearchInterfaceFullPc({ cpus = [], coolers = [], gpus = [], psus = [], cases = [], motherboards = [], rams = [], storages = [], lang = 'es' }) {
   const [selectedCase, setSelectedCase] = useState(null);
   const [selectedMb, setSelectedMb] = useState(null);
   const [selectedCpu, setSelectedCpu] = useState(null);
@@ -165,6 +160,7 @@ export default function SearchInterfaceFullPc({ cpus = [], coolers = [], gpus = 
   const [selectedPsu, setSelectedPsu] = useState(null);
   const [isVerifying, setIsVerifying] = useState(false);
 
+  const isEn = lang === 'en';
   const ready = Boolean(selectedCase && selectedCpu && selectedGpu && selectedPsu);
 
   const handleNavigate = (e) => {
@@ -181,83 +177,54 @@ export default function SearchInterfaceFullPc({ cpus = [], coolers = [], gpus = 
     if (selectedMb) queryParams.set('mb', selectedMb.slug);
     if (selectedRam) queryParams.set('ram', selectedRam.slug);
     if (selectedStorage) queryParams.set('storage', selectedStorage.slug);
+    if (isEn) queryParams.set('lang', 'en');
 
-    window.location.href = `/build?${queryParams.toString()}`;
+    const basePath = isEn ? '/en/build' : '/build';
+    window.location.href = `${basePath}?${queryParams.toString()}`;
   };
 
   return (
     <div className="relative w-full max-w-[1200px] mx-auto z-20 mt-8 sm:mt-12 font-sans">
       <div className="relative rounded-[2rem] bg-[#050507]/90 border border-white/10 backdrop-blur-2xl p-6 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] overflow-visible">
-        
         <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr_300px] gap-8 items-start relative z-10">
-          
-          {/* COLUMNA IZQUIERDA */}
           <div className="flex flex-col gap-6 order-2 lg:order-1 relative z-30">
-            <CompactCombobox label="PROCESADOR (CPU)" step="01" placeholder="INTEL I9, RYZEN 7..." items={cpus} selected={selectedCpu} onSelect={setSelectedCpu} />
-            <CompactCombobox label="REFRIGERACIÓN" step="02" placeholder="AIO 360, TORRE..." items={coolers} selected={selectedCooler} onSelect={setSelectedCooler} />
-            <CompactCombobox label="PLACA BASE" step="03" placeholder="Z790, B650..." items={motherboards} selected={selectedMb} onSelect={setSelectedMb} />
-            <CompactCombobox label="MEMORIA RAM" step="04" placeholder="DDR5 6000MHZ..." items={rams} selected={selectedRam} onSelect={setSelectedRam} />
+            <CompactCombobox label={isEn ? "PROCESSOR (CPU)" : "PROCESADOR (CPU)"} step="01" placeholder="INTEL I9, RYZEN 7..." items={cpus} selected={selectedCpu} onSelect={setSelectedCpu} lang={lang} />
+            <CompactCombobox label={isEn ? "COOLER / HEATSINK" : "REFRIGERACIÓN"} step="02" placeholder="AIO 360, TORRE..." items={coolers} selected={selectedCooler} onSelect={setSelectedCooler} lang={lang} />
+            <CompactCombobox label={isEn ? "MOTHERBOARD" : "PLACA BASE"} step="03" placeholder="Z790, B650..." items={motherboards} selected={selectedMb} onSelect={setSelectedMb} lang={lang} />
+            <CompactCombobox label={isEn ? "RAM MEMORY" : "MEMORIA RAM"} step="04" placeholder="DDR5 6000MHZ..." items={rams} selected={selectedRam} onSelect={setSelectedRam} lang={lang} />
           </div>
 
-          {/* DIAGRAMA CENTRAL SVG */}
           <div className="flex justify-center items-center order-1 lg:order-2 h-full min-h-[400px] relative z-10">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,255,255,0.1)_0%,transparent_60%)] pointer-events-none"></div>
-            
             <svg viewBox="0 0 400 450" className="w-full max-w-[360px] drop-shadow-[0_0_20px_rgba(0,255,255,0.15)] transition-all duration-500">
-              <rect x="50" y="20" width="300" height="400" rx="10" fill="#090d13" stroke={selectedCase ? '#00ffff' : 'white'} strokeWidth="2" strokeOpacity={selectedCase ? '0.6' : '0.2'} className="transition-all duration-300" />
-              
-              <g transform="translate(320, 85)" className="transition-all duration-300">
-                <circle cx="0" cy="0" r="18" fill="none" stroke={selectedCase ? '#00ffff' : 'white'} strokeWidth="1.5" strokeOpacity={selectedCase ? '0.4' : '0.1'} strokeDasharray="3 3"/>
-                <circle cx="0" cy="45" r="18" fill="none" stroke={selectedCase ? '#00ffff' : 'white'} strokeWidth="1.5" strokeOpacity={selectedCase ? '0.4' : '0.1'} strokeDasharray="3 3"/>
-                <circle cx="0" cy="90" r="18" fill="none" stroke={selectedCase ? '#00ffff' : 'white'} strokeWidth="1.5" strokeOpacity={selectedCase ? '0.4' : '0.1'} strokeDasharray="3 3"/>
-              </g>
-
-              <circle cx="75" cy="85" r="16" fill="none" stroke={selectedCase ? '#00ffff' : 'white'} strokeWidth="1.5" strokeOpacity={selectedCase ? '0.3' : '0.1'} strokeDasharray="3 3" className="transition-all duration-300"/>
-
-              <rect x="70" y="50" width="180" height="230" rx="4" fill="#161b22" stroke={selectedMb ? '#00ffff' : 'white'} strokeWidth="1.5" strokeOpacity={selectedMb ? '0.8' : '0.15'} className="transition-all duration-300" />
-              
-              <rect x="130" y="90" width="40" height="40" rx="4" fill="#0d1117" stroke={selectedCpu ? '#00ffff' : 'white'} strokeWidth="1.5" strokeOpacity={selectedCpu ? '0.9' : '0.2'} className="transition-all duration-300" />
-              <circle cx="150" cy="110" r="10" fill="none" stroke={selectedCooler ? '#00ffff' : 'white'} strokeWidth="1.5" strokeOpacity={selectedCooler ? '0.9' : '0.1'} strokeDasharray="2 2" className="transition-all duration-300" />
-
-              <g transform="translate(190, 80)" className="transition-all duration-300">
-                <rect x="0" y="0" width="6" height="60" rx="1" fill="#0d1117" stroke={selectedRam ? '#00ffff' : 'white'} strokeOpacity={selectedRam ? '0.7' : '0.15'} />
-                <rect x="12" y="0" width="6" height="60" rx="1" fill="#0d1117" stroke={selectedRam ? '#00ffff' : 'white'} strokeOpacity={selectedRam ? '0.7' : '0.15'} />
-              </g>
-
-              <rect x="70" y="180" width="220" height="40" rx="4" fill="#0d1117" stroke={selectedGpu ? '#00ffff' : 'white'} strokeWidth="1.5" strokeOpacity={selectedGpu ? '0.9' : '0.15'} className="transition-all duration-300" />
-              <g className="transition-all duration-300" stroke={selectedGpu ? '#00ffff' : 'white'} strokeOpacity={selectedGpu ? '0.4' : '0.05'} strokeWidth="1">
-                <circle cx="100" cy="200" r="12" fill="none" />
-                <circle cx="145" cy="200" r="12" fill="none" />
-                <circle cx="190" cy="200" r="12" fill="none" />
-              </g>
-              <text x="250" y="204" fill={selectedGpu ? '#00ffff' : 'white'} opacity={selectedGpu ? '1' : '0.2'} fontFamily="Orbitron" fontSize="12" fontWeight="bold" textAnchor="middle" className="transition-all duration-300">GPU</text>
-
-              <rect x="130" y="240" width="60" height="15" rx="2" fill="#0d1117" stroke={selectedStorage ? '#00ffff' : 'white'} strokeWidth="1.5" strokeOpacity={selectedStorage ? '0.8' : '0.15'} className="transition-all duration-300" />
-
-              <rect x="50" y="320" width="300" height="100" rx="4" fill="#161b22" stroke={selectedCase ? '#00ffff' : 'white'} strokeWidth="1.5" strokeOpacity={selectedCase ? '0.3' : '0.1'} className="transition-all duration-300" />
-              <rect x="70" y="340" width="100" height="60" rx="4" fill="#0d1117" stroke={selectedPsu ? '#00ffff' : 'white'} strokeWidth="1.5" strokeOpacity={selectedPsu ? '0.9' : '0.15'} className="transition-all duration-300" />
-              <circle cx="120" cy="370" r="18" fill="none" stroke={selectedPsu ? '#00ffff' : 'white'} strokeOpacity={selectedPsu ? '0.4' : '0.05'} strokeWidth="1" strokeDasharray="2 2" className="transition-all duration-300" />
+              <rect x="50" y="20" width="300" height="400" rx="10" fill="#090d13" stroke={selectedCase ? '#00ffff' : 'white'} strokeWidth="2" strokeOpacity={selectedCase ? '0.6' : '0.2'} />
+              <rect x="70" y="50" width="180" height="230" rx="4" fill="#161b22" stroke={selectedMb ? '#00ffff' : 'white'} strokeWidth="1.5" strokeOpacity={selectedMb ? '0.8' : '0.15'} />
+              <rect x="130" y="90" width="40" height="40" rx="4" fill="#0d1117" stroke={selectedCpu ? '#00ffff' : 'white'} strokeWidth="1.5" strokeOpacity={selectedCpu ? '0.9' : '0.2'} />
+              <circle cx="150" cy="110" r="10" fill="none" stroke={selectedCooler ? '#00ffff' : 'white'} strokeWidth="1.5" strokeOpacity={selectedCooler ? '0.9' : '0.1'} strokeDasharray="2 2" />
+              <rect x="70" y="180" width="220" height="40" rx="4" fill="#0d1117" stroke={selectedGpu ? '#00ffff' : 'white'} strokeWidth="1.5" strokeOpacity={selectedGpu ? '0.9' : '0.15'} />
+              <text x="250" y="204" fill={selectedGpu ? '#00ffff' : 'white'} opacity={selectedGpu ? '1' : '0.2'} fontFamily="Orbitron" fontSize="12" fontWeight="bold" textAnchor="middle">GPU</text>
+              <rect x="130" y="240" width="60" height="15" rx="2" fill="#0d1117" stroke={selectedStorage ? '#00ffff' : 'white'} strokeWidth="1.5" strokeOpacity={selectedStorage ? '0.8' : '0.15'} />
+              <rect x="50" y="320" width="300" height="100" rx="4" fill="#161b22" stroke={selectedCase ? '#00ffff' : 'white'} strokeWidth="1.5" strokeOpacity={selectedCase ? '0.3' : '0.1'} />
+              <rect x="70" y="340" width="100" height="60" rx="4" fill="#0d1117" stroke={selectedPsu ? '#00ffff' : 'white'} strokeWidth="1.5" strokeOpacity={selectedPsu ? '0.9' : '0.15'} />
             </svg>
           </div>
 
-          {/* COLUMNA DERECHA */}
           <div className="flex flex-col gap-6 order-3 lg:order-3 relative z-30">
-            <CompactCombobox label="CHASIS / CAJA" step="05" placeholder="NZXT H9, CORSAIR..." items={cases} selected={selectedCase} onSelect={setSelectedCase} align="right" />
-            <CompactCombobox label="TARJETA GRÁFICA (GPU)" step="06" placeholder="RTX 4090, RX 7900..." items={gpus} selected={selectedGpu} onSelect={setSelectedGpu} align="right" />
-            <CompactCombobox label="FUENTE (PSU)" step="07" placeholder="1000W ATX 3.0..." items={psus} selected={selectedPsu} onSelect={setSelectedPsu} align="right" />
-            <CompactCombobox label="ALMACENAMIENTO" step="08" placeholder="NVME 2TB GEN4..." items={storages} selected={selectedStorage} onSelect={setSelectedStorage} align="right" />
+            <CompactCombobox label={isEn ? "CHASSIS / CASE" : "CHASIS / CAJA"} step="05" placeholder="NZXT H9, CORSAIR..." items={cases} selected={selectedCase} onSelect={setSelectedCase} align="right" lang={lang} />
+            <CompactCombobox label="GRAPHICS CARD (GPU)" step="06" placeholder="RTX 4090, RX 7900..." items={gpus} selected={selectedGpu} onSelect={setSelectedGpu} align="right" lang={lang} />
+            <CompactCombobox label={isEn ? "POWER SUPPLY (PSU)" : "FUENTE (PSU)"} step="07" placeholder="1000W ATX 3.0..." items={psus} selected={selectedPsu} onSelect={setSelectedPsu} align="right" lang={lang} />
+            <CompactCombobox label={isEn ? "STORAGE" : "ALMACENAMIENTO"} step="08" placeholder="NVME 2TB GEN4..." items={storages} selected={selectedStorage} onSelect={setSelectedStorage} align="right" lang={lang} />
           </div>
-
         </div>
 
-        {/* BOTÓN INFERIOR DE AUDITORÍA */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mt-10 pt-6 border-t border-white/10 relative z-10">
           <div className="flex items-center gap-4">
             <div className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all ${ready ? 'border-[#00ffff] bg-[#00ffff]/10' : 'border-[#00ffff]/30 border-dashed animate-spin'}`}>
               {ready && <svg className="w-4 h-4 text-[#00ffff]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>}
             </div>
             <p className="text-[10px] text-[#00ffff] font-orbitron tracking-[0.15em] uppercase leading-relaxed whitespace-pre-line">
-              {ready ? 'MATRIZ DE COMPONENTES COMPLETADA.\nLISTO PARA SIMULACIÓN DE ENSAMBLAJE.' : 'SELECCIONA LOS COMPONENTES PRINCIPALES\nPARA HABILITAR EL ESCÁNER.'}
+              {ready 
+                ? (isEn ? 'COMPONENT MATRIX COMPLETED.\nREADY FOR BUILD SIMULATION.' : 'MATRIZ DE COMPONENTES COMPLETADA.\nLISTO PARA SIMULACIÓN DE ENSAMBLAJE.')
+                : (isEn ? 'SELECT PRIMARY COMPONENTS\nTO ENABLE SCANNER.' : 'SELECCIONA LOS COMPONENTES PRINCIPALES\nPARA HABILITAR EL ESCÁNER.')}
             </p>
           </div>
 
@@ -270,10 +237,11 @@ export default function SearchInterfaceFullPc({ cpus = [], coolers = [], gpus = 
                 : 'bg-white/5 text-white/20 border border-white/10 cursor-not-allowed pointer-events-none'
             }`}
           >
-            <span className="relative z-10">{isVerifying ? 'PROCESANDO...' : 'AUDITORÍA TOTAL'}</span>
+            <span className="relative z-10">
+              {isVerifying ? (isEn ? 'PROCESSING...' : 'PROCESANDO...') : (isEn ? 'FULL AUDIT' : 'AUDITORÍA TOTAL')}
+            </span>
           </a>
         </div>
-
       </div>
     </div>
   );

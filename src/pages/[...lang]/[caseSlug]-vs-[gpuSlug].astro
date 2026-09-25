@@ -1,18 +1,10 @@
 ---
-import casesData from '../data/cases.json';
-import gpusData from '../data/gpus.json';
-import Footer from '../components/Footer.astro';
-import '../styles/global.css';
-import { getStoresForLocale } from '../config/stores.js';
-import { getLangFromUrl, useTranslations } from '../i18n/utils';
-
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
-const langPrefix = lang === 'en' ? '/en' : '';
-
-// Obtiene la lista de tiendas según la región/idioma del usuario
-const currentLang = lang;
-const stores = getStoresForLocale(currentLang);
+import casesData from '../../data/cases.json';
+import gpusData from '../../data/gpus.json';
+import Footer from '../../components/Footer.astro';
+import '../../styles/global.css';
+import { getStoresForLocale } from '../../config/stores.js';
+import { useTranslations } from '../../i18n/utils';
 
 // 1. GENERADOR DE RUTAS (pSEO)
 export async function getStaticPaths() {
@@ -20,12 +12,16 @@ export async function getStaticPaths() {
   const gpus = gpusData.slice(0, 40);
 
   const paths = [];
-  for (const pcCase of cases) {
-    for (const gpu of gpus) {
-      paths.push({
-        params: { caseSlug: pcCase.slug, gpuSlug: gpu.slug },
-        props: { pcCase, gpu }
-      });
+  const langs = [undefined, 'en'];
+
+  for (const lang of langs) {
+    for (const pcCase of cases) {
+      for (const gpu of gpus) {
+        paths.push({
+          params: { lang, caseSlug: pcCase.slug, gpuSlug: gpu.slug },
+          props: { pcCase, gpu }
+        });
+      }
     }
   }
   return paths;
@@ -33,16 +29,23 @@ export async function getStaticPaths() {
 
 // 2. RECUPERAR DATOS DE LA COMBINACIÓN ACTUAL
 const { pcCase, gpu } = Astro.props;
+const { lang: langParam } = Astro.params;
+const lang = langParam === 'en' ? 'en' : 'es';
 
 if (!pcCase || !gpu) {
   return Astro.redirect('/404');
 }
 
-// Consultas limpias para los enlaces de las tiendas
+const t = useTranslations(lang);
+const langPrefix = lang === 'en' ? '/en' : '';
+
+const currentLang = lang;
+const stores = getStoresForLocale(currentLang);
+
 const caseQuery = `${pcCase.brand} ${pcCase.model}`.trim();
 const gpuQuery = `${gpu.brand} ${gpu.model}`.trim();
 
-// 3. CÁLCULOS Y ESTADOS (Intactos)
+// 3. CÁLCULOS Y ESTADOS
 const caseMaxLength = pcCase.maxGpuLengthMM || pcCase.maxGpuLength || 350;
 const gpuLength = gpu.dimensions?.lengthMM || gpu.length || gpu.lengthMM || 300;
 
@@ -67,7 +70,7 @@ if (margin < 0) {
 
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
-// 4. SEO: nombres normalizados y respuestas dinámicas (FAQ / meta / schema.org)
+// 4. SEO: nombres normalizados y respuestas dinámicas
 const gpuFullName = `${gpu.brand} ${gpu.model}`;
 const caseFullName = `${pcCase.brand} ${pcCase.model}`;
 const marginLabel = margin > 0 ? `+${margin}mm` : `${margin}mm`;

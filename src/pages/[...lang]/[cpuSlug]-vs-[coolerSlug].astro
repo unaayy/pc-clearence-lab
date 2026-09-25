@@ -1,40 +1,45 @@
 ---
-import cpusData from '../data/cpus.json';
-import coolersData from '../data/coolers.json';
-import Footer from '../components/Footer.astro';
-import '../styles/global.css';
-import { getStoresForLocale } from '../config/stores.js';
-import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import cpusData from '../../data/cpus.json';
+import coolersData from '../../data/coolers.json';
+import Footer from '../../components/Footer.astro';
+import '../../styles/global.css';
+import { getStoresForLocale } from '../../config/stores.js';
+import { useTranslations } from '../../i18n/utils';
 
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
-const langPrefix = lang === 'en' ? '/en' : '';
-
-// 1. GENERADOR DE RUTAS (REQUERIDO POR ASTRO EN MODO ESTÁTICO)
+// 1. GENERADOR DE RUTAS AMBAS LENGUAS
 export async function getStaticPaths() {
   const cpus = cpusData.slice(0, 100);
   const coolers = coolersData.slice(0, 100);
 
   const paths = [];
-  for (const cpu of cpus) {
-    for (const cooler of coolers) {
-      paths.push({
-        params: { cpuSlug: cpu.slug, coolerSlug: cooler.slug },
-        props: { cpu, cooler }
-      });
+  const langs = [undefined, 'en'];
+
+  for (const lang of langs) {
+    for (const cpu of cpus) {
+      for (const cooler of coolers) {
+        paths.push({
+          params: { lang, cpuSlug: cpu.slug, coolerSlug: cooler.slug },
+          props: { cpu, cooler }
+        });
+      }
     }
   }
   return paths;
 }
 
-// 2. RECUPERAR DATOS DE LA COMBINACIÓN ACTUAL
+// 2. RECUPERAR DATOS DE LA COMBINACIÓN ACTUAL (UNA SOLA VEZ)
 const { cpu, cooler } = Astro.props;
+const { lang: langParam } = Astro.params;
+const lang = langParam === 'en' ? 'en' : 'es';
 
 if (!cpu || !cooler) {
   return Astro.redirect('/404');
 }
 
-// Configuración dinámica de tiendas por idioma/región
+const t = useTranslations(lang);
+const langPrefix = lang === 'en' ? '/en' : '';
+
+// Configuración dinámica de tiendas por idioma
 const currentLang = lang;
 const stores = getStoresForLocale(currentLang);
 
@@ -60,18 +65,18 @@ const coolerCapacity = getCoolerCapacity(cooler);
 const margin = coolerCapacity - cpuTdp;
 
 let status = 'verde';
-let colorHex = '#10b981'; // Emerald (Frío)
+let colorHex = '#10b981';
 let statusText = lang === 'en' ? 'OPTIMAL THERMAL CLEARANCE' : 'DESPEJE TÉRMICO ÓPTIMO';
 let statusMessage = lang === 'en' ? 'STABLE TEMPS / NO THROTTLING' : 'TEMPERATURAS ESTABLES / SIN THROTTLING';
 
 if (margin < -15) {
   status = 'rojo';
-  colorHex = '#f43f5e'; // Rose (Caliente)
+  colorHex = '#f43f5e';
   statusText = lang === 'en' ? 'CRITICAL / THERMAL THROTTLING' : 'CRÍTICO / THROTTLING TÉRMICO';
   statusMessage = lang === 'en' ? 'SEVERE DISSIPATION DEFICIT' : 'DÉFICIT DE DISIPACIÓN SEVERO';
 } else if (margin < 20) {
   status = 'amarillo';
-  colorHex = '#fbbf24'; // Amber (Ajustado)
+  colorHex = '#fbbf24';
   statusText = lang === 'en' ? 'TIGHT THERMAL MARGIN' : 'MARGEN TÉRMICO AJUSTADO';
   statusMessage = lang === 'en' ? 'WARNING UNDER MAXIMUM LOAD' : 'ADVERTENCIA BAJO CARGA MÁXIMA';
 }
