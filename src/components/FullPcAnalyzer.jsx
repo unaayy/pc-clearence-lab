@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { getStoresForLocale } from '../config/stores.js';
 
 /**
  * Resuelve la build seleccionada a partir de los datasets particionados y
- * de un origen de parámetros compatible con la interfaz de URLSearchParams
- * (tanto `window.location.search` en cliente como `Astro.url.searchParams`
- * en el servidor exponen `.get(key)`, así que esta función sirve para ambos).
+ * de un origen de parámetros compatible con la interfaz de URLSearchParams.
  */
 export function resolveBuild(db, sp) {
   if (!db || !sp) return null;
@@ -32,19 +31,14 @@ export function formatName(comp) {
 }
 
 /**
- * Título y descripción dinámicos para la pestaña/compartidos.
- * Si la página que envuelve este componente es una ruta Astro, lo ideal es
- * llamar a esta misma función en el frontmatter (con el build ya resuelto
- * en el servidor vía `resolveBuild(db, Astro.url.searchParams)`) para
- * escribir el <title> y el <meta name="description"> en el HTML servido,
- * en vez de depender solo del useEffect de aquí abajo.
+ * Título y descripción dinámicos para SEO.
  */
 export function getBuildSeoMeta(build) {
   if (!build || (!build.cpu && !build.gpu && !build.case)) {
     return {
       title: 'Analizador de Compatibilidad de PC | LIDUNAX',
       description:
-        'Comprueba si tu CPU, GPU, placa base, RAM, PSU, refrigeración y chasis son compatibles entre sí, y compra cada pieza en Amazon, PcComponentes o Coolmod.',
+        'Comprueba si tu CPU, GPU, placa base, RAM, PSU, refrigeración y chasis son compatibles entre sí, y compra cada pieza al mejor precio.',
     };
   }
   const parts = [build.cpu, build.gpu, build.case].filter(Boolean).map(formatName);
@@ -66,22 +60,18 @@ const ICONS = {
   'CHASIS / CAJA': 'PC',
 };
 
-const STORES = [
-  { key: 'amazon', name: 'Amazon ES', color: '#ff9900' },
-  { key: 'pcc', name: 'PcComponentes', color: '#ff6600' },
-  { key: 'coolmod', name: 'Coolmod', color: '#00bfff' },
-];
-
 export default function FullPcAnalyzer({ db, searchParams }) {
-  // Si el padre (Astro) ya nos pasa searchParams resueltos en el servidor,
-  // la build se calcula de forma síncrona en el primer render: no hace
-  // falta esperar a un useEffect ni mostrar el spinner, y el HTML que
-  // reciben los buscadores ya contiene el contenido real.
   const [build, setBuild] = useState(() => (searchParams ? resolveBuild(db, searchParams) : null));
   const [loading, setLoading] = useState(!searchParams);
 
+  // Detección dinámica de idioma para las tiendas
+  const currentLang = searchParams?.get('lang') || 
+                      (typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('lang') : null) || 
+                      'es';
+  const stores = getStoresForLocale(currentLang);
+
   useEffect(() => {
-    if (searchParams) return; // ya resuelto arriba de forma síncrona
+    if (searchParams) return;
     try {
       if (typeof window === 'undefined') return;
       const params = new URLSearchParams(window.location.search);
@@ -93,8 +83,6 @@ export default function FullPcAnalyzer({ db, searchParams }) {
     }
   }, [db, searchParams]);
 
-  // Mejora progresiva: si nadie ha fijado el <title>/<meta description> en
-  // el servidor, los actualizamos igualmente en cuanto conocemos la build.
   useEffect(() => {
     if (typeof document === 'undefined' || !build) return;
     const { title, description } = getBuildSeoMeta(build);
@@ -117,7 +105,7 @@ export default function FullPcAnalyzer({ db, searchParams }) {
     );
   }
 
-  // --- 1. CÁLCULOS TÉCNICOS ADAPTADOS A LOS JSONS INDIVIDUALES ---
+  // --- 1. CÁLCULOS TÉCNICOS ---
   const cpuTdp = build.cpu?.tdp || 120;
   const gpuTdp = build.gpu?.tdp || 250;
   const rawPower = cpuTdp + gpuTdp + 80;
@@ -133,7 +121,6 @@ export default function FullPcAnalyzer({ db, searchParams }) {
   const gpuWidth = build.gpu?.widthMM || 135;
   const cableClearance = caseWidthCap - gpuWidth;
 
-  // Semáforo del cable GPU vs Cristal
   let cableCritical = false;
   let cableColorHex = '#10b981';
   let cableDesc = 'Pendiente de GPU o Chasis';
@@ -151,7 +138,6 @@ export default function FullPcAnalyzer({ db, searchParams }) {
     }
   }
 
-  // Refrigeración
   let coolerOk = false;
   let coolerDesc = 'Falta Disipador o Chasis';
   if (build.cooler && build.case) {
@@ -175,13 +161,10 @@ export default function FullPcAnalyzer({ db, searchParams }) {
 
   const isAIO = build.cooler?.isLiquid;
 
-  // Coordenadas Dinámicas SVG
   const gpuWidthSvg = gpuLen > 330 ? 240 : 200;
   const gpuX = 60;
   const connectorX = gpuX + gpuWidthSvg - 30;
 
-  // Checklist de compatibilidad — se define una sola vez y se reutiliza en
-  // el panel HUD lateral y en la tabla de resumen del final de la página.
   const complianceChecks = [
     {
       key: 'gpu',
@@ -212,7 +195,7 @@ export default function FullPcAnalyzer({ db, searchParams }) {
     },
   ];
 
-  // --- 2. GENERADOR DE ENLACES PARA TIENDAS ---
+  // --- 2. PREPARACIÓN DE COMPONENTES ---
   const selectedComponents = [
     { label: 'PROCESADOR (CPU)', data: build.cpu },
     { label: 'TARJETA GRÁFICA', data: build.gpu },
@@ -224,17 +207,7 @@ export default function FullPcAnalyzer({ db, searchParams }) {
     { label: 'CHASIS / CAJA', data: build.case },
   ].filter((c) => c.data);
 
-  const getStoreLink = (store, item) => {
-    if (!item || !item.model) return '#';
-    const brandName = item.brand && !item.brand.toLowerCase().includes('genér') ? item.brand : '';
-    const query = encodeURIComponent(`${brandName} ${item.model}`.trim());
-    if (store === 'amazon') return `https://www.amazon.es/s?k=${query}&tag=TU_TAG_AFILIADO_AQUI-21`;
-    if (store === 'pcc') return `https://www.pccomponentes.com/buscar/?query=${query}`;
-    if (store === 'coolmod') return `https://www.coolmod.com/buscar/?search=${query}`;
-    return '#';
-  };
-
-  // --- 3. GENERACIÓN DE TEXTOS SEO NARRATIVOS ---
+  // --- 3. TEXTOS SEO NARRATIVOS ---
   const physicalText = gpuOk && !cableCritical
     ? `La arquitectura interna del chasis ${formatName(build.case) || ''} proporciona una holgura verificada para la gráfica ${formatName(build.gpu) || ''}. Con ${caseMaxGpu - gpuLen}mm de margen de tolerancia frontal y ${Math.round(cableClearance)}mm laterales, se asegura el cierre hermético del panel de cristal templado sin flexionar en exceso el conector de alimentación principal 12VHPWR.`
     : build.gpu && build.case
@@ -259,7 +232,7 @@ export default function FullPcAnalyzer({ db, searchParams }) {
     ? `INCOMPATIBILIDAD ESTRUCTURAL: Intento de emparejar el procesador (${build.cpu?.socket}) con un zócalo incompatible en la placa base (${build.mb?.socket}). Imposible proceder con el ensamble.`
     : 'Faltan componentes de placa base o CPU para validar el ecosistema de procesamiento.';
 
-  // --- 4. PREGUNTAS FRECUENTES DINÁMICAS (contenido visible + FAQPage schema) ---
+  // --- 4. PREGUNTAS FRECUENTES DINÁMICAS ---
   const faqPower = build.psu
     ? psuOk
       ? `Sí. Tu fuente de ${psuPower}W cubre con margen los ${reqPower}W de demanda pico estimada (TDP de CPU + GPU, más un 25% de margen de seguridad para picos transitorios).`
@@ -335,7 +308,7 @@ export default function FullPcAnalyzer({ db, searchParams }) {
         .spin-slow { animation: spinSlow 3s linear infinite; }
       `}</style>
 
-      {/* Datos estructurados: mejoran la aparición en resultados enriquecidos de Google */}
+      {/* Datos estructurados */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       {itemListSchema && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
@@ -352,7 +325,7 @@ export default function FullPcAnalyzer({ db, searchParams }) {
         </p>
       </div>
 
-      {/* BLOQUE PRINCIPAL: DIBUJO (IZQ) Y VERIFICACIÓN (DER) */}
+      {/* BLOQUE PRINCIPAL: DIBUJO Y VERIFICACIÓN */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 lg:gap-8 mb-16">
 
         {/* DIAGRAMA VISUAL DEL PC */}
@@ -475,7 +448,7 @@ export default function FullPcAnalyzer({ db, searchParams }) {
                 </>
               )}
 
-              {/* VENTILADORES FRONTALES EMPOTRADOS */}
+              {/* VENTILADORES FRONTALES */}
               <g transform="translate(340, 75)" opacity="0.6">
                 <g className="spin-slow" style={{ transformOrigin: '0px 35px' }}>
                   <circle cx="0" cy="35" r="14" fill="none" stroke={mainStatusColor} strokeWidth="1.5" />
@@ -495,14 +468,13 @@ export default function FullPcAnalyzer({ db, searchParams }) {
           </svg>
         </div>
 
-        {/* PANEL LATERAL DE VERIFICACIÓN (DERECHA) */}
+        {/* PANEL LATERAL DE VERIFICACIÓN */}
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2.5 mb-1 px-1">
             <span className="w-1.5 h-1.5 rounded-full bg-[#00ffff]"></span>
             <h2 className="font-orbitron font-bold text-white/80 uppercase tracking-[0.2em] text-xs">Auditoría HUD</h2>
           </div>
 
-          {/* Estado general: eyebrow discreto + titular en blanco, sin glow ni barra neón */}
           <div className="bg-[#0a0a0c] border border-white/5 rounded-2xl p-5">
             <div className="flex items-center gap-2 mb-2.5">
               <span className="relative flex h-1.5 w-1.5">
@@ -519,7 +491,6 @@ export default function FullPcAnalyzer({ db, searchParams }) {
             <p className="text-slate-500 text-[11px] mt-2">Matriz de compatibilidad completada.</p>
           </div>
 
-          {/* Checklist: badge tenue con icono, título neutro, sin bordes de color ni animaciones de giro */}
           <div className="flex flex-col gap-2">
             {complianceChecks.map((c) => (
               <div key={c.key} className="bg-white/[0.02] hover:bg-white/[0.04] border border-white/5 hover:border-white/10 rounded-2xl px-4 py-3.5 flex items-center gap-3.5 transition-colors duration-200">
@@ -545,7 +516,7 @@ export default function FullPcAnalyzer({ db, searchParams }) {
 
       </div>
 
-      {/* DISEÑO BENTO GRID: INVENTARIO */}
+      {/* INVENTARIO */}
       <div className="mb-12 max-w-[1200px] mx-auto">
         <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">Inventario Paramétrico</h2>
 
@@ -569,13 +540,15 @@ export default function FullPcAnalyzer({ db, searchParams }) {
         </div>
       </div>
 
-      {/* CENTRAL DE ADQUISICIÓN / TIENDAS — una fila por componente, tres tiendas siempre visibles */}
+      {/* CENTRAL DE ADQUISICIÓN / TIENDAS */}
       {selectedComponents.length > 0 && (
         <div className="mb-16 max-w-[1200px] mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-6">
-            <h2 className="text-2xl font-bold font-orbitron uppercase tracking-widest text-white/90">Central de Adquisición</h2>
+            <h2 className="text-2xl font-bold font-orbitron uppercase tracking-widest text-white/90">
+              {currentLang === 'es' ? 'Central de Adquisición' : 'Acquisition Center'}
+            </h2>
             <p className="text-slate-500 text-xs sm:text-sm font-mono">
-              {selectedComponents.length} {selectedComponents.length === 1 ? 'componente' : 'componentes'} · 3 tiendas comparadas
+              {selectedComponents.length} {selectedComponents.length === 1 ? 'componente' : 'componentes'} · {stores.length} tiendas
             </p>
           </div>
           <p className="text-slate-400 text-sm max-w-2xl mb-6">
@@ -596,19 +569,27 @@ export default function FullPcAnalyzer({ db, searchParams }) {
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2 shrink-0 pl-[52px] sm:pl-0">
-                    {STORES.map((store) => (
-                      <a
-                        key={store.key}
-                        href={getStoreLink(store.key, comp.data)}
-                        target="_blank"
-                        rel="nofollow sponsored noopener noreferrer"
-                        aria-label={`Buscar ${formatName(comp.data)} en ${store.name}`}
-                        className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 hover:border-white/25 transition-all text-[11px] font-orbitron tracking-wide text-slate-300 hover:text-white"
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: store.color, boxShadow: `0 0 6px ${store.color}` }}></span>
-                        {store.name}
-                      </a>
-                    ))}
+                    {stores.map((store) => {
+                      const query = formatName(comp.data);
+                      const url = query ? store.buildUrl(query) : '#';
+
+                      return (
+                        <a
+                          key={store.id}
+                          href={url}
+                          target="_blank"
+                          rel="nofollow sponsored noopener noreferrer"
+                          aria-label={`Buscar ${query} en ${store.name}`}
+                          className="relative overflow-hidden flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/[0.02] hover:bg-white/[0.08] border border-white/5 hover:border-white/20 transition-all text-[11px] font-orbitron tracking-wide text-slate-300 hover:text-white"
+                        >
+                          <span>{store.name}</span>
+                          <div 
+                            className="absolute bottom-0 left-0 right-0 h-[2px]" 
+                            style={{ background: `linear-gradient(90deg, transparent 0%, ${store.color} 50%, transparent 100%)` }}
+                          ></div>
+                        </a>
+                      );
+                    })}
                   </div>
                 </div>
               ))}
@@ -617,7 +598,7 @@ export default function FullPcAnalyzer({ db, searchParams }) {
         </div>
       )}
 
-      {/* TEXTO NARRATIVO AVANZADO PARA SEO Y ADSENSE */}
+      {/* TEXTO NARRATIVO AVANZADO */}
       <div className="mb-16 max-w-5xl mx-auto">
         <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">Análisis de Ingeniería y Ensamble</h2>
 
@@ -643,7 +624,7 @@ export default function FullPcAnalyzer({ db, searchParams }) {
         </div>
       </div>
 
-      {/* METODOLOGÍA — contenido evergreen, educativo y único para SEO/AdSense */}
+      {/* METODOLOGÍA */}
       <div className="mb-16 max-w-5xl mx-auto">
         <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">Cómo Calculamos Cada Compatibilidad</h2>
         <div className="bg-[#0a0a0c] border border-white/5 rounded-[24px] p-6 sm:p-8 lg:p-10 shadow-2xl">
@@ -676,7 +657,7 @@ export default function FullPcAnalyzer({ db, searchParams }) {
         </div>
       </div>
 
-      {/* TABLA RESUMEN — versión accesible/indexable del checklist del HUD */}
+      {/* TABLA RESUMEN */}
       <div className="mb-16 max-w-5xl mx-auto">
         <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">Resumen de Compatibilidad</h2>
         <div className="bg-[#0a0a0c] border border-white/5 rounded-[20px] overflow-hidden overflow-x-auto">
@@ -701,7 +682,7 @@ export default function FullPcAnalyzer({ db, searchParams }) {
         </div>
       </div>
 
-      {/* PREGUNTAS FRECUENTES — visible, coincide con el FAQPage schema de arriba */}
+      {/* PREGUNTAS FRECUENTES */}
       <div className="mb-16 max-w-5xl mx-auto">
         <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">Preguntas Frecuentes</h2>
         <div className="bg-[#0a0a0c] border border-white/5 rounded-[24px] divide-y divide-white/5">
