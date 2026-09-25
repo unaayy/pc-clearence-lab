@@ -181,7 +181,8 @@ function HudCombobox({ label, placeholder, items = [], selected, onSelect, onCho
   );
 }
 
-export default function SearchInterface({ cases = [], gpus = [], lang = 'es' }) {
+export default function SearchInterface({ cases = [], gpus = [] }) {
+  const lang = typeof window !== 'undefined' && window.location.pathname.startsWith('/en') ? 'en' : 'es';
   const [selectedCase, setSelectedCase] = useState(null);
   const [selectedGpu, setSelectedGpu] = useState(null);
   const [isVerifying, setIsVerifying] = useState(false);

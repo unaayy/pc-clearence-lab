@@ -53,14 +53,16 @@ export function getBuildSeoMeta(build, isEn = false) {
   };
 }
 
-export default function FullPcAnalyzer({ db, searchParams, lang = 'es' }) {
-  const [build, setBuild] = useState(() => (searchParams ? resolveBuild(db, searchParams) : null));
-  const [loading, setLoading] = useState(!searchParams);
+export default function FullPcAnalyzer({ db, searchParams, lang }) {
+  // Detecta el idioma directamente desde la URL o parámetros sin depender de props
+  const isEn = typeof window !== 'undefined' 
+    ? (window.location.pathname.startsWith('/en') || new URLSearchParams(window.location.search).get('lang') === 'en')
+    : lang === 'en';
 
-  // Detección dinámica de idioma
-  const currentLang = searchParams?.get('lang') || lang || 'es';
-  const isEn = currentLang === 'en';
+  const currentLang = isEn ? 'en' : 'es';
   const stores = getStoresForLocale(currentLang);
+  
+  // ... resto del componente
 
   const ICONS = {
     [isEn ? 'PROCESSOR (CPU)' : 'PROCESADOR (CPU)']: 'CPU',

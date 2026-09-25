@@ -7,10 +7,12 @@ interface AffiliateBannersProps {
   caseObj: Case;
   lang?: string;
 }
-
-export const AffiliateBanners: React.FC<AffiliateBannersProps> = ({ result, gpuObj, caseObj, lang = 'es' }) => {
+export const AffiliateBanners: React.FC<AffiliateBannersProps> = ({ result, gpuObj, caseObj }) => {
   const AMAZON_TAG = 'lidunax-21';
-  const isEn = lang === 'en';
+  const isEn = typeof window !== 'undefined' && window.location.pathname.startsWith('/en');
+
+  if (result.status === 'GREEN') {
+    // ...
 
   if (result.status === 'GREEN') {
     const gpuUrl = `https://www.amazon.es/s?k=${encodeURIComponent(gpuObj.brand + ' ' + gpuObj.model)}&tag=${AMAZON_TAG}`;

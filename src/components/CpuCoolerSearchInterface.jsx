@@ -184,7 +184,8 @@ function HudCombobox({ label, placeholder, items, selected, onSelect, onChosen, 
   );
 }
 
-export default function CpuSearchInterface({ cpus = [], coolers = [], lang = 'es' }) {
+export default function CpuSearchInterface({ cpus = [], coolers = [] }) {
+  const lang = typeof window !== 'undefined' && window.location.pathname.startsWith('/en') ? 'en' : 'es';
   const [selectedCpu, setSelectedCpu] = useState(null);
   const [selectedCooler, setSelectedCooler] = useState(null);
   const [isVerifying, setIsVerifying] = useState(false);

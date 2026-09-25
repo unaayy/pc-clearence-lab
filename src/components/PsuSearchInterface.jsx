@@ -177,7 +177,8 @@ function HudCombobox({ label, placeholder, items, selected, onSelect, onChosen, 
   );
 }
 
-export default function PsuSearchInterface({ psus = [], gpus = [], cpus = [], lang = 'es' }) {
+export default function CpuSearchInterface({ cpus = [], coolers = [] }) {
+  const lang = typeof window !== 'undefined' && window.location.pathname.startsWith('/en') ? 'en' : 'es';
   const [selectedPsu, setSelectedPsu] = useState(null);
   const [selectedGpu, setSelectedGpu] = useState(null);
   const [selectedCpu, setSelectedCpu] = useState(null);
