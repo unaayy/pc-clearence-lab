@@ -14,5 +14,9 @@
   "sec.psu.sub": "Vatios, conectores 12VHPWR y gestión de cables",
   "sec.pc.title": "PC COMPLETO",
   "sec.pc.sub": "Escáner total de compatibilidad y ensamble",
-  "btn.analyze": "INICIAR ANÁLISIS"
+  "btn.analyze": "INICIAR ANÁLISIS",
+  "tag.01": "01 // TELEMETRÍA",
+  "tag.02": "02 // TÉRMICA",
+  "tag.03": "03 // ENERGÍA",
+  "tag.04": "04 // INTEGRAL"
 }

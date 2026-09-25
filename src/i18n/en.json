@@ -14,5 +14,9 @@
   "sec.psu.sub": "Wattage, 12VHPWR connectors and cable management",
   "sec.pc.title": "FULL PC BUILD",
   "sec.pc.sub": "Full system compatibility and assembly scan",
-  "btn.analyze": "START ANALYSIS"
+  "btn.analyze": "START ANALYSIS",
+  "tag.01": "01 // TELEMETRY",
+  "tag.02": "02 // THERMAL",
+  "tag.03": "03 // POWER",
+  "tag.04": "04 // FULL AUDIT"
 }

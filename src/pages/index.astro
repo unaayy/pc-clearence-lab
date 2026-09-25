@@ -8,12 +8,22 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const langPrefix = lang === 'en' ? '/en' : '';
 
-const secciones = [
-  { href: `${langPrefix}/gpu-caja`,   img: '/gpu.webp',    index: '01', tag: '01 // TELEMETRÍA', title: t('sec.gpu.title'), sub: t('sec.gpu.sub'), disabled: false },
-  { href: `${langPrefix}/cpu-refrig`, img: '/cpu.webp',    index: '02', tag: '02 // TÉRMICA',    title: t('sec.cpu.title'), sub: t('sec.cpu.sub'), disabled: false },
-  { href: `${langPrefix}/fuente-psu`, img: '/fuente.webp', index: '03', tag: '03 // ENERGÍA',    title: t('sec.psu.title'), sub: t('sec.psu.sub'), disabled: false },
-  { href: `${langPrefix}/full-pc`,    img: '/pc.webp',     index: '04', tag: '04 // INTEGRAL',   title: t('sec.pc.title'),  sub: t('sec.pc.sub') }
-]
+interface Seccion {
+  href: string;
+  img: string;
+  index: string;
+  tag: string;
+  title: string;
+  sub: string;
+  disabled?: boolean;
+}
+
+const secciones: Seccion[] = [
+  { href: `${langPrefix}/gpu-caja`,   img: '/gpu.webp',    index: '01', tag: t('tag.01'), title: t('sec.gpu.title'), sub: t('sec.gpu.sub'), disabled: false },
+  { href: `${langPrefix}/cpu-refrig`, img: '/cpu.webp',    index: '02', tag: t('tag.02'), title: t('sec.cpu.title'), sub: t('sec.cpu.sub'), disabled: false },
+  { href: `${langPrefix}/fuente-psu`, img: '/fuente.webp', index: '03', tag: t('tag.03'), title: t('sec.psu.title'), sub: t('sec.psu.sub'), disabled: false },
+  { href: `${langPrefix}/full-pc`,    img: '/pc.webp',     index: '04', tag: t('tag.04'), title: t('sec.pc.title'),  sub: t('sec.pc.sub') }
+];
 ---
 
 <html lang={lang}>
@@ -40,7 +50,6 @@ const secciones = [
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" />
     </noscript>
 
-    <!-- Detección automática de idioma ultrarrápida (0 ms layout shift) -->
     <!-- Detección automática de idioma ultrarrápida (0 ms layout shift) -->
     <script is:inline>
       (function () {
