@@ -2,10 +2,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { getStoresForLocale } from '../config/stores.js';
 
-/**
- * Resuelve la build seleccionada a partir de los datasets particionados y
- * de un origen de parámetros compatible con la interfaz de URLSearchParams.
- */
 export function resolveBuild(db, sp) {
   if (!db || !sp) return null;
   const getComp = (type, slug) => {
@@ -24,16 +20,12 @@ export function resolveBuild(db, sp) {
   };
 }
 
-/** Nombre limpio "Marca Modelo", omitiendo marcas genéricas. */
 export function formatName(comp) {
   if (!comp) return null;
   const brandName = comp.brand && !comp.brand.toLowerCase().includes('genér') ? comp.brand : '';
   return `${brandName} ${comp.model}`.trim();
 }
 
-/**
- * Título y descripción dinámicos para SEO.
- */
 export function getBuildSeoMeta(build, isEn = false) {
   if (!build || (!build.cpu && !build.gpu && !build.case)) {
     return {
@@ -54,23 +46,23 @@ export function getBuildSeoMeta(build, isEn = false) {
 }
 
 export default function FullPcAnalyzer({ db, searchParams, lang }) {
-  // Detecta el idioma directamente desde la URL o parámetros sin depender de props
   const isEn = typeof window !== 'undefined' 
-    ? (window.location.pathname.startsWith('/en') || new URLSearchParams(window.location.search).get('lang') === 'en')
+    ? (window.location.pathname.startsWith('/en') || lang === 'en')
     : lang === 'en';
 
   const currentLang = isEn ? 'en' : 'es';
   const stores = getStoresForLocale(currentLang);
 
-  // 1. RESOLVER BUILD PRIMERO (A prueba de SSR)
+  // RESOLUCIÓN RESILIENTE EN CLIENTE/SERVIDOR
   const build = useMemo(() => {
-    if (db && searchParams) {
-      return resolveBuild(db, searchParams);
+    if (!db) return null;
+    let sp = searchParams;
+    if (typeof window !== 'undefined') {
+      sp = new URLSearchParams(window.location.search);
     }
-    return null;
+    return resolveBuild(db, sp);
   }, [db, searchParams]);
 
-  // 2. EFECTO SEO (Ejecutado solo cuando 'build' está definido)
   useEffect(() => {
     if (typeof document === 'undefined' || !build) return;
     try {
@@ -112,7 +104,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
     );
   }
 
-  // --- 1. CÁLCULOS TÉCNICOS ---
   const cpuTdp = build.cpu?.tdp || 120;
   const gpuTdp = build.gpu?.tdp || 250;
   const rawPower = cpuTdp + gpuTdp + 80;
@@ -214,7 +205,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
     },
   ];
 
-  // --- 2. PREPARACIÓN DE COMPONENTES ---
   const selectedComponents = [
     { label: isEn ? 'PROCESSOR (CPU)' : 'PROCESADOR (CPU)', data: build.cpu },
     { label: isEn ? 'GRAPHICS CARD' : 'TARJETA GRÁFICA', data: build.gpu },
@@ -226,7 +216,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
     { label: isEn ? 'CHASSIS / CASE' : 'CHASIS / CAJA', data: build.case },
   ].filter((c) => c.data);
 
-  // --- 3. TEXTOS SEO NARRATIVOS ---
   const physicalText = gpuOk && !cableCritical
     ? (isEn 
       ? `The internal architecture of the ${formatName(build.case) || ''} chassis provides verified clearance for the ${formatName(build.gpu) || ''} graphics card. With ${caseMaxGpu - gpuLen}mm of front clearance margin and ${Math.round(cableClearance)}mm lateral margin, it ensures tight closure of the side panel without over-bending the 12VHPWR power cable.`
@@ -267,7 +256,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
       : `INCOMPATIBILIDAD ESTRUCTURAL: Intento de emparejar el procesador (${build.cpu?.socket}) con un zócalo incompatible en la placa base (${build.mb?.socket}). Imposible proceder con el ensamble.`)
     : (isEn ? 'Missing motherboard or CPU components to validate processing ecosystem.' : 'Faltan componentes de placa base o CPU para validar el ecosistema de procesamiento.');
 
-  // --- 4. PREGUNTAS FRECUENTES DINÁMICAS ---
   const faqPower = build.psu
     ? psuOk
       ? (isEn ? `Yes. Your ${psuPower}W PSU comfortably covers the estimated ${reqPower}W peak demand (CPU + GPU TDP plus 25% safety margin for transient spikes).` : `Sí. Tu fuente de ${psuPower}W cubre con margen los ${reqPower}W de demanda pico estimada (TDP de CPU + GPU, más un 25% de margen de seguridad para picos transitorios).`)
@@ -330,31 +318,25 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
 
   return (
     <div className="w-full font-sans animate-[fadeIn_0.5s_ease-out]">
-
       <style>{`
         @keyframes flowReverse { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 24; } }
         .cable-fluid { stroke-dasharray: 12 12; animation: flowReverse 0.8s linear infinite; }
-
         @keyframes liquidFlow { from { stroke-dashoffset: 8; } to { stroke-dashoffset: 0; } }
         .liquid-fluid { stroke-dasharray: 4 4; animation: liquidFlow 0.5s linear infinite; }
-
         @keyframes liquidFlowReverse { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 8; } }
         .liquid-fluid-reverse { stroke-dasharray: 4 4; animation: liquidFlowReverse 0.5s linear infinite; }
-
         @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .spin-slow { animation: spinSlow 3s linear infinite; }
       `}</style>
 
-      {/* Datos estructurados */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       {itemListSchema && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
       )}
 
-      {/* ENCABEZADO */}
       <div className="mb-10 text-center sm:text-left">
         <h1 className="text-3xl sm:text-4xl font-bold font-orbitron mb-3 uppercase tracking-wide">
-          <span class="text-slate-400 block text-lg mb-1">
+          <span className="text-slate-400 block text-lg mb-1">
             {isEn ? 'Audit and Acquisition Center' : 'Centro de Auditoría y Adquisición'}
           </span>
           {build.case ? formatName(build.case) : (isEn ? 'CUSTOM BUILD' : 'CONFIGURACIÓN PERSONALIZADA')}
@@ -366,10 +348,7 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
         </p>
       </div>
 
-      {/* BLOQUE PRINCIPAL: DIBUJO Y VERIFICACIÓN */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 lg:gap-8 mb-16">
-
-        {/* DIAGRAMA VISUAL DEL PC */}
         <div className="relative bg-[#0a0a0c] border border-white/5 rounded-[24px] overflow-hidden min-h-[460px] flex items-center justify-center p-4 shadow-[inset_0_0_80px_rgba(0,0,0,0.8)]">
           <div className="absolute inset-0 opacity-[0.15]" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
 
@@ -387,16 +366,12 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
             </defs>
 
             <g transform="translate(0, 0)">
-              {/* CHASIS */}
               <rect x="40" y="30" width="320" height="420" rx="10" fill="#090d13" stroke={mainStatusColor} strokeWidth="2.5" filter="url(#glow)"/>
-
-              {/* PLACA BASE */}
               <rect x="60" y="60" width="220" height="240" rx="4" fill="#0d1117" stroke={build.mb ? '#00ffff' : '#333'} strokeWidth="1.5" strokeOpacity="0.5"/>
               <text x="170" y="290" fill="#555" fontFamily="Orbitron" fontSize="8" textAnchor="middle" letterSpacing="1">
                 MOTHERBOARD {build.mb ? `| ${build.mb.socket || ''}` : ''}
               </text>
 
-              {/* NVMe SSD */}
               <g transform="translate(160, 250)">
                 <rect x="0" y="0" width="60" height="14" rx="2" fill={build.storage ? '#0d1117' : '#161b22'} stroke={build.storage ? '#00ffff' : '#333'} strokeWidth="1" filter={build.storage ? "url(#softGlow)" : ""} />
                 {build.storage && <rect x="2" y="2" width="56" height="10" rx="1" fill="#00ffff" fillOpacity="0.25" />}
@@ -405,13 +380,11 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
                 </text>
               </g>
 
-              {/* CPU */}
               <g transform="translate(130, 100)">
                 <rect x="0" y="0" width="55" height="50" rx="3" fill="#151b23" stroke={socketOk && build.cpu ? '#10b981' : '#f43f5e'} strokeWidth="2" filter="url(#glow)"/>
                 <text x="27.5" y="30" fill="white" fontFamily="Orbitron" fontSize="11" fontWeight="bold" textAnchor="middle" filter="url(#softGlow)">CPU</text>
               </g>
 
-              {/* REFRIGERACIÓN Y TUBOS LÍQUIDA AIO */}
               {isAIO ? (
                 <g transform="translate(0, 0)">
                   <rect x="100" y="40" width="200" height="18" rx="2" fill="#161b22" stroke="#00ffff" strokeWidth="1.5" />
@@ -432,7 +405,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
                 </g>
               ) : null}
 
-              {/* MEMORIA RAM */}
               <g transform="translate(210, 90)">
                 <rect x="0" y="0" width="5" height="65" rx="1" fill="#161b22" stroke={build.ram ? '#00ffff' : '#333'} strokeWidth="1" />
                 <rect x="12" y="0" width="5" height="65" rx="1" fill="#161b22" stroke={build.ram ? '#00ffff' : '#333'} strokeWidth="1" />
@@ -446,7 +418,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
                 )}
               </g>
 
-              {/* CAJETÍN PSU */}
               <g transform="translate(40, 320)">
                 <rect x="0" y="0" width="320" height="130" rx="4" fill="#0d1117" stroke="white" strokeOpacity="0.15" strokeWidth="1.5" />
                 <g transform="translate(15, 20)">
@@ -460,7 +431,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
                 <text x="230" y="60" fill="#555" fontFamily="monospace" fontSize="8" textAnchor="middle">CABLE SHROUD</text>
               </g>
 
-              {/* GPU Y CABLE DE ENERGÍA */}
               {build.gpu && (
                 <>
                   {build.psu && (
@@ -491,7 +461,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
                 </>
               )}
 
-              {/* VENTILADORES FRONTALES */}
               <g transform="translate(340, 75)" opacity="0.6">
                 <g className="spin-slow" style={{ transformOrigin: '0px 35px' }}>
                   <circle cx="0" cy="35" r="14" fill="none" stroke={mainStatusColor} strokeWidth="1.5" />
@@ -511,7 +480,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
           </svg>
         </div>
 
-        {/* PANEL LATERAL DE VERIFICACIÓN */}
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2.5 mb-1 px-1">
             <span className="w-1.5 h-1.5 rounded-full bg-[#00ffff]"></span>
@@ -563,7 +531,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
 
       </div>
 
-      {/* INVENTARIO */}
       <div className="mb-12 max-w-[1200px] mx-auto">
         <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">
           {isEn ? 'Parametric Inventory' : 'Inventario Paramétrico'}
@@ -591,7 +558,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
         </div>
       </div>
 
-      {/* CENTRAL DE ADQUISICIÓN / TIENDAS */}
       {selectedComponents.length > 0 && (
         <div className="mb-16 max-w-[1200px] mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-6">
@@ -651,7 +617,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
         </div>
       )}
 
-      {/* TEXTO NARRATIVO AVANZADO */}
       <div className="mb-16 max-w-5xl mx-auto">
         <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">
           {isEn ? 'Engineering & Assembly Analysis' : 'Análisis de Ingeniería y Ensamble'}
@@ -687,7 +652,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
         </div>
       </div>
 
-      {/* METODOLOGÍA */}
       <div className="mb-16 max-w-5xl mx-auto">
         <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">
           {isEn ? 'How We Calculate Compatibility' : 'Cómo Calculamos Cada Compatibilidad'}
@@ -734,7 +698,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
         </div>
       </div>
 
-      {/* TABLA RESUMEN */}
       <div className="mb-16 max-w-5xl mx-auto">
         <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">
           {isEn ? 'Compatibility Summary' : 'Resumen de Compatibilidad'}
@@ -761,7 +724,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
         </div>
       </div>
 
-      {/* PREGUNTAS FRECUENTES */}
       <div className="mb-16 max-w-5xl mx-auto">
         <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">
           {isEn ? 'Frequently Asked Questions' : 'Preguntas Frecuentes'}
@@ -778,7 +740,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
           ))}
         </div>
       </div>
-
     </div>
   );
 }
