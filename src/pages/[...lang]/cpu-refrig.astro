@@ -1,26 +1,34 @@
 ---
-// src/pages/cpu-refrig.astro
-import CpuCoolerSearchInterface from '../components/CpuCoolerSearchInterface.jsx';
-import Footer from '../components/Footer.astro';
-import '../styles/global.css';
-import { getLangFromUrl, useTranslations } from '../i18n/utils';
-
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
-const langPrefix = lang === 'en' ? '/en' : '';
+// src/pages/[...lang]/cpu-refrig.astro
+import CpuCoolerSearchInterface from '../../components/CpuCoolerSearchInterface.jsx';
+import Footer from '../../components/Footer.astro';
+import '../../styles/global.css';
+import { useTranslations } from '../../i18n/utils';
 
 // Importamos directamente los archivos individuales de hardware
-import cpus from '../data/cpus.json';
-import coolers from '../data/coolers.json';
+import cpus from '../../data/cpus.json';
+import coolers from '../../data/coolers.json';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } }, // Genera /cpu-refrig (Español)
+    { params: { lang: 'en' } },      // Genera /en/cpu-refrig (Inglés)
+  ];
+}
+
+const { lang: langParam } = Astro.params;
+const lang = langParam === 'en' ? 'en' : 'es';
+
+const t = useTranslations(lang);
+const langPrefix = lang === 'en' ? '/en' : '';
 
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
 const statement = lang === 'en'
   ? 'Lidunax thermal algorithm evaluates processor TDP heat generation against cooler dissipation capacity, checking socket compatibility and physical RAM clearance.'
-  : 'El algoritmo térmico de Lidunax evalúa la generación de calor TDP del procesador frente a la capacidad de disipación del cooler, comprobando la compatibilidad de socket y el despeje físico con las memorias RAM.';
+  : 'El algoritmo térmico de Lidunax evalúa la generación de calor TDP del procesador frente a la capacidad de disipación del cooler, comprobando la compatibilidad de socket y holgura física de RAM.';
 const statementWords = statement.split(' ');
 ---
-
 <html lang={lang}>
   <head>
     <meta charset="utf-8" />

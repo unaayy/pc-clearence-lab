@@ -1,43 +1,55 @@
 ---
-// src/pages/gpu-caja.astro
-import SearchInterface from '../components/SearchInterface.jsx';
-import Footer from '../components/Footer.astro';
-import '../styles/global.css';
-import { getLangFromUrl, useTranslations } from '../i18n/utils';
+// src/pages/[...lang]/fuente-psu.astro
+import PsuSearchInterface from '../../components/PsuSearchInterface.jsx';
+import Footer from '../../components/Footer.astro';
+import '../../styles/global.css';
+import { useTranslations } from '../../i18n/utils';
 
-const lang = getLangFromUrl(Astro.url);
+// 1. Importamos directamente los archivos individuales de hardware
+import psusData from '../../data/psus.json';
+import gpusData from '../../data/gpus.json';
+import cpusData from '../../data/cpus.json';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } }, // Genera /fuente-psu (Español)
+    { params: { lang: 'en' } },      // Genera /en/fuente-psu (Inglés)
+  ];
+}
+
+const { lang: langParam } = Astro.params;
+const lang = langParam === 'en' ? 'en' : 'es';
+
 const t = useTranslations(lang);
 const langPrefix = lang === 'en' ? '/en' : '';
 
-// 1. Importamos las bases de datos desde sus archivos individuales
-import cases from '../data/cases.json';
-import gpus from '../data/gpus.json';
+const psus = psusData || [];
+const gpus = gpusData || [];
+const cpus = cpusData || [];
 
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
 
 const statement = lang === 'en'
-  ? 'Lidunax compatibility analysis checks real GPU dimensions against chassis free space, accounting for AIO radiators and side cable clearance.'
-  : 'El análisis de compatibilidad de Lidunax contrasta las dimensiones reales de profundidad, anchura y altura de la tarjeta gráfica frente al espacio libre del chasis, teniendo en cuenta la instalación de radiadores frontales y el margen lateral para el conector de alimentación.';
-const statementWords = statement.split(' ');
+  ? 'Lidunax power algorithm evaluates combined peak energy demands (TDP) of processor and graphics card, adding a safety margin for transient spikes.'
+  : 'El algoritmo de potencia de Lidunax evalúa las demandas de energía pico (TDP) combinadas del procesador (CPU) y la tarjeta gráfica (GPU), añadiendo un margen de seguridad.';
 
-const pairs = cases.slice(0, 3).flatMap((caseItem) =>
-  gpus.slice(0, 2).map((gpuItem) => ({ caseItem, gpuItem }))
-);
+// AÑADIR ESTA LÍNEA QUE FALTABA:
+const statementWords = statement.split(' ');
 ---
 
 <html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{lang === 'en' ? 'GPU & Case Compatibility Checker | LIDUNAX' : 'LIDUNAX - Comprobador físico de hardware y compatibilidad'}</title>
+    <title>{lang === 'en' ? 'PSU Power Calculator & Wattage | LIDUNAX' : 'Calculadora de Fuente de Alimentación (PSU) y Vatios | LIDUNAX'}</title>
     <link rel="icon" type="image/png" href="/logo2.webp?v=5" />
-    <meta name="description" content="Verifica el espacio libre, holguras y compatibilidad física entre tu chasis y tarjeta gráfica en LIDUNAX." />
-    <link rel="canonical" href={canonicalURL} />
+    <meta name="description" content="Calcula los vatios reales que necesita tu PC según tu CPU y GPU. Verifica compatibilidad ATX 3.0." />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="canonical" href={canonicalURL} />
   </head>
 
   <body class="bg-[#050507] text-white min-h-screen relative overflow-x-hidden flex flex-col justify-between selection:bg-[#00ffff] selection:text-black">
@@ -53,7 +65,6 @@ const pairs = cases.slice(0, 3).flatMap((caseItem) =>
             <img src="/logoancho.webp" alt="LDX" width="160" height="32" class="h-8 sm:h-10 w-auto object-contain" />
             <span class="brand__name orb">LIDUNAX</span>
           </a>
-
           <nav class="nav__links" aria-label="Principal">
             <a href={langPrefix || '/'}>{t('nav.home')}</a>
             <a href={`${langPrefix}/faq`}>{t('nav.faq')}</a>
@@ -64,59 +75,54 @@ const pairs = cases.slice(0, 3).flatMap((caseItem) =>
 
       <main class="main sf">
 
-        <section class="hero mb-8 sm:mb-16">
+        <section class="hero mb-8 sm:mb-12">
           <h1 class="h1 orb rise" style="--d:.05s">
-            <span>{lang === 'en' ? 'Check' : 'Comprobar'}</span>
-            <span>{lang === 'en' ? 'compatibility' : 'compatibilidad'}</span>
+            <span>{lang === 'en' ? 'Power &' : 'Fuente &'}</span>
+            <span>{lang === 'en' ? 'PSU Energy' : 'Energía PSU'}</span>
           </h1>
           <p class="hero__sub rise" style="--d:.25s">
             {lang === 'en'
-              ? 'Check clearance and exact margins before assembling your PC.'
-              : 'Verifica el espacio libre y las holguras exactas antes de ensamblar tu PC.'}
+              ? 'Select power supply, GPU, and processor to generate energy telemetry report.'
+              : 'Selecciona la fuente de alimentación, gráfica y procesador para generar el informe de telemetría energética.'}
           </p>
 
-          <div class="tool rise-soft mt-8" style="--d:.8s">
-            <SearchInterface client:idle cases={cases} gpus={gpus} />
-          </div>
+          <PsuSearchInterface client:idle psus={psus} gpus={gpus} cpus={cpus} />
         </section>
 
         <section class="section" aria-labelledby="como-evaluamos">
           <h2 id="como-evaluamos" class="h2 orb text-center md:text-left">
-            {lang === 'en' ? 'How we evaluate physical clearance in LIDUNAX' : '¿Cómo evaluamos la compatibilidad física en LIDUNAX?'}
+            {lang === 'en' ? 'How we calculate ideal power supply in LIDUNAX' : '¿Cómo calculamos la fuente ideal en LIDUNAX?'}
           </h2>
-
           <p class="lit text-center md:text-left mx-auto md:mx-0" data-lit>
             {statementWords.map((word) => (<><span class="w">{word}</span>{' '}</>))}
           </p>
-
           <div class="bento">
             <article class="card card--wide">
               <div>
-                <h3 class="orb">{lang === 'en' ? 'Length Clearance' : 'Holgura longitudinal'}</h3>
+                <h3 class="orb">{lang === 'en' ? 'Transient Spike Margin' : 'Margen para picos transitorios'}</h3>
                 <p>
                   {lang === 'en'
-                    ? 'We measure total GPU length against chassis maximum clearance, deducting 30 mm for front AIO radiators.'
-                    : 'Medimos la longitud total de la GPU frente al espacio máximo del chasis, restando 30 mm si se monta un radiador AIO en el frontal.'}
+                    ? 'High-end GPUs suffer instant power micro-spikes up to 150% TDP. We add a 25% buffer to prevent OCP/OPP shutdowns.'
+                    : 'Las tarjetas gráficas de gama alta sufren micro-picos de consumo instantáneo de hasta un 150% de su TDP. Añadimos un buffer del 25% para evitar apagaos repentinos por disparo del sistema de protección OCP/OPP.'}
                 </p>
               </div>
               <div class="stat">
-                <span class="stat__n orb">-30<small>mm</small></span>
-                <span class="stat__cap">{lang === 'en' ? 'with front AIO radiator' : 'con radiador AIO frontal'}</span>
+                <span class="stat__n orb">+25<small>%</small></span>
+                <span class="stat__cap">{lang === 'en' ? 'safety and efficiency margin' : 'margen de seguridad y eficiencia'}</span>
               </div>
             </article>
-
             <article class="card card--narrow">
               <div>
-                <h3 class="orb">{lang === 'en' ? '12VHPWR Side Clearance' : 'Espacio lateral 12VHPWR'}</h3>
+                <h3 class="orb">ATX 3.0 / PCIe 5.0</h3>
                 <p>
                   {lang === 'en'
-                    ? 'Modern GPUs require clearance to avoid bending cables against glass. We ensure at least 35 mm.'
-                    : 'Las gráficas modernas requieren espacio para no doblar el cable contra el cristal. Garantizamos un margen mínimo de 35 mm para evitar tensiones.'}
+                    ? 'Native compatibility with 12VHPWR connectors to power modern GPUs up to 600W without adapters.'
+                    : 'Garantizamos compatibilidad nativa con conectores 12VHPWR o 12V-2x6 para alimentar GPUs modernas hasta 600W sin depender de adaptadores.'}
                 </p>
               </div>
               <div class="stat">
-                <span class="stat__n orb">35<small>mm</small></span>
-                <span class="stat__cap">{lang === 'en' ? 'minimum side margin' : 'margen mínimo lateral'}</span>
+                <span class="stat__n orb">600<small>W</small></span>
+                <span class="stat__cap">{lang === 'en' ? 'single rail PCIe Gen 5 power' : 'potencia canal único PCIe Gen 5'}</span>
               </div>
             </article>
           </div>

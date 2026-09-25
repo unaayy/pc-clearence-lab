@@ -1,11 +1,18 @@
 ---
+// src/pages/[...lang].astro
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
-import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
 
-// Detecta si la ruta actual es la versión /en o la principal /
-const isEnRoute = Astro.url.pathname.startsWith('/en');
-const lang = isEnRoute ? 'en' : 'es';
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } }, // Para la ruta principal: lidunax.com/
+    { params: { lang: 'en' } },      // Para la ruta en inglés: lidunax.com/en/
+  ];
+}
+
+const { lang: langParam } = Astro.params;
+const lang = langParam === 'en' ? 'en' : 'es';
 
 const t = useTranslations(lang);
 const langPrefix = lang === 'en' ? '/en' : '';
@@ -27,6 +34,8 @@ const secciones: Seccion[] = [
   { href: `${langPrefix}/full-pc`,    img: '/pc.webp',     index: '04', tag: t('tag.04'), title: t('sec.pc.title'),  sub: t('sec.pc.sub') }
 ];
 ---
+
+<!-- Tu HTML y componentes aquí abajo -->
 
 <html lang={lang}>
   <head>

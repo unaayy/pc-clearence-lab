@@ -1,23 +1,32 @@
 ---
-// src/pages/full-pc.astro
-import SearchInterfaceFullPc from '../components/SearchInterfaceFullPc.jsx';
-import Footer from '../components/Footer.astro';
-import '../styles/global.css';
-import { getLangFromUrl, useTranslations } from '../i18n/utils';
+// src/pages/[...lang]/full-pc.astro
+import SearchInterfaceFullPc from '../../components/SearchInterfaceFullPc.jsx';
+import Footer from '../../components/Footer.astro';
+import '../../styles/global.css';
+import { useTranslations } from '../../i18n/utils';
 
-const lang = getLangFromUrl(Astro.url);
+export function getStaticPaths() {
+  return [
+    { params: { lang: undefined } }, // Genera /full-pc (Español)
+    { params: { lang: 'en' } },      // Genera /en/full-pc (Inglés)
+  ];
+}
+
+const { lang: langParam } = Astro.params;
+const lang = langParam === 'en' ? 'en' : 'es';
+
 const t = useTranslations(lang);
 const langPrefix = lang === 'en' ? '/en' : '';
 
-// Importamos individualmente los 8 datasets divididos
-import cpusData from '../data/cpus.json';
-import coolersData from '../data/coolers.json';
-import gpusData from '../data/gpus.json';
-import psusData from '../data/psus.json';
-import casesData from '../data/cases.json';
-import motherboardsData from '../data/motherboards.json';
-import ramsData from '../data/rams.json';
-import storageData from '../data/storage.json';
+// Importamos individualmente los 8 datasets divididos desde ../../data/
+import cpusData from '../../data/cpus.json';
+import coolersData from '../../data/coolers.json';
+import gpusData from '../../data/gpus.json';
+import psusData from '../../data/psus.json';
+import casesData from '../../data/cases.json';
+import motherboardsData from '../../data/motherboards.json';
+import ramsData from '../../data/rams.json';
+import storageData from '../../data/storage.json';
 
 const cpus = cpusData || [];
 const coolers = coolersData || [];
