@@ -3,8 +3,10 @@ import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 
-// Detecta si la ruta es / o /en/
-const lang = getLangFromUrl(Astro.url);
+// Detecta si la ruta actual es la versión /en o la principal /
+const isEnRoute = Astro.url.pathname.startsWith('/en');
+const lang = isEnRoute ? 'en' : 'es';
+
 const t = useTranslations(lang);
 const langPrefix = lang === 'en' ? '/en' : '';
 
