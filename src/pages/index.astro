@@ -41,16 +41,23 @@ const secciones = [
     </noscript>
 
     <!-- Detección automática de idioma ultrarrápida (0 ms layout shift) -->
+    <!-- Detección automática de idioma ultrarrápida (0 ms layout shift) -->
     <script is:inline>
       (function () {
-        const savedLang = localStorage.getItem('lidunax_lang');
-        const browserLang = (navigator.language || navigator.userLanguage || '').slice(0, 2);
-        const targetLang = savedLang || (browserLang === 'en' ? 'en' : 'es');
+        // Leemos el idioma del navegador limpiando mayúsculas y subcódigos (ej: en-US -> en)
+        var rawLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+        var browserIsEn = rawLang.startsWith('en');
+        var savedLang = localStorage.getItem('lidunax_lang');
 
-        const currentPath = window.location.pathname;
+        // Si el usuario eligió español expresamente, respetamos su elección;
+        // en caso contrario, si su dispositivo está en inglés, forzamos 'en'
+        var targetLang = savedLang ? savedLang : (browserIsEn ? 'en' : 'es');
 
+        var currentPath = window.location.pathname;
+
+        // Si el objetivo es inglés y no estamos ya en una ruta /en, redirigimos
         if (targetLang === 'en' && !currentPath.startsWith('/en')) {
-          window.location.replace('/en' + currentPath);
+          window.location.replace('/en' + (currentPath === '/' ? '' : currentPath));
         }
       })();
     </script>
