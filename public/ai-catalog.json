@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "Lidunax Hardware Clearance Lab",
+  "description": "Herramienta de análisis de compatibilidad física para componentes de PC.",
+  "url": "https://www.lidunax.com",
+  "endpoints": []
+}

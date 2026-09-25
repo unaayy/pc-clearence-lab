@@ -1,0 +1,8 @@
+# Lidunax
+
+> Lidunax es un analizador dinámico de compatibilidad física para configuraciones de PC. Valida dimensiones de GPU, CPU, fuentes de alimentación y chasis.
+
+## Recursos
+- [Página Principal](https://www.lidunax.com/): Herramienta de verificación de hardware.
+- [FAQ](https://www.lidunax.com/faq): Preguntas frecuentes sobre dimensiones de componentes.
+- [Sobre Nosotros](https://www.lidunax.com/about): Información sobre la plataforma.
