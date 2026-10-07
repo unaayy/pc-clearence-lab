@@ -75,7 +75,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.lidunax.com');
       <header class="border-b border-white/10 bg-black/50 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
           <a href={langPrefix || '/'} class="flex items-center gap-3">
-            <img src="/logoancho.webp" alt="LDX" width="160" height="32" class="h-8 w-auto object-contain" />
+            <img src="/logoancho.webp" decoding="async" alt="LDX" width="160" height="32" class="h-8 w-auto object-contain" />
             <span class="font-orbitron font-bold tracking-widest hidden sm:block">LIDUNAX</span>
           </a>
           <nav class="flex gap-6 text-sm font-orbitron tracking-wider text-slate-400">

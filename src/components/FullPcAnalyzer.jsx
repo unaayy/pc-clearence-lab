@@ -1,6 +1,48 @@
 // src/components/FullPcAnalyzer.jsx
-import React, { useEffect, useMemo } from 'react';
-import { getStoresForLocale } from '../config/stores.js';
+import React, { useEffect, useMemo, useRef, useState, memo, lazy, Suspense } from 'react';
+import { SmartAffiliateCTA, StockText } from './SmartAffiliateCTA';
+import { ScrollToBuyButton } from './AmazonButton';
+import { SolutionCard, ApprovedBanner } from './CompatibilityAssistant';
+import { analyzeBuild, getRecommendations } from '../utils/buildAnalysis.js';
+
+// Secciones informativas bajo el fold: se descargan solo cuando el usuario se acerca a ellas
+const BuildDetails = lazy(() => import('./BuildDetails.jsx'));
+const DETAILS_PLACEHOLDER_HEIGHT = 800;
+
+function LazyBuildDetails(props) {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || visible) return undefined;
+    if (typeof IntersectionObserver === 'undefined') {
+      setVisible(true);
+      return undefined;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: '600px 0px' }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [visible]);
+
+  return (
+    <div ref={ref} style={visible ? undefined : { minHeight: DETAILS_PLACEHOLDER_HEIGHT }}>
+      {visible && (
+        <Suspense fallback={<div style={{ minHeight: DETAILS_PLACEHOLDER_HEIGHT }} />}>
+          <BuildDetails {...props} />
+        </Suspense>
+      )}
+    </div>
+  );
+}
 
 export function resolveBuild(db, sp) {
   if (!db || !sp) return null;
@@ -52,7 +94,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
     : lang === 'en';
 
   const currentLang = isEn ? 'en' : 'es';
-  const stores = getStoresForLocale(currentLang);
 
   const build = useMemo(() => {
     if (!db) return null;
@@ -82,17 +123,6 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
     }
   }, [build, isEn]);
 
-  const ICONS = {
-    [isEn ? 'PROCESSOR (CPU)' : 'PROCESADOR (CPU)']: 'CPU',
-    [isEn ? 'GRAPHICS CARD' : 'TARJETA GRÁFICA']: 'GPU',
-    [isEn ? 'MOTHERBOARD' : 'PLACA BASE']: 'MB',
-    [isEn ? 'COOLING' : 'REFRIGERACIÓN']: 'RF',
-    [isEn ? 'RAM MEMORY' : 'MEMORIA RAM']: 'RAM',
-    [isEn ? 'STORAGE' : 'ALMACENAMIENTO']: 'SSD',
-    [isEn ? 'POWER SUPPLY' : 'FUENTE (PSU)']: 'PSU',
-    [isEn ? 'CHASSIS / CASE' : 'CHASIS / CAJA']: 'PC',
-  };
-
   if (!build) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
@@ -104,107 +134,32 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
     );
   }
 
-  // --- CÁLCULOS Y VALIDACIONES ---
-  const cpuTdp = build.cpu?.tdp || 120;
-  const gpuTdp = build.gpu?.tdp || 250;
-  const rawPower = cpuTdp + gpuTdp + 80;
-  const reqPower = Math.ceil(rawPower * 1.25);
-  const psuPower = build.psu?.wattage || 0;
-  const psuOk = build.psu ? psuPower >= reqPower : false;
+  return <AnalyzerView build={build} isEn={isEn} />;
+}
 
-  const gpuLen = build.gpu?.lengthMM || 0;
-  const caseMaxGpu = build.case?.maxGpuLengthMM || 0;
-  const gpuOk = build.gpu && build.case ? (caseMaxGpu > 0 ? gpuLen <= caseMaxGpu : true) : false;
+const AnalyzerView = memo(function AnalyzerView({ build, isEn }) {
+  const ICONS = {
+    [isEn ? 'PROCESSOR (CPU)' : 'PROCESADOR (CPU)']: 'CPU',
+    [isEn ? 'GRAPHICS CARD' : 'TARJETA GRÁFICA']: 'GPU',
+    [isEn ? 'MOTHERBOARD' : 'PLACA BASE']: 'MB',
+    [isEn ? 'COOLING' : 'REFRIGERACIÓN']: 'RF',
+    [isEn ? 'RAM MEMORY' : 'MEMORIA RAM']: 'RAM',
+    [isEn ? 'STORAGE' : 'ALMACENAMIENTO']: 'SSD',
+    [isEn ? 'POWER SUPPLY' : 'FUENTE (PSU)']: 'PSU',
+    [isEn ? 'CHASSIS / CASE' : 'CHASIS / CAJA']: 'PC',
+  };
 
-  const caseWidthCap = build.case?.maxCpuCoolerHeightMM || 165;
-  const gpuWidth = build.gpu?.widthMM || 135;
-  const cableClearance = caseWidthCap - gpuWidth;
-
-  let cableCritical = false;
-  let cableColorHex = '#10b981';
-  let cableDesc = isEn ? 'Pending GPU or Case' : 'Pendiente de GPU o Chasis';
-
-  if (build.gpu && build.case) {
-    if (cableClearance < 20) {
-      cableCritical = true;
-      cableColorHex = '#f43f5e';
-      cableDesc = isEn 
-        ? `Glass panel collision: ${Math.round(cableClearance)}mm clearance. Wider case required.`
-        : `Choque contra cristal: ${Math.round(cableClearance)}mm de margen. Necesitas caja más ancha.`;
-    } else if (cableClearance < 35) {
-      cableColorHex = '#fbbf24';
-      cableDesc = isEn 
-        ? `Forced bend: ${Math.round(cableClearance)}mm free. Use 90º angled adapter.`
-        : `Cierre forzado: ${Math.round(cableClearance)}mm libres. Usa cable acodado a 90º.`;
-    } else {
-      cableDesc = isEn 
-        ? `Safe side clearance: ${Math.round(cableClearance)}mm free to glass.`
-        : `Holgura lateral segura: ${Math.round(cableClearance)}mm libres hasta el cristal.`;
-    }
-  }
-
-  let coolerOk = false;
-  let coolerDesc = isEn ? 'Missing Cooler or Case' : 'Falta Disipador o Chasis';
-  if (build.cooler && build.case) {
-    if (build.cooler.isLiquid) {
-      coolerOk = (build.cooler.radiatorSizeMM || 240) <= 360;
-      coolerDesc = isEn 
-        ? `AIO Radiator: ${build.cooler.radiatorSizeMM || 240}mm. Case limit OK.`
-        : `Radiador AIO: ${build.cooler.radiatorSizeMM || 240}mm. Límite chasis OK.`;
-    } else {
-      const height = build.cooler.heightMM || 155;
-      coolerOk = height <= (build.case.maxCpuCoolerHeightMM || 999);
-      coolerDesc = isEn 
-        ? `Tower: ${height}mm. Limit: ${build.case.maxCpuCoolerHeightMM || 165}mm.`
-        : `Torre: ${height}mm. Límite: ${build.case.maxCpuCoolerHeightMM || 165}mm.`;
-    }
-  }
-
-  const socketOk = build.cpu && build.mb ? build.cpu.socket === build.mb.socket : true;
-  const ramOk = Boolean(build.ram);
-  const storageOk = Boolean(build.storage);
-
-  const allClear = psuOk && gpuOk && coolerOk && socketOk && ramOk && storageOk && !cableCritical;
-  const mainStatusColor = allClear ? '#10b981' : '#f43f5e';
-  const statusMessage = allClear 
-    ? (isEn ? 'BUILD FULLY VIABLE' : 'ENSAMBLAJE TOTALMENTE VIABLE') 
-    : (isEn ? 'INCOMPATIBILITY OR STRUCTURAL RISK' : 'INCOMPATIBILIDAD O RIESGO ESTRUCTURAL');
-
-  const isAIO = build.cooler?.isLiquid;
-
-  const gpuWidthSvg = gpuLen > 330 ? 240 : 200;
-  const gpuX = 60;
-  const connectorX = gpuX + gpuWidthSvg - 30;
-
-  const complianceChecks = [
-    {
-      key: 'gpu',
-      t: isEn ? 'GPU LENGTH CLEARANCE' : 'HOLGURA LONGITUD (GPU)',
-      ok: gpuOk,
-      c: gpuOk ? '#10b981' : '#f43f5e',
-      d: build.gpu && build.case
-        ? caseMaxGpu > 0
-          ? `${isEn ? 'Length' : 'Longitud'}: ${gpuLen}mm | ${isEn ? 'Max' : 'Máx'}: ${caseMaxGpu}mm`
-          : `${isEn ? 'Length' : 'Longitud'}: ${gpuLen}mm | ${isEn ? 'Max: no data (assumed ok)' : 'Máx: sin dato (asumido compatible)'}`
-        : (isEn ? 'Pending' : 'Pendiente'),
-    },
-    { key: 'cable', t: isEn ? 'CABLE & GLASS CLEARANCE' : 'CABLEADO Y CRISTAL (ANCHO)', ok: !cableCritical, c: cableColorHex, d: cableDesc },
-    {
-      key: 'power',
-      t: isEn ? 'POWER SUPPLY CAPACITY' : 'SUMINISTRO ENERGÉTICO',
-      ok: psuOk,
-      c: psuOk ? '#10b981' : '#f43f5e',
-      d: build.psu ? `${isEn ? 'Demand' : 'Demanda'}: ${reqPower}W | PSU: ${psuPower}W` : (isEn ? 'Pending' : 'Pendiente'),
-    },
-    { key: 'cooling', t: isEn ? 'COOLING CLEARANCE' : 'ESPACIO REFRIGERACIÓN', ok: coolerOk, c: coolerOk ? '#10b981' : '#f43f5e', d: coolerDesc },
-    {
-      key: 'socket',
-      t: isEn ? 'SOCKET COMPATIBILITY' : 'COMPATIBILIDAD SOCKET',
-      ok: socketOk,
-      c: socketOk ? '#10b981' : '#f43f5e',
-      d: build.cpu && build.mb ? (socketOk ? (isEn ? 'Matching LGA/AM' : 'LGA/AM Coincidente') : (isEn ? 'Incompatible' : 'Incompatible')) : (isEn ? 'Pending' : 'Pendiente'),
-    },
-  ];
+  // --- ANÁLISIS (memoizado: solo se recalcula si cambia la build o el idioma) ---
+  const analysis = useMemo(() => analyzeBuild(build, isEn), [build, isEn]);
+  const recommendations = useMemo(() => getRecommendations(build, analysis, isEn), [build, analysis, isEn]);
+  const {
+    cpuTdp, gpuTdp, reqPower, psuPower, psuOk,
+    gpuLen, caseMaxGpu, gpuOk,
+    caseWidthCap, gpuWidth, cableClearance, cableCritical, cableColorHex, cableDesc,
+    coolerOk, coolerDesc, socketOk, ramOk, storageOk,
+    allClear, mainStatusColor, statusMessage, isAIO,
+    gpuWidthSvg, gpuX, connectorX, complianceChecks,
+  } = analysis;
 
   const selectedComponents = [
     { label: isEn ? 'PROCESSOR (CPU)' : 'PROCESADOR (CPU)', data: build.cpu },
@@ -217,79 +172,83 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
     { label: isEn ? 'CHASSIS / CASE' : 'CHASIS / CAJA', data: build.case },
   ].filter((c) => c.data);
 
-  const physicalText = gpuOk && !cableCritical
-    ? (isEn 
-      ? `The internal architecture of the ${formatName(build.case) || ''} chassis provides verified clearance for the ${formatName(build.gpu) || ''} graphics card. With ${caseMaxGpu - gpuLen}mm of front clearance margin and ${Math.round(cableClearance)}mm lateral margin, it ensures tight closure of the side panel without over-bending the 12VHPWR power cable.`
-      : `La arquitectura interna del chasis ${formatName(build.case) || ''} proporciona una holgura verificada para la gráfica ${formatName(build.gpu) || ''}. Con ${caseMaxGpu - gpuLen}mm de margen de tolerancia frontal y ${Math.round(cableClearance)}mm laterales, se asegura el cierre hermético del panel de cristal templado sin flexionar en exceso el conector de alimentación principal 12VHPWR.`)
-    : build.gpu && build.case
-    ? (isEn 
-      ? `COLLISION RISK: The dimensions of the graphics card (${gpuLen}mm length and ${gpuWidth}mm width) directly conflict with physical limits inside the chassis. Proper installation or safe cable routing will be impossible.`
-      : `RIESGO DE COLISIÓN: Las cotas de la tarjeta gráfica (${gpuLen}mm de largo y ${gpuWidth}mm de ancho) entran en conflicto directo con los límites físicos del habitáculo del chasis. Se imposibilitará la instalación correcta o el enrutamiento seguro de los cables de potencia PCIe.`)
-    : (isEn ? 'Missing case or GPU data to perform volumetric clearance calculation.' : 'Faltan datos de chasis o tarjeta gráfica para realizar el cálculo de holgura volumétrica.');
+  // Textos narrativos y FAQ: memoizados para no recomponer strings en cada render
+  const { physicalText, platformText, powerText, thermalText, faqItems } = useMemo(() => {
+    const physicalText = gpuOk && !cableCritical
+      ? (isEn 
+        ? `The internal architecture of the ${formatName(build.case) || ''} chassis provides verified clearance for the ${formatName(build.gpu) || ''} graphics card. With ${caseMaxGpu - gpuLen}mm of front clearance margin and ${Math.round(cableClearance)}mm lateral margin, it ensures tight closure of the side panel without over-bending the 12VHPWR power cable.`
+        : `La arquitectura interna del chasis ${formatName(build.case) || ''} proporciona una holgura verificada para la gráfica ${formatName(build.gpu) || ''}. Con ${caseMaxGpu - gpuLen}mm de margen de tolerancia frontal y ${Math.round(cableClearance)}mm laterales, se asegura el cierre hermético del panel de cristal templado sin flexionar en exceso el conector de alimentación principal 12VHPWR.`)
+      : build.gpu && build.case
+      ? (isEn 
+        ? `COLLISION RISK: The dimensions of the graphics card (${gpuLen}mm length and ${gpuWidth}mm width) directly conflict with physical limits inside the chassis. Proper installation or safe cable routing will be impossible.`
+        : `RIESGO DE COLISIÓN: Las cotas de la tarjeta gráfica (${gpuLen}mm de largo y ${gpuWidth}mm de ancho) entran en conflicto directo con los límites físicos del habitáculo del chasis. Se imposibilitará la instalación correcta o el enrutamiento seguro de los cables de potencia PCIe.`)
+      : (isEn ? 'Missing case or GPU data to perform volumetric clearance calculation.' : 'Faltan datos de chasis o tarjeta gráfica para realizar el cálculo de holgura volumétrica.');
 
-  const thermalText = coolerOk
-    ? (isEn 
-      ? `System thermal profile is secured. The ${formatName(build.cooler) || ''} solution integrates seamlessly. This ensures the ${formatName(build.cpu) || ''} CPU maintains optimal boost clocks without thermal throttling, dissipating ${cpuTdp}W TDP.`
-      : `El perfil térmico del sistema está asegurado. La solución ${formatName(build.cooler) || ''} se integra perfectamente. Esto asegura que la CPU ${formatName(build.cpu) || ''} mantenga frecuencias de reloj óptimas (boost clocks) constantes, evitando el temido 'thermal throttling' y prolongando la vida útil del silicio al disipar los ${cpuTdp}W de TDP.`)
-    : build.cooler && build.case
-    ? (isEn 
-      ? `THERMAL CONFLICT: The chosen cooling system exceeds case tolerance limits. The side panel cannot close or required radiator mounts are missing.`
-      : `CONFLICTO TÉRMICO: El sistema de refrigeración seleccionado supera las cotas de tolerancia de la caja. El panel lateral no podrá cerrarse o no existen anclajes compatibles para el radiador requerido.`)
-    : (isEn ? 'Insufficient thermal data for heat dissipation forecast.' : 'Datos térmicos insuficientes para elaborar el pronóstico de disipación de calor.');
+    const thermalText = coolerOk
+      ? (isEn 
+        ? `System thermal profile is secured. The ${formatName(build.cooler) || ''} solution integrates seamlessly. This ensures the ${formatName(build.cpu) || ''} CPU maintains optimal boost clocks without thermal throttling, dissipating ${cpuTdp}W TDP.`
+        : `El perfil térmico del sistema está asegurado. La solución ${formatName(build.cooler) || ''} se integra perfectamente. Esto asegura que la CPU ${formatName(build.cpu) || ''} mantenga frecuencias de reloj óptimas (boost clocks) constantes, evitando el temido 'thermal throttling' y prolongando la vida útil del silicio al disipar los ${cpuTdp}W de TDP.`)
+      : build.cooler && build.case
+      ? (isEn 
+        ? `THERMAL CONFLICT: The chosen cooling system exceeds case tolerance limits. The side panel cannot close or required radiator mounts are missing.`
+        : `CONFLICTO TÉRMICO: El sistema de refrigeración seleccionado supera las cotas de tolerancia de la caja. El panel lateral no podrá cerrarse o no existen anclajes compatibles para el radiador requerido.`)
+      : (isEn ? 'Insufficient thermal data for heat dissipation forecast.' : 'Datos térmicos insuficientes para elaborar el pronóstico de disipación de calor.');
 
-  const powerText = psuOk
-    ? (isEn 
-      ? `Electrical topology is guaranteed by the ${formatName(build.psu) || ''} unit. After crossing load curves, we calculate a peak demand of ${reqPower}W against ${psuPower}W nominal delivery. This safety headroom prevents shutdowns from transient power spikes.`
-      : `La topología eléctrica está garantizada por la fuente ${formatName(build.psu) || ''}. Tras cruzar las curvas de consumo, calculamos una demanda pico de ${reqPower}W frente a los ${psuPower}W de entrega nominal. Este generoso margen asegura eficiencia óptima y evita apagones por picos transitorios (power spikes).`)
-    : build.psu
-    ? (isEn 
-      ? `POWER DEFICIT: The ${psuPower}W capacity is insufficient to sustain peak demands (${reqPower}W). Immediate risk of triggering OCP/OPP protection systems.`
-      : `DÉFICIT ENERGÉTICO: La capacidad de ${psuPower}W es insuficiente para sostener los picos requeridos (${reqPower}W). Riesgo inminente de activación de los sistemas de protección (OCP/OPP).`)
-    : (isEn ? 'Power demand analysis suspended due to missing PSU unit.' : 'Análisis de demanda energética suspendido por ausencia de unidad de suministro (PSU).');
+    const powerText = psuOk
+      ? (isEn 
+        ? `Electrical topology is guaranteed by the ${formatName(build.psu) || ''} unit. After crossing load curves, we calculate a peak demand of ${reqPower}W against ${psuPower}W nominal delivery. This safety headroom prevents shutdowns from transient power spikes.`
+        : `La topología eléctrica está garantizada por la fuente ${formatName(build.psu) || ''}. Tras cruzar las curvas de consumo, calculamos una demanda pico de ${reqPower}W frente a los ${psuPower}W de entrega nominal. Este generoso margen asegura eficiencia óptima y evita apagones por picos transitorios (power spikes).`)
+      : build.psu
+      ? (isEn 
+        ? `POWER DEFICIT: The ${psuPower}W capacity is insufficient to sustain peak demands (${reqPower}W). Immediate risk of triggering OCP/OPP protection systems.`
+        : `DÉFICIT ENERGÉTICO: La capacidad de ${psuPower}W es insuficiente para sostener los picos requeridos (${reqPower}W). Riesgo inminente de activación de los sistemas de protección (OCP/OPP).`)
+      : (isEn ? 'Power demand analysis suspended due to missing PSU unit.' : 'Análisis de demanda energética suspendido por ausencia de unidad de suministro (PSU).');
 
-  const platformText = socketOk && build.mb && build.cpu
-    ? (isEn 
-      ? `Central bus interconnect is properly matched. The ${formatName(build.mb) || ''} motherboard natively supports the processor under socket ${build.cpu?.socket || ''}, enabling ultra-fast PCI-Express data transfers to memory and NVMe M.2 storage.`
-      : `La interconexión central (bus de datos) está correctamente emparejada. La placa base ${formatName(build.mb) || ''} alberga nativamente el procesador bajo el zócalo ${build.cpu?.socket || ''}, habilitando la transferencia ultrarrápida de datos PCI-Express hacia la memoria y la unidad de almacenamiento sólido NVMe M.2.`)
-    : !socketOk
-    ? (isEn 
-      ? `STRUCTURAL INCOMPATIBILITY: Attempting to pair processor (${build.cpu?.socket}) with an incompatible socket on motherboard (${build.mb?.socket}). Impossible to assemble.`
-      : `INCOMPATIBILIDAD ESTRUCTURAL: Intento de emparejar el procesador (${build.cpu?.socket}) con un zócalo incompatible en la placa base (${build.mb?.socket}). Imposible proceder con el ensamble.`)
-    : (isEn ? 'Missing motherboard or CPU components to validate processing ecosystem.' : 'Faltan componentes de placa base o CPU para validar el ecosistema de procesamiento.');
+    const platformText = socketOk && build.mb && build.cpu
+      ? (isEn 
+        ? `Central bus interconnect is properly matched. The ${formatName(build.mb) || ''} motherboard natively supports the processor under socket ${build.cpu?.socket || ''}, enabling ultra-fast PCI-Express data transfers to memory and NVMe M.2 storage.`
+        : `La interconexión central (bus de datos) está correctamente emparejada. La placa base ${formatName(build.mb) || ''} alberga nativamente el procesador bajo el zócalo ${build.cpu?.socket || ''}, habilitando la transferencia ultrarrápida de datos PCI-Express hacia la memoria y la unidad de almacenamiento sólido NVMe M.2.`)
+      : !socketOk
+      ? (isEn 
+        ? `STRUCTURAL INCOMPATIBILITY: Attempting to pair processor (${build.cpu?.socket}) with an incompatible socket on motherboard (${build.mb?.socket}). Impossible to assemble.`
+        : `INCOMPATIBILIDAD ESTRUCTURAL: Intento de emparejar el procesador (${build.cpu?.socket}) con un zócalo incompatible en la placa base (${build.mb?.socket}). Imposible proceder con el ensamble.`)
+      : (isEn ? 'Missing motherboard or CPU components to validate processing ecosystem.' : 'Faltan componentes de placa base o CPU para validar el ecosistema de procesamiento.');
 
-  const faqPower = build.psu
-    ? psuOk
-      ? (isEn ? `Yes. Your ${psuPower}W PSU comfortably covers the estimated ${reqPower}W peak demand (CPU + GPU TDP plus 25% safety margin for transient spikes).` : `Sí. Tu fuente de ${psuPower}W cubre con margen los ${reqPower}W de demanda pico estimada (TDP de CPU + GPU, más un 25% de margen de seguridad para picos transitorios).`)
-      : (isEn ? `No. Estimated peak demand is ${reqPower}W while your PSU delivers ${psuPower}W. You risk shutdowns due to OCP/OPP protections.` : `No es suficiente. Se estima una demanda pico de ${reqPower}W y tu fuente entrega ${psuPower}W. Te arriesgas a apagones por activación de las protecciones OCP/OPP; sube de gama de PSU.`)
-    : (isEn ? 'Rule of thumb: sum CPU and GPU TDP, add 80W for other parts, and multiply by 1.25 for transient spike safety margin.' : 'Como regla general: suma el TDP de tu CPU y tu GPU, añade unos 80W para el resto de componentes, y multiplica el resultado por 1,25 para dejar margen a los picos de consumo transitorios.');
+    const faqPower = build.psu
+      ? psuOk
+        ? (isEn ? `Yes. Your ${psuPower}W PSU comfortably covers the estimated ${reqPower}W peak demand (CPU + GPU TDP plus 25% safety margin for transient spikes).` : `Sí. Tu fuente de ${psuPower}W cubre con margen los ${reqPower}W de demanda pico estimada (TDP de CPU + GPU, más un 25% de margen de seguridad para picos transitorios).`)
+        : (isEn ? `No. Estimated peak demand is ${reqPower}W while your PSU delivers ${psuPower}W. You risk shutdowns due to OCP/OPP protections.` : `No es suficiente. Se estima una demanda pico de ${reqPower}W y tu fuente entrega ${psuPower}W. Te arriesgas a apagones por activación de las protecciones OCP/OPP; sube de gama de PSU.`)
+      : (isEn ? 'Rule of thumb: sum CPU and GPU TDP, add 80W for other parts, and multiply by 1.25 for transient spike safety margin.' : 'Como regla general: suma el TDP de tu CPU y tu GPU, añade unos 80W para el resto de componentes, y multiplica el resultado por 1,25 para dejar margen a los picos de consumo transitorios.');
 
-  const faqSocket = build.cpu && build.mb
-    ? socketOk
-      ? (isEn ? `Yes. The processor (${build.cpu.socket}) and motherboard (${build.mb.socket}) share the same socket, so physical mounting is correct.` : `Sí. El procesador (${build.cpu.socket}) y la placa base (${build.mb.socket}) comparten el mismo zócalo, por lo que el montaje físico y eléctrico es correcto.`)
-      : (isEn ? `No. The CPU uses socket ${build.cpu.socket} and motherboard is ${build.mb.socket}. They are physically incompatible.` : `No. El procesador usa socket ${build.cpu.socket} y la placa base es ${build.mb.socket}. Son físicamente incompatibles: no existe adaptador, tendrás que cambiar el procesador o la placa base.`)
-    : (isEn ? 'CPU and motherboard sockets must match exactly (e.g. LGA1700 or AM5).' : 'El socket (zócalo) del procesador y el de la placa base deben coincidir exactamente (por ejemplo, LGA1700 o AM5). Si no coinciden, el procesador no encaja físicamente en la placa.');
+    const faqSocket = build.cpu && build.mb
+      ? socketOk
+        ? (isEn ? `Yes. The processor (${build.cpu.socket}) and motherboard (${build.mb.socket}) share the same socket, so physical mounting is correct.` : `Sí. El procesador (${build.cpu.socket}) y la placa base (${build.mb.socket}) comparten el mismo zócalo, por lo que el montaje físico y eléctrico es correcto.`)
+        : (isEn ? `No. The CPU uses socket ${build.cpu.socket} and motherboard is ${build.mb.socket}. They are physically incompatible.` : `No. El procesador usa socket ${build.cpu.socket} y la placa base es ${build.mb.socket}. Son físicamente incompatibles: no existe adaptador, tendrás que cambiar el procesador o la placa base.`)
+      : (isEn ? 'CPU and motherboard sockets must match exactly (e.g. LGA1700 or AM5).' : 'El socket (zócalo) del procesador y el de la placa base deben coincidir exactamente (por ejemplo, LGA1700 o AM5). Si no coinciden, el procesador no encaja físicamente en la placa.');
 
-  const faqGpuFit = build.gpu && build.case
-    ? gpuOk
-      ? (isEn ? `Yes. Your ${formatName(build.gpu)} is ${gpuLen}mm long and your case supports up to ${caseMaxGpu}mm, leaving ${caseMaxGpu - gpuLen}mm free.` : `Sí. Tu ${formatName(build.gpu)} mide ${gpuLen}mm y tu caja admite hasta ${caseMaxGpu}mm, dejando ${caseMaxGpu - gpuLen}mm libres.`)
-      : (isEn ? `No. Your ${formatName(build.gpu)} is ${gpuLen}mm long, while the case only supports up to ${caseMaxGpu}mm. Missing ${gpuLen - caseMaxGpu}mm.` : `No. Tu ${formatName(build.gpu)} mide ${gpuLen}mm, mientras que el chasis solo admite hasta ${caseMaxGpu}mm. Faltan ${gpuLen - caseMaxGpu}mm de espacio.`)
-    : (isEn ? 'Compare the GPU length in millimeters against the maximum supported length listed in the case specs.' : 'Compara la longitud en milímetros de la gráfica (publicada por el fabricante) con la longitud máxima admitida por tu caja, un dato que suele aparecer en la ficha técnica del chasis como "Max GPU Length".');
+    const faqGpuFit = build.gpu && build.case
+      ? gpuOk
+        ? (isEn ? `Yes. Your ${formatName(build.gpu)} is ${gpuLen}mm long and your case supports up to ${caseMaxGpu}mm, leaving ${caseMaxGpu - gpuLen}mm free.` : `Sí. Tu ${formatName(build.gpu)} mide ${gpuLen}mm y tu caja admite hasta ${caseMaxGpu}mm, dejando ${caseMaxGpu - gpuLen}mm libres.`)
+        : (isEn ? `No. Your ${formatName(build.gpu)} is ${gpuLen}mm long, while the case only supports up to ${caseMaxGpu}mm. Missing ${gpuLen - caseMaxGpu}mm.` : `No. Tu ${formatName(build.gpu)} mide ${gpuLen}mm, mientras que el chasis solo admite hasta ${caseMaxGpu}mm. Faltan ${gpuLen - caseMaxGpu}mm de espacio.`)
+      : (isEn ? 'Compare the GPU length in millimeters against the maximum supported length listed in the case specs.' : 'Compara la longitud en milímetros de la gráfica (publicada por el fabricante) con la longitud máxima admitida por tu caja, un dato que suele aparecer en la ficha técnica del chasis como "Max GPU Length".');
 
-  const faqCable = build.gpu && build.case
-    ? cableDesc
-    : (isEn ? 'GPU width and clearance to the side panel determine if power cables fit without forcing. Under 20mm clearance usually requires a 90º angled adapter.' : 'El grosor de la tarjeta gráfica y el hueco libre hasta el panel de cristal templado determinan si el conector de alimentación y sus cables caben sin forzarse. Con menos de 20mm de margen suele ser obligatorio usar un cable acodado a 90º.');
+    const faqCable = build.gpu && build.case
+      ? cableDesc
+      : (isEn ? 'GPU width and clearance to the side panel determine if power cables fit without forcing. Under 20mm clearance usually requires a 90º angled adapter.' : 'El grosor de la tarjeta gráfica y el hueco libre hasta el panel de cristal templado determinan si el conector de alimentación y sus cables caben sin forzarse. Con menos de 20mm de margen suele ser obligatorio usar un cable acodado a 90º.');
 
-  const faqCooler = build.cooler && build.case
-    ? coolerDesc
-    : (isEn ? 'Tower air coolers must respect maximum chassis height (typically 150-170mm), while liquid AIO radiators must fit available mounts (up to 360mm).' : 'Los disipadores de aire tipo torre deben respetar la altura máxima del chasis (normalmente entre 150 y 170mm), y los radiadores líquidos (AIO) deben caber en los anclajes frontales o superiores, habitualmente hasta 360mm.');
+    const faqCooler = build.cooler && build.case
+      ? coolerDesc
+      : (isEn ? 'Tower air coolers must respect maximum chassis height (typically 150-170mm), while liquid AIO radiators must fit available mounts (up to 360mm).' : 'Los disipadores de aire tipo torre deben respetar la altura máxima del chasis (normalmente entre 150 y 170mm), y los radiadores líquidos (AIO) deben caber en los anclajes frontales o superiores, habitualmente hasta 360mm.');
 
-  const faqItems = [
-    { q: isEn ? `Does the ${build.gpu ? formatName(build.gpu) : 'graphics card'} fit in the selected case?` : `¿Cabe la ${build.gpu ? formatName(build.gpu) : 'tarjeta gráfica'} en la caja seleccionada?`, a: faqGpuFit },
-    { q: isEn ? 'Is my power supply (PSU) sufficient?' : '¿Es suficiente mi fuente de alimentación (PSU)?', a: faqPower },
-    { q: isEn ? 'Do CPU and motherboard sockets match?' : '¿Coinciden el socket de la CPU y el de la placa base?', a: faqSocket },
-    { q: isEn ? 'Do I need a 90º angled power cable?' : '¿Necesito un cable de alimentación acodado a 90º?', a: faqCable },
-    { q: isEn ? 'What cooling system can I install in this chassis?' : '¿Qué refrigeración puedo instalar en este chasis?', a: faqCooler },
-  ];
+    const faqItems = [
+      { q: isEn ? `Does the ${build.gpu ? formatName(build.gpu) : 'graphics card'} fit in the selected case?` : `¿Cabe la ${build.gpu ? formatName(build.gpu) : 'tarjeta gráfica'} en la caja seleccionada?`, a: faqGpuFit },
+      { q: isEn ? 'Is my power supply (PSU) sufficient?' : '¿Es suficiente mi fuente de alimentación (PSU)?', a: faqPower },
+      { q: isEn ? 'Do CPU and motherboard sockets match?' : '¿Coinciden el socket de la CPU y el de la placa base?', a: faqSocket },
+      { q: isEn ? 'Do I need a 90º angled power cable?' : '¿Necesito un cable de alimentación acodado a 90º?', a: faqCable },
+      { q: isEn ? 'What cooling system can I install in this chassis?' : '¿Qué refrigeración puedo instalar en este chasis?', a: faqCooler },
+    ];
+    return { physicalText, platformText, powerText, thermalText, faqItems };
+  }, [build, isEn, analysis]);
 
   return (
     <div className="w-full font-sans animate-[fadeIn_0.5s_ease-out]">
@@ -479,8 +438,10 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
           </div>
 
           <div className="flex flex-col gap-2">
+            {allClear && <ApprovedBanner isEn={isEn} />}
             {complianceChecks.map((c) => (
-              <div key={c.key} className="bg-white/[0.02] hover:bg-white/[0.04] border border-white/5 hover:border-white/10 rounded-2xl px-4 py-3.5 flex items-center gap-3.5 transition-colors duration-200">
+              <div key={c.key} className="bg-white/[0.02] hover:bg-white/[0.04] border border-white/5 hover:border-white/10 rounded-2xl transition-colors duration-200">
+              <div className="px-4 py-3.5 flex items-center gap-3.5">
                 <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: `${c.c}1f` }}>
                   {c.ok ? (
                     <svg className="w-3.5 h-3.5" style={{ color: c.c }} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" /></svg>
@@ -497,8 +458,17 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
                   </p>
                 </div>
               </div>
+              {recommendations[c.key] && <SolutionCard rec={recommendations[c.key]} isEn={isEn} />}
+              </div>
             ))}
           </div>
+
+          {/* CTA PRINCIPAL (above the fold): justo bajo la Auditoría HUD */}
+          {selectedComponents.length > 0 && (
+            <div className="mt-2">
+              <ScrollToBuyButton targetId="disponibilidad-compra" isEn={isEn} count={selectedComponents.length} />
+            </div>
+          )}
         </div>
 
       </div>
@@ -531,193 +501,68 @@ export default function FullPcAnalyzer({ db, searchParams, lang }) {
         </div>
       </div>
 
-      {/* CENTRAL DE ADQUISICIÓN DE TIENDAS */}
+      {/* DISPONIBILIDAD Y COMPRA POR COMPONENTE */}
       {selectedComponents.length > 0 && (
-        <div className="mb-16 max-w-[1200px] mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-6">
-            <h2 className="text-2xl font-bold font-orbitron uppercase tracking-widest text-white/90">
-              {isEn ? 'Acquisition Center' : 'Central de Adquisición'}
+        <section
+          id="disponibilidad-compra"
+          tabIndex={-1}
+          aria-label={isEn ? 'Availability and purchase' : 'Disponibilidad y compra'}
+          className="bg-white text-zinc-900 rounded-2xl p-5 md:p-6 shadow-2xl border border-zinc-200 mt-8 space-y-3 mb-16 max-w-[1200px] mx-auto scroll-mt-24 focus:outline-none"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-zinc-950 font-black tracking-wider text-lg uppercase">
+              {isEn ? 'AVAILABILITY & PURCHASE' : 'DISPONIBILIDAD Y COMPRA'}
             </h2>
-            <p className="text-slate-500 text-xs sm:text-sm font-mono">
-              {selectedComponents.length} {isEn ? (selectedComponents.length === 1 ? 'component' : 'components') : (selectedComponents.length === 1 ? 'componente' : 'componentes')} · {stores.length} {isEn ? 'stores' : 'tiendas'}
-            </p>
+            <span className="bg-amber-100 text-amber-900 font-mono font-bold px-2.5 py-0.5 rounded-full text-xs uppercase">
+              {selectedComponents.length} {isEn ? (selectedComponents.length === 1 ? 'COMPONENT' : 'COMPONENTS') : (selectedComponents.length === 1 ? 'COMPONENTE' : 'COMPONENTES')}
+            </span>
           </div>
-          <p className="text-slate-400 text-sm max-w-2xl mb-6">
-            {isEn 
-              ? 'Clicking opens the store search pre-filtered by exact brand and model.'
-              : 'Cada botón abre la búsqueda de esa tienda ya filtrada por marca y modelo exacto, para que no tengas que volver a escribir nada.'}
-          </p>
 
-          <div className="bg-[#0a0a0c] border border-white/5 rounded-[24px] p-2 sm:p-3 shadow-2xl">
-            <div className="divide-y divide-white/5">
-              {selectedComponents.map((comp, i) => (
-                <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-4">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 shrink-0 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center">
-                      <span className="font-orbitron text-[9px] font-bold text-[#00ffff] tracking-wide">{ICONS[comp.label] || '•'}</span>
+          <div className="space-y-2">
+            {selectedComponents.map((comp, i) => {
+              const query = formatName(comp.data);
+              return (
+                <div
+                  key={i}
+                  className="bg-zinc-50 hover:bg-zinc-100/80 border border-zinc-200/80 p-3.5 rounded-xl flex flex-wrap items-center justify-between gap-x-3 gap-y-2 transition-all"
+                >
+                  <div className="flex flex-col gap-1.5 min-w-0 flex-1 basis-[10rem]">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="shrink-0 bg-zinc-200 text-zinc-900 font-bold font-mono text-[11px] px-2 py-1 rounded">
+                        {ICONS[comp.label] || '•'}
+                      </span>
+                      <span className="font-bold text-xs md:text-sm text-zinc-900 truncate max-w-[200px] md:max-w-[320px]" title={query}>
+                        {query}
+                      </span>
                     </div>
-                    <div className="min-w-0">
-                      <p className="text-[9px] uppercase tracking-[0.15em] text-slate-500 font-orbitron mb-0.5">{comp.label}</p>
-                      <p className="text-white text-sm font-medium truncate">{formatName(comp.data)}</p>
-                    </div>
+                    <StockText isEn={isEn} />
                   </div>
-                  <div className="flex flex-wrap gap-2 shrink-0 pl-[52px] sm:pl-0">
-                    {stores.map((store) => {
-                      const query = formatName(comp.data);
-                      const url = query ? store.buildUrl(query) : '#';
-
-                      return (
-                        <a
-                          key={store.id}
-                          href={url}
-                          target="_blank"
-                          rel="nofollow sponsored noopener noreferrer"
-                          aria-label={`Search ${query} on ${store.name}`}
-                          className="relative overflow-hidden flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/[0.02] hover:bg-white/[0.08] border border-white/5 hover:border-white/20 transition-all text-[11px] font-orbitron tracking-wide text-slate-300 hover:text-white"
-                        >
-                          <span>{store.name}</span>
-                          <div 
-                            className="absolute bottom-0 left-0 right-0 h-[2px]" 
-                            style={{ background: `linear-gradient(90deg, transparent 0%, ${store.color} 50%, transparent 100%)` }}
-                          ></div>
-                        </a>
-                      );
-                    })}
+                  <div className="ml-auto shrink-0">
+                    <SmartAffiliateCTA variant="light" isEn={isEn} query={query} />
                   </div>
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
-        </div>
+
+          <p className="text-[11px] text-zinc-500 font-mono text-center pt-3 border-t border-zinc-200 leading-snug">
+            {isEn
+              ? 'Prices and availability are subject to change at the originating store. We earn a commission under the affiliate program terms.'
+              : 'Precios y disponibilidad sujetos a cambios en la tienda de origen. Ganamos comisión según las condiciones del programa de afiliados.'}
+          </p>
+        </section>
       )}
 
-      {/* ANÁLISIS TÉCNICO Y INGENIERÍA */}
-      <div className="mb-16 max-w-5xl mx-auto">
-        <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">
-          {isEn ? 'Engineering & Assembly Analysis' : 'Análisis de Ingeniería y Ensamble'}
-        </h2>
-
-        <div className="bg-[#0a0a0c] border border-white/5 rounded-[24px] p-6 sm:p-8 lg:p-10 shadow-2xl relative overflow-hidden">
-          <div className="space-y-8 relative z-10 text-slate-300 leading-relaxed text-[15px]">
-            <div className="border-l-2 pl-4 border-cyan-500/30">
-              <h3 className="font-orbitron font-bold text-white mb-2 tracking-wide">
-                {isEn ? 'Architecture & Physical Clearances' : 'Arquitectura y Holguras Físicas'}
-              </h3>
-              <p>{physicalText}</p>
-            </div>
-            <div className="border-l-2 pl-4 border-cyan-500/30">
-              <h3 className="font-orbitron font-bold text-white mb-2 tracking-wide">
-                {isEn ? 'Platform & Logical Structure' : 'Plataforma y Estructura Lógica'}
-              </h3>
-              <p>{platformText}</p>
-            </div>
-            <div className="border-l-2 pl-4 border-cyan-500/30">
-              <h3 className="font-orbitron font-bold text-white mb-2 tracking-wide">
-                {isEn ? 'Power Supply & Efficiency' : 'Suministro Energético y Eficiencia'}
-              </h3>
-              <p>{powerText}</p>
-            </div>
-            <div className="border-l-2 pl-4 border-cyan-500/30">
-              <h3 className="font-orbitron font-bold text-white mb-2 tracking-wide">
-                {isEn ? 'Thermodynamics & Airflow' : 'Termodinámica y Flujo de Aire'}
-              </h3>
-              <p>{thermalText}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* CÓMO CALCULAMOS CADA COMPATIBILIDAD */}
-      <div className="mb-16 max-w-5xl mx-auto">
-        <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">
-          {isEn ? 'How We Calculate Compatibility' : 'Cómo Calculamos Cada Compatibilidad'}
-        </h2>
-        <div className="bg-[#0a0a0c] border border-white/5 rounded-[24px] p-6 sm:p-8 lg:p-10 shadow-2xl">
-          <div className="grid sm:grid-cols-2 gap-6 text-slate-300 text-sm leading-relaxed">
-            <div>
-              <h3 className="font-orbitron font-bold text-white mb-2 tracking-wide text-[13px]">
-                {isEn ? 'GPU Clearance' : 'Holgura de la GPU'}
-              </h3>
-              <p>{isEn ? 'We compare GPU length in millimeters against the maximum supported length in the chassis.' : 'Comparamos la longitud en milímetros de la tarjeta gráfica con la longitud máxima que admite el chasis. Si la gráfica mide más que ese límite, marcamos incompatibilidad física directa.'}</p>
-            </div>
-            <div>
-              <h3 className="font-orbitron font-bold text-white mb-2 tracking-wide text-[13px]">
-                {isEn ? 'Cable & Side Glass' : 'Cableado y cristal lateral'}
-              </h3>
-              <p>{isEn ? 'We subtract GPU width from available side space to tempered glass. Less than 20mm suggests collision risk.' : 'Restamos el ancho de la GPU al hueco disponible junto al panel de cristal templado. Por debajo de 20mm consideramos riesgo de choque; entre 20 y 35mm, recomendamos cable acodado a 90º.'}</p>
-            </div>
-            <div>
-              <h3 className="font-orbitron font-bold text-white mb-2 tracking-wide text-[13px]">
-                {isEn ? 'Power Supply Demand' : 'Suministro energético'}
-              </h3>
-              <p>{isEn ? 'We sum CPU + GPU TDP plus 80W base draw, applying a 25% safety margin for transient spikes.' : 'Sumamos el TDP de CPU y GPU más 80W de consumo base del resto de componentes, y aplicamos un 25% de margen de seguridad para picos transitorios. La PSU debe igualar o superar ese total.'}</p>
-            </div>
-            <div>
-              <h3 className="font-orbitron font-bold text-white mb-2 tracking-wide text-[13px]">
-                {isEn ? 'Cooling Solution' : 'Refrigeración'}
-              </h3>
-              <p>{isEn ? 'For air towers, we verify max height. For AIO liquid coolers, we check radiator support up to 360mm.' : 'Para torres de aire, comparamos la altura del disipador con la altura máxima del chasis. Para líquida AIO, comprobamos que el tamaño del radiador (hasta 360mm) encaje en los anclajes disponibles.'}</p>
-            </div>
-            <div>
-              <h3 className="font-orbitron font-bold text-white mb-2 tracking-wide text-[13px]">
-                {isEn ? 'CPU & Motherboard Socket' : 'Socket de CPU y placa base'}
-              </h3>
-              <p>{isEn ? 'CPU socket (e.g. LGA1700 or AM5) must match motherboard socket exactly.' : 'El zócalo del procesador (por ejemplo LGA1700 o AM5) debe coincidir exactamente con el de la placa base. No existen adaptadores físicos entre sockets distintos.'}</p>
-            </div>
-            <div>
-              <h3 className="font-orbitron font-bold text-white mb-2 tracking-wide text-[13px]">
-                {isEn ? 'RAM & Storage' : 'RAM y almacenamiento'}
-              </h3>
-              <p>{isEn ? 'We confirm memory and storage modules are selected and compatible with motherboard slots.' : 'Verificamos que haya un módulo de memoria y una unidad de almacenamiento seleccionados; recomendamos siempre confirmar el tipo (DDR4/DDR5, NVMe/SATA) contra los slots reales de tu placa base.'}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* TABLA RESUMEN DE COMPATIBILIDAD */}
-      <div className="mb-16 max-w-5xl mx-auto">
-        <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">
-          {isEn ? 'Compatibility Summary' : 'Resumen de Compatibilidad'}
-        </h2>
-        <div className="bg-[#0a0a0c] border border-white/5 rounded-[20px] overflow-hidden overflow-x-auto">
-          <table className="w-full text-sm text-left border-collapse min-w-[520px]">
-            <thead>
-              <tr className="border-b border-white/5 text-[10px] sm:text-xs font-orbitron text-[#00ffff] tracking-widest uppercase">
-                <th className="px-6 py-4 font-semibold">{isEn ? 'Check' : 'Verificación'}</th>
-                <th className="px-6 py-4 font-semibold">{isEn ? 'Status' : 'Estado'}</th>
-                <th className="px-6 py-4 font-semibold">{isEn ? 'Details' : 'Detalle'}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {complianceChecks.map((c, i) => (
-                <tr key={c.key} className={i % 2 === 1 ? 'bg-white/[0.02]' : ''}>
-                  <td className="px-6 py-4 font-bold text-white">{c.t}</td>
-                  <td className="px-6 py-4 font-orbitron font-bold" style={{ color: c.c }}>{c.ok ? 'OK' : (isEn ? 'REVIEW' : 'REVISAR')}</td>
-                  <td className="px-6 py-4 text-slate-300 font-mono text-xs">{c.d}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* PREGUNTAS FRECUENTES */}
-      <div className="mb-16 max-w-5xl mx-auto">
-        <h2 className="text-2xl font-bold font-orbitron mb-6 uppercase tracking-widest text-white/90">
-          {isEn ? 'Frequently Asked Questions' : 'Preguntas Frecuentes'}
-        </h2>
-        <div className="bg-[#0a0a0c] border border-white/5 rounded-[24px] divide-y divide-white/5">
-          {faqItems.map((item, i) => (
-            <details key={i} className="group p-6 sm:p-8">
-              <summary className="cursor-pointer font-orbitron text-sm sm:text-base text-white list-none flex justify-between items-center gap-4">
-                {item.q}
-                <span className="text-slate-500 group-open:rotate-45 transition-transform text-xl leading-none shrink-0">+</span>
-              </summary>
-              <p className="text-slate-300 text-sm leading-relaxed mt-4">{item.a}</p>
-            </details>
-          ))}
-        </div>
-      </div>
+      {/* SECCIONES INFORMATIVAS (bajo el fold): carga diferida */}
+      <LazyBuildDetails
+        isEn={isEn}
+        physicalText={physicalText}
+        platformText={platformText}
+        powerText={powerText}
+        thermalText={thermalText}
+        complianceChecks={complianceChecks}
+        faqItems={faqItems}
+      />
     </div>
   );
-}
+});
